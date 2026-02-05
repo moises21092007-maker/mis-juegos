@@ -2,180 +2,192 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Cue Master Elite - Ultra Pro</title>
+    <title>Cue Master Elite | Pro League</title>
     <style>
         :root {
             --gold: #f1c40f;
-            --blue-royal: #0056ff;
-            --green-success: #2ecc71;
-            --panel-bg: rgba(0, 0, 0, 0.8);
+            --blue-pass: #0047ab;
+            --bg-dark: #050a0f;
+            --panel-grad: linear-gradient(180deg, #1e272e 0%, #050a0f 100%);
         }
 
         body {
-            margin: 0;
-            background: #050505 url('https://www.transparenttextures.com/patterns/dark-matter.png');
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            height: 100vh;
-            overflow: hidden;
+            margin: 0; background: var(--bg-dark); color: white;
+            font-family: 'Arial Black', sans-serif; overflow: hidden;
         }
 
-        /* --- TOP BAR ESTILO MINICLIP --- */
+        /* --- FONDO DECORADO --- */
+        #game-wrapper {
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #1a2a3a 0%, #050a0f 100%);
+            display: flex; flex-direction: column;
+        }
+
+        /* --- TOP BAR (RECURSOS Y PERFIL) --- */
         .top-bar {
-            background: linear-gradient(to bottom, #222, #000);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 25px;
-            border-bottom: 2px solid var(--gold);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 20px; background: rgba(0,0,0,0.8); border-bottom: 2px solid var(--gold);
+        }
+        .profile { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 45px; height: 45px; border: 2px solid var(--gold); border-radius: 5px; background: url('https://i.pravatar.cc/100?u=Moises') center/cover; }
+        .money-group { display: flex; gap: 15px; }
+        .res-pill { background: #111; padding: 4px 12px; border-radius: 20px; border: 1px solid #444; font-size: 0.8rem; }
+
+        /* --- BOTÓN POOL PASS (IGUAL A LA FOTO) --- */
+        .pool-pass-widget {
+            position: absolute; right: 20px; top: 70px;
+            width: 180px; height: 50px; background: linear-gradient(90deg, #ffd700, #ff8c00);
+            border-radius: 10px; border: 2px solid white; color: black;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
         }
 
-        .profile-box { display: flex; align-items: center; gap: 15px; }
-        .avatar-frame {
-            width: 50px; height: 50px;
-            border-radius: 8px;
-            border: 2px solid var(--gold);
-            background: url('https://i.pravatar.cc/100?u=Moises') center/cover;
-            box-shadow: 0 0 10px var(--gold);
+        /* --- NAVEGACIÓN PRINCIPAL --- */
+        .main-stage { flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .main-stage.active { display: flex; }
+
+        .game-grid { display: flex; gap: 20px; padding: 20px; }
+        .big-card {
+            width: 220px; height: 140px; border-radius: 15px; border: 3px solid rgba(255,255,255,0.1);
+            cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 15px;
+            background-size: cover; text-shadow: 2px 2px 4px black;
         }
+        .big-card:hover { transform: translateY(-5px); border-color: white; }
+        .card-1v1 { background-image: url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300'); border-bottom: 6px solid #2ecc71; }
+        .card-special { background-image: url('https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=300'); border-bottom: 6px solid #3498db; }
 
-        .stats-group { display: flex; gap: 20px; }
-        .stat-pill {
-            background: #111;
-            border: 1px solid #444;
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
+        /* --- ZONA DE JUEGO (MESA) --- */
+        .table-container {
+            background: #3d2b1f; padding: 15px; border-radius: 20px; 
+            box-shadow: 0 20px 50px black; border: 4px solid #5d4037;
         }
+        canvas { background: #006064; border-radius: 10px; cursor: crosshair; }
 
-        /* --- BOTONES DE JUEGO PRINCIPALES --- */
-        .main-menu {
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-        }
-
-        .play-buttons { display: flex; gap: 30px; }
-        .btn-large {
-            width: 280px; height: 160px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            background-size: cover;
-            background-position: center;
-            border: 3px solid rgba(255,255,255,0.1);
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            padding: 15px;
-            overflow: hidden;
-        }
-        
-        /* Imagen de fondo para botones */
-        .btn-1v1 { background-image: linear-gradient(to top, rgba(0,100,0,0.8), transparent), url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=400'); }
-        .btn-special { background-image: linear-gradient(to top, rgba(0,50,150,0.8), transparent), url('https://images.unsplash.com/photo-1628771065518-0d82f1938462?q=80&w=400'); }
-
-        .btn-large:hover { transform: translateY(-10px) scale(1.02); border-color: white; }
-
-        /* --- SISTEMA DE COFRES --- */
-        .inventory-footer {
-            position: fixed; bottom: 0; width: 100%;
+        /* --- ZONA DE COFRES --- */
+        .chest-dock {
             height: 120px; background: rgba(0,0,0,0.9);
-            display: flex; justify-content: center; gap: 20px; align-items: center;
-            border-top: 1px solid #333;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            border-top: 2px solid #222;
         }
-
-        .chest-box {
-            width: 130px; height: 90px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 12px;
-            text-align: center;
-            position: relative;
+        .chest-slot {
+            width: 110px; height: 85px; background: #1a1a1a; border-radius: 10px;
+            border: 2px solid #333; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; font-size: 0.7rem;
         }
+        .slot-active { border-color: #2ecc71; color: #2ecc71; background: #001a00; }
 
-        .chest-img {
-            width: 50px; margin-top: 5px;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+        /* --- ZONA DE TACOS (SHOP) --- */
+        .cue-list { display: flex; gap: 20px; padding: 20px; }
+        .cue-card {
+            width: 180px; background: #111; padding: 15px; border-radius: 10px;
+            border: 1px solid var(--gold); text-align: center;
         }
+        .cue-img { width: 10px; height: 120px; background: linear-gradient(to bottom, #795548, #3e2723); margin: 10px auto; border-radius: 5px; }
 
-        .chest-box.active { border-color: var(--green-success); }
-        .timer { font-size: 11px; color: var(--green-success); font-weight: bold; }
-
-        /* --- POOL PASS POPUP --- */
-        .pool-pass-btn {
-            background: linear-gradient(135deg, #ffd700, #b8860b);
-            color: black; padding: 10px 25px;
-            border-radius: 10px; font-weight: 900;
-            cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(255,215,0,0.4);
-        }
-
+        .back-btn { position: absolute; left: 20px; top: 70px; background: #e74c3c; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<div id="game-wrapper">
     <div class="top-bar">
-        <div class="profile-box">
-            <div class="avatar-frame"></div>
+        <div class="profile">
+            <div class="avatar"></div>
             <div>
-                <div style="font-weight: bold; font-size: 1.1rem;">MOISES</div>
-                <div style="color: var(--gold); font-size: 0.8rem;">🏆 15,200</div>
+                <div>MOISES</div>
+                <div style="color:var(--gold); font-size: 0.7rem;">LVL 20</div>
             </div>
         </div>
-
-        <div class="stats-group">
-            <div class="stat-pill">
-                <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" width="20">
-                <span style="color: #2ecc71;">90,176</span>
-            </div>
-            <div class="stat-pill">
-                <img src="https://cdn-icons-png.flaticon.com/512/3258/3258443.png" width="20">
-                <span style="color: var(--gold);">5,000,000</span>
-            </div>
+        <div class="money-group">
+            <div class="res-pill">💵 90,176</div>
+            <div class="res-pill" style="color:var(--gold)">🪙 5,000,000</div>
         </div>
-
-        <div class="pool-pass-btn">Pool Pass</div>
+        <div onclick="openTab('shop')" style="cursor:pointer">🛒 TIENDA</div>
     </div>
 
-    <div class="main-menu">
-        <h1 style="letter-spacing: 8px; text-shadow: 0 0 20px var(--gold);">CUE MASTER ELITE</h1>
+    <div class="pool-pass-widget" onclick="openTab('pass')">
+        POOL PASS 🏆 [Rango 14]
+    </div>
+
+    <div id="home" class="main-stage active">
+        <h1 style="letter-spacing: 10px; color: var(--gold); text-shadow: 0 0 20px rgba(241,196,15,0.4);">CUE MASTER ELITE</h1>
+        <div class="game-grid">
+            <div class="big-card card-1v1" onclick="openTab('game')">JUGAR 1v1</div>
+            <div class="big-card card-special">MODO ESPECIAL</div>
+        </div>
+    </div>
+
+    <div id="game" class="main-stage">
+        <div class="back-btn" onclick="openTab('home')">VOLVER</div>
+        <div class="table-container">
+            <canvas id="poolCanvas" width="700" height="350"></canvas>
+        </div>
+    </div>
+
+    <div id="shop" class="main-stage">
+        <div class="back-btn" onclick="openTab('home')">VOLVER</div>
+        <h2>MIS TACOS (CUEDEX)</h2>
+        <div class="cue-list">
+            <div class="cue-card">
+                <div>TACO DE FUEGO</div>
+                <div class="cue-img" style="background: linear-gradient(to bottom, red, orange);"></div>
+                <button style="background:var(--gold); border:none; border-radius:3px;">EQUIPAR</button>
+            </div>
+            <div class="cue-card">
+                <div>TACO REAL</div>
+                <div class="cue-img" style="background: linear-gradient(to bottom, #0047ab, #ffd700);"></div>
+                <button style="border:none; border-radius:3px;">EQUIPADO</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pass" class="main-stage">
+        <div class="back-btn" onclick="openTab('home')">VOLVER</div>
+        <div style="width: 80%; background: #222; padding: 40px; border-radius: 20px; border: 2px solid var(--gold);">
+            <h1>ROUTE 66 PASS</h1>
+            <p>Gana 240 puntos más para el siguiente cofre premium.</p>
+            <div style="width: 100%; height: 20px; background: #000; border-radius: 10px;">
+                <div style="width: 60%; height: 100%; background: var(--gold); border-radius: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chest-dock">
+        <div class="chest-slot">Lisbon<br>3h 00m</div>
+        <div class="chest-slot slot-active">ABRIR<br>¡Listo!</div>
+        <div class="chest-slot">Sidney<br>3h 00m</div>
+        <div class="chest-slot">Sidney<br>3h 00m</div>
+    </div>
+</div>
+
+<script>
+    function openTab(tabId) {
+        document.querySelectorAll('.main-stage').forEach(s => s.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if(tabId === 'game') initTable();
+    }
+
+    function initTable() {
+        const c = document.getElementById('poolCanvas');
+        const ctx = c.getContext('2d');
+        ctx.clearRect(0,0,700,350);
         
-        <div class="play-buttons">
-            <div class="btn-large btn-1v1">
-                <div style="font-weight: 900; font-size: 1.5rem;">1 CONTRA 1</div>
-            </div>
-            <div class="btn-large btn-special">
-                <div style="font-weight: 900; font-size: 1.5rem;">MINIJUEGOS</div>
-            </div>
-        </div>
-    </div>
+        // Dibujar troneras (agujeros)
+        ctx.fillStyle = "#000";
+        [[0,0],[350,0],[700,0],[0,350],[350,350],[700,350]].forEach(p => {
+            ctx.beginPath(); ctx.arc(p[0], p[1], 20, 0, Math.PI*2); ctx.fill();
+        });
 
-    <div class="inventory-footer">
-        <div class="chest-box active">
-            <img src="https://cdn-icons-png.flaticon.com/512/2859/2859846.png" class="chest-img">
-            <div class="timer">LISTO</div>
-        </div>
-        <div class="chest-box">
-            <img src="https://cdn-icons-png.flaticon.com/512/2859/2859846.png" class="chest-img" style="opacity: 0.5;">
-            <div style="font-size: 10px; color: #666;">VACÍO</div>
-        </div>
-        <div class="chest-box">
-            <img src="https://cdn-icons-png.flaticon.com/512/2859/2859846.png" class="chest-img" style="opacity: 0.5;">
-            <div style="font-size: 10px; color: #666;">VACÍO</div>
-        </div>
-        <div class="chest-box">
-            <img src="https://cdn-icons-png.flaticon.com/512/2859/2859846.png" class="chest-img" style="opacity: 0.5;">
-            <div style="font-size: 10px; color: #666;">VACÍO</div>
-        </div>
-    </div>
-
+        // Bola blanca y línea de guía
+        ctx.beginPath(); ctx.arc(150, 175, 10, 0, Math.PI*2); ctx.fillStyle = "white"; ctx.fill();
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath(); ctx.moveTo(160, 175); ctx.lineTo(400, 175); ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.stroke();
+        
+        // Taco de billar
+        ctx.setLineDash([]);
+        ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(20, 175); ctx.lineTo(135, 175); ctx.strokeStyle = "#d7ccc8"; ctx.stroke();
+    }
+</script>
 </body>
 </html>
