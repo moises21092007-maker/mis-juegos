@@ -3,55 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Social</title>
+    <title>Aura | Búsqueda</title>
     <style>
-        :root { --bg: #000; --panel: #121212; --blue: #0095f6; --border: #262626; }
+        :root { --bg: #000; --panel: #1c1c1e; --border: #262626; --text-grey: #8e8e93; }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
 
-        /* VISTAS */
-        .view { height: 100vh; display: none; overflow-y: auto; }
+        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; }
         .view.active { display: block; }
 
-        /* --- PANTALLA PARA TI (2753.jpg) --- */
-        #feed-view { background: #000; position: relative; }
-        .video-overlay {
-            position: absolute; top: 0; width: 100%; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
+        /* --- PANTALLA BUSCAR (2756.jpg) --- */
+        .search-header {
+            display: flex; align-items: center; padding: 10px 15px;
+            gap: 15px; border-bottom: 1px solid var(--border);
         }
-        .video-placeholder {
-            width: 100%; height: 100vh; background: #1a1a1a;
-            display: flex; align-items: center; justify-content: center;
+        .search-bar {
+            background: #262626; border-radius: 10px; flex: 1;
+            display: flex; align-items: center; padding: 8px 12px;
         }
-        .user-tag { position: absolute; bottom: 100px; left: 15px; display: flex; align-items: center; gap: 10px; }
-        .btn-follow { background: transparent; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 8px; font-weight: bold; }
+        .search-bar input {
+            background: transparent; border: none; color: white;
+            width: 100%; outline: none; font-size: 1rem;
+        }
 
-        /* --- PANTALLA PERFIL (2751.jpg) --- */
-        #profile-view { padding: 20px; text-align: left; }
-        .p-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .p-avatar-ring { 
-            width: 85px; height: 85px; border-radius: 50%; padding: 3px;
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        .section-title {
+            display: flex; justify-content: space-between;
+            padding: 15px; font-weight: bold;
         }
-        .p-avatar-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
-        .stats-row { display: flex; gap: 25px; margin: 15px 0; }
-        .stat-item { text-align: center; }
-        .stat-item b { display: block; font-size: 1.1rem; }
-        .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; }
+        .ver-todo { color: #0095f6; font-size: 0.9rem; font-weight: normal; }
 
-        /* --- PANTALLA EDICIÓN (2752.jpg) --- */
-        #edit-screen {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 2000; padding: 15px; box-sizing: border-box;
+        /* LISTA RECIENTES */
+        .recent-item {
+            display: flex; align-items: center; padding: 10px 15px; gap: 12px;
         }
-        .edit-input-box { background: #1c1c1e; border-radius: 10px; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .edit-input-box label { display: block; font-size: 0.7rem; color: #8e8e93; }
-        .edit-input-box input { background: transparent; border: none; color: white; width: 100%; font-size: 1rem; outline: none; }
+        .recent-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+        .recent-info { flex: 1; }
+        .recent-info span { display: block; font-size: 0.95rem; font-weight: 500; }
+        .recent-info small { color: var(--text-grey); font-size: 0.8rem; }
+        .recent-more { color: var(--text-grey); font-size: 1.2rem; cursor: pointer; }
+
+        /* SUGERENCIAS (CARRUSEL) */
+        .sugerencias-carrusel {
+            display: flex; gap: 10px; padding: 0 15px; overflow-x: auto;
+        }
+        .sugerencia-card {
+            min-width: 150px; height: 200px; border-radius: 10px;
+            background: #111; overflow: hidden; position: relative;
+        }
+        .sugerencia-card img { width: 100%; height: 100%; object-fit: cover; }
 
         /* NAV INFERIOR */
         nav {
             position: fixed; bottom: 0; width: 100%; height: 60px;
             background: #000; border-top: 1px solid var(--border);
-            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            display: flex; justify-content: space-around; align-items: center;
         }
         .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
@@ -59,92 +63,61 @@
 </head>
 <body>
 
-    <div id="feed-view" class="view active">
-        <div class="video-overlay">
-            <span>+</span>
-            <span style="font-weight:bold;">Para ti ∨</span>
-            <span>❤️</span>
-        </div>
-        <div class="video-placeholder">
-            <p style="color:#444;">[ Simulación de Vídeo ]</p>
-        </div>
-        <div class="user-tag">
-            <div style="width:35px; height:35px; border-radius:50%; background:grey;"></div>
-            <span>fitnessshayla</span>
-            <button class="btn-follow">Seguir</button>
-        </div>
-    </div>
-
-    <div id="profile-view" class="view">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-weight:bold; font-size:1.2rem;">moi_._lopez ∨</span>
-            <span>☰</span>
-        </div>
-        
-        <div style="display:flex; align-items:center; gap:30px; margin-top:20px;">
-            <div class="p-avatar-ring"><img src="https://i.pravatar.cc/150?u=moi"></div>
-            <div class="stats-row">
-                <div class="stat-item"><b>0</b><small>publicaciones</small></div>
-                <div class="stat-item"><b>104</b><small>seguidores</small></div>
-                <div class="stat-item"><b>247</b><small>seguidos</small></div>
+    <div id="search-view" class="view active">
+        <div class="search-header">
+            <span style="font-size: 1.5rem;">‹</span>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar" id="main-search">
             </div>
         </div>
 
-        <div style="margin-top:10px;">
-            <b>moi_._Lopez</b><br>
-            <span style="color:#8e8e93;">📍 Estepona</span>
+        <div class="section-title">
+            <span>Recientes</span>
+            <span class="ver-todo">Ver todo</span>
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn-p" onclick="openEdit()">Editar perfil</button>
-            <button class="btn-p">Compartir</button>
+        <div id="recent-list">
+            <div class="recent-item">
+                <img src="https://i.pravatar.cc/150?u=ayto" class="recent-avatar">
+                <div class="recent-info">
+                    <span>Ayuntamiento de Estepona</span>
+                    <small>• más de 1 miembros nuevos</small>
+                </div>
+                <div class="recent-more">...</div>
+            </div>
+
+            <div class="recent-item">
+                <img src="https://i.pravatar.cc/150?u=ainhoa" class="recent-avatar">
+                <div class="recent-info">
+                    <span>Ainhoa Bustamante Ortega</span>
+                    <small>1 amigo en común</small>
+                </div>
+                <div class="recent-more">...</div>
+            </div>
         </div>
 
-        <div style="text-align:center; margin-top:60px;">
-            <img src="https://cdn-icons-png.flaticon.com/512/3534/3534065.png" width="120" style="filter:invert(1); opacity:0.8;">
-            <h2>Crea tu primera publicación</h2>
-            <button style="background:var(--blue); border:none; color:white; padding:12px 40px; border-radius:10px; font-weight:bold;">Crear</button>
+        <div class="section-title">
+            <span>Personas que quizá conozcas</span>
+            <span class="ver-todo">Ver todo</span>
         </div>
-    </div>
 
-    <div id="edit-screen">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <span onclick="closeEdit()">✕</span>
-            <b style="font-size:1.1rem;">Editar perfil</b>
-            <span style="color:var(--blue); font-weight:bold;" onclick="saveEdit()">✔️</span>
+        <div class="sugerencias-carrusel">
+            <div class="sugerencia-card">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200">
+            </div>
+            <div class="sugerencia-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200">
+            </div>
         </div>
-        <center><p style="color:var(--blue); font-weight:bold;">Editar foto o avatar</p></center>
-        
-        <div class="edit-input-box"><label>Nombre</label><input type="text" id="in-name" value="moi_._Lopez"></div>
-        <div class="edit-input-box"><label>Nombre de usuario</label><input type="text" id="in-user" value="moi_._lopez_"></div>
-        <div class="edit-input-box"><label>Pronombres</label><input type="text" placeholder="Pronombres"></div>
-        <div class="edit-input-box"><label>Presentación</label><input type="text" id="in-bio" value="📍 Estepona"></div>
-        
-        <p style="color:var(--blue);">Añadir enlace</p>
-        <p style="color:var(--blue);">Añadir banners</p>
     </div>
 
     <nav>
-        <div class="nav-icon active" onclick="changeTab('feed-view', this)">🏠</div>
-        <div class="nav-icon">🔍</div>
+        <div class="nav-icon" onclick="alert('Ir a Home')">🏠</div>
+        <div class="nav-icon active">🔍</div>
         <div class="nav-icon" style="font-size:2rem;">➕</div>
         <div class="nav-icon">🎬</div>
-        <div class="nav-icon" onclick="changeTab('profile-view', this)">👤</div>
+        <div class="nav-icon" onclick="alert('Ir a Perfil')">👤</div>
     </nav>
 
-    <script>
-        function changeTab(id, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-        }
-        function openEdit() { document.getElementById('edit-screen').style.display = 'block'; }
-        function closeEdit() { document.getElementById('edit-screen').style.display = 'none'; }
-        function saveEdit() {
-            document.getElementById('p-name-label').innerText = document.getElementById('in-name').value;
-            closeEdit();
-        }
-    </script>
 </body>
 </html>
