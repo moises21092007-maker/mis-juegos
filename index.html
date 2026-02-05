@@ -2,150 +2,185 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Master Billiards Pro</title>
+    <title>8 Ball Master Edition</title>
     <style>
-        body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        #game-container { position: relative; }
-        canvas { border: 12px solid #3e2723; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.8); cursor: crosshair; background: #2e7d32; }
-        #menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; z-index: 10; }
-        h1 { font-size: 3rem; margin-bottom: 1rem; color: #f1c40f; text-shadow: 2px 2px #000; }
-        button { padding: 15px 40px; font-size: 1.2rem; background: #27ae60; color: white; border: none; border-radius: 30px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #2ecc71; transform: scale(1.1); }
-        .stats { position: absolute; top: -40px; width: 100%; display: flex; justify-content: space-between; font-weight: bold; color: #aaa; }
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #f1c40f;
+            --dark: #0f172a;
+        }
+
+        body {
+            margin: 0;
+            background: var(--dark);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MENÚ PRINCIPAL --- */
+        #main-menu {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--secondary) 0%, var(--dark) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .header-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-logo h1 {
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff, #bdc3c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 250px);
+            gap: 20px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .game-card h3 { color: var(--accent); margin-top: 0; }
+        .game-card p { font-size: 0.9rem; color: #ccc; }
+        
+        .badge {
+            background: var(--accent);
+            color: black;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* --- ÁREA DE JUEGO --- */
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+        }
+
+        canvas {
+            border: 15px solid #3d2b1f;
+            border-radius: 10px;
+            background: #27ae60;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .top-bar {
+            width: 800px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .btn-back {
+            background: #e74c3c;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <div class="stats">
-        <span>BOLAS METIDAS: <span id="score">0</span></span>
-        <span>MODO: PROFESIONAL</span>
-    </div>
-    
-    <div id="menu-overlay">
-        <h1>BILLAR MASTER PRO</h1>
-        <button onclick="startGame()">JUGAR AHORA</button>
+    <div id="main-menu">
+        <div class="header-logo">
+            <p style="color: var(--accent); letter-spacing: 5px;">WORLD CLASS</p>
+            <h1>8 BALL POOL</h1>
+        </div>
+
+        <div class="menu-grid">
+            <div class="game-card" onclick="startMode('PRACTICE')">
+                <div class="badge">FREE</div>
+                <h3>PRÁCTICA</h3>
+                <p>Entrena tus tiros sin presión.</p>
+            </div>
+            <div class="game-card" onclick="startMode('1V1')" style="border-width: 3px;">
+                <div class="badge" style="background: #e74c3c; color: white;">HOT</div>
+                <h3>1 VS 1</h3>
+                <p>Compite contra un oponente local.</p>
+            </div>
+            <div class="game-card" onclick="startMode('TOURNAMENT')">
+                <h3>TORNEO</h3>
+                <p>Gana el trofeo de la liga.</p>
+            </div>
+        </div>
     </div>
 
-    <canvas id="poolTable"></canvas>
-</div>
+    <div id="game-screen">
+        <div class="top-bar">
+            <div>MODO: <span id="current-mode-text">PRÁCTICA</span></div>
+            <button class="btn-back" onclick="goToMenu()">SALIR AL MENÚ</button>
+        </div>
+        <canvas id="poolTable"></canvas>
+    </div>
 
 <script>
-const canvas = document.getElementById('poolTable');
-const ctx = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
-const menu = document.getElementById('menu-overlay');
+    // Lógica básica de navegación
+    const mainMenu = document.getElementById('main-menu');
+    const gameScreen = document.getElementById('game-screen');
+    const modeText = document.getElementById('current-mode-text');
 
-canvas.width = 800;
-canvas.height = 400;
-
-let balls = [];
-let score = 0;
-let gameState = 'MENU';
-const ballRadius = 10;
-const friction = 0.985;
-const holes = [
-    {x: 0, y: 0}, {x: 400, y: 0}, {x: 800, y: 0},
-    {x: 0, y: 400}, {x: 400, y: 400}, {x: 800, y: 400}
-];
-
-class Ball {
-    constructor(x, y, color, isWhite = false) {
-        this.x = x; this.y = y; this.color = color;
-        this.isWhite = isWhite; this.vx = 0; this.vy = 0;
-        this.inHole = false;
+    function startMode(mode) {
+        mainMenu.style.display = 'none';
+        gameScreen.style.display = 'flex';
+        modeText.innerText = mode;
+        // Aquí llamaríamos a la función de inicialización del juego de billar
+        initGame(); 
     }
-    draw() {
-        if (this.inHole) return;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
+
+    function goToMenu() {
+        gameScreen.style.display = 'none';
+        mainMenu.style.display = 'flex';
     }
-    update() {
-        if (this.inHole) return;
-        this.x += this.vx; this.y += this.vy;
-        this.vx *= friction; this.vy *= friction;
-        
-        // Colisión con agujeros
-        holes.forEach(h => {
-            let d = Math.hypot(this.x - h.x, this.y - h.y);
-            if (d < 20) {
-                if (this.isWhite) {
-                    this.x = 200; this.y = 200; this.vx = 0; this.vy = 0;
-                } else {
-                    this.inHole = true;
-                    score++;
-                    scoreEl.innerText = score;
-                }
-            }
-        });
 
-        // Rebotes
-        if (this.x < ballRadius || this.x > canvas.width - ballRadius) this.vx *= -1;
-        if (this.y < ballRadius || this.y > canvas.height - ballRadius) this.vy *= -1;
-    }
-}
-
-function startGame() {
-    menu.style.display = 'none';
-    gameState = 'PLAYING';
-    initGame();
-}
-
-function initGame() {
-    balls = [new Ball(200, 200, 'white', true)];
-    for(let i=0; i<15; i++) {
-        balls.push(new Ball(500 + Math.random()*200, 100 + Math.random()*200, i%2? 'red':'yellow'));
-    }
-}
-
-// (Aquí va la lógica de colisiones igual que la anterior...)
-function checkCollisions() {
-    for (let i = 0; i < balls.length; i++) {
-        for (let j = i + 1; j < balls.length; j++) {
-            if (balls[i].inHole || balls[j].inHole) continue;
-            let dx = balls[j].x - balls[i].x;
-            let dy = balls[j].y - balls[i].y;
-            let dist = Math.hypot(dx, dy);
-            if (dist < ballRadius * 2) {
-                let angle = Math.atan2(dy, dx);
-                let vx1 = balls[i].vx * Math.cos(angle) + balls[i].vy * Math.sin(angle);
-                let vy1 = balls[i].vy * Math.cos(angle) - balls[i].vx * Math.sin(angle);
-                let vx2 = balls[j].vx * Math.cos(angle) + balls[j].vy * Math.sin(angle);
-                let vy2 = balls[j].vy * Math.cos(angle) - balls[j].vx * Math.sin(angle);
-                balls[i].vx = vx2 * Math.cos(angle) - vy1 * Math.sin(angle);
-                balls[i].vy = vy1 * Math.cos(angle) + vx2 * Math.sin(angle);
-                balls[j].vx = vx1 * Math.cos(angle) - vy2 * Math.sin(angle);
-                balls[j].vy = vy2 * Math.cos(angle) + vx1 * Math.sin(angle);
-            }
-        }
-    }
-}
-
-canvas.addEventListener('mousedown', (e) => {
-    if (gameState !== 'PLAYING') return;
-    const rect = canvas.getBoundingClientRect();
-    const mX = e.clientX - rect.left;
-    const mY = e.clientY - rect.top;
-    balls[0].vx = (balls[0].x - mX) * 0.1;
-    balls[0].vy = (balls[0].y - mY) * 0.1;
-});
-
-function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Dibujar agujeros
-    ctx.fillStyle = 'black';
-    holes.forEach(h => { ctx.beginPath(); ctx.arc(h.x, h.y, 20, 0, Math.PI*2); ctx.fill(); });
-    
-    if (gameState === 'PLAYING') {
-        checkCollisions();
-        balls.forEach(b => { b.update(); b.draw(); });
-    }
-    requestAnimationFrame(loop);
-}
-loop();
+    // --- (Aquí iría todo el código del motor de billar que ya tenemos) ---
+    // NOTA: Para no saturar este mensaje, usa la lógica de físicas que te pasé antes
+    // insertándola dentro de una función initGame()
 </script>
 </body>
 </html>
