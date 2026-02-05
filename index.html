@@ -1,31 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Mis Juegos</title>
+    <meta charset="UTF-8">
+    <title>Billar Pro - Mi Web</title>
     <style>
-        body {
-            background-color: #1a1a2e; /* Color azul oscuro/negro */
-            color: #e94560; /* Letras color fucsia/rojo */
-            font-family: sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        h1 {
-            font-size: 50px;
-            text-shadow: 2px 2px #0f3460;
-        }
-        p {
-            color: #16213e;
-            background: #0f3460;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-        }
+        body { background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; font-family: sans-serif; }
+        canvas { border: 15px solid #5d4037; border-radius: 10px; box-shadow: 0 0 50px rgba(0,0,0,0.5); cursor: crosshair; }
+        .ui { position: absolute; top: 20px; color: white; text-align: center; pointer-events: none; }
     </style>
 </head>
 <body>
-    <h1>🎮 MIS JUEGOS 🕹️</h1>
-    <p>¡Prepárate! La diversión empieza aquí.</p>
+    <div class="ui">
+        <h1>BILLAR PRO</h1>
+        <p>Arrastra y suelta para golpear la bola blanca</p>
+    </div>
+    <canvas id="poolTable"></canvas>
+
+<script>
+const canvas = document.getElementById('poolTable');
+const ctx = canvas.getContext('2d');
+canvas.width = 800;
+canvas.height = 400;
+
+let balls = [];
+const ballRadius = 12;
+const friction = 0.985;
+
+class Ball {
+    constructor(x, y, color, isWhite = false) {
+        this.x = x; this.y = y; this.color = color;
+        this.isWhite = isWhite; this.vx = 0; this.vy = 0;
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        // Brillo para efecto 3D
+        ctx.beginPath();
+        ctx.arc(this.x - 3, this.y - 3, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.fill();
+        ctx.closePath();
+    }
+    update() {
+        this.x += this.vx; this.y += this.vy;
+        this.vx *= friction; this.vy *= friction;
+        if (Math.abs(this.vx) < 0.1) this.vx = 0;
+        if (Math.abs(this.vy) < 0.1) this.vy = 0;
+        // Rebotes bandas
+        if (this.x + ballRadius > canvas.width || this.x - ballRadius < 0) { this.vx *= -1; this.x = this.x < ballRadius ? ballRadius : canvas.width - ballRadius; }
+        if (this.y + ballRadius > canvas.height || this.y - ballRadius < 0) { this.vy *= -1; this.y = this.y < ballRadius ? ballRadius : canvas.height - ballRadius; }
+    }
+}
+
+// Crear bolas en triángulo
+function initGame() {
+    balls = [];
+    balls.push(new Ball(200, 200, 'white', true)); // Bola blanca
+    let startX = 550, startY = 200;
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j <= i; j++) {
+            balls.push(new Ball(startX + i * 22, (startY - (i * 12)) + j * 25, j % 2 === 0 ? '#e74c3c' : '#f1c40f'));
+        }
+    }
+}
+
+function checkCollisions() {
+    for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+            let dx = balls[j].x - balls[i].x;
+            let dy = balls[j].y - balls[i].y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < ballRadius * 2) {
+                let angle = Math.atan2(dy, dx);
+                let sin = Math.sin(angle), cos = Math.cos(angle);
+                // Física básica de choque
+                let vx1 = balls[i].vx * cos + balls[i].vy * sin;
+                let vy1 = balls[i].vy * cos - balls[i].vx * sin;
+                let vx2 = balls[j].vx * cos + balls[j].vy * sin;
+                let vy2 = balls[j].vy * cos - balls[j].vx * sin;
+                balls[i].vx = vx2 * cos - vy1 * sin;
+                balls[i].vy = vy1 * cos + vx2 * sin;
+                balls[j].vx = vx1 * cos - vy2 * sin;
+                balls[j].vy = vy2 * cos + vx1 * sin;
+                // Evitar que se queden pegadas
+                let overlap = ballRadius * 2 - dist;
+                balls[i].x -= (overlap/2) * cos; balls[i].y -= (overlap/2) * sin;
+                balls[j].x += (overlap/2) * cos; balls[j].y += (overlap/2) * sin;
+            }
+        }
+    }
+}
+
+let isDragging = false;
+canvas.addEventListener('mousedown', (e) => {
+    if (balls[0].vx === 0 && balls[0].vy === 0) isDragging = true;
+});
+canvas.addEventListener('mouseup', (e) => {
+    if (!isDragging) return;
+    let rect = canvas.getBoundingClientRect();
+    let mouseX = e.clientX - rect.left, mouseY = e.clientY - rect.top;
+    balls[0].vx = (balls[0].x - mouseX) * 0.15;
+    balls[0].vy = (balls[0].y - mouseY) * 0.15;
+    isDragging = false;
+});
+
+function loop() {
+    ctx.fillStyle = '#2e7d32'; // Color tapete
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    checkCollisions();
+    balls.forEach(b => { b.update(); b.draw(); });
+    requestAnimationFrame(loop);
+}
+
+initGame();
+loop();
+</script>
 </body>
 </html>
