@@ -2,185 +2,186 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>8 Ball Master Edition</title>
+    <title>Billar 8 Ball - Campos Visuales</title>
     <style>
         :root {
-            --primary: #1e3c72;
-            --secondary: #2a5298;
-            --accent: #f1c40f;
-            --dark: #0f172a;
+            --table-wood-dark: #3d2b1f;
+            --table-wood-light: #6a4a3a;
+            --tapete-red: #8b0000; /* Rojo oscuro para el tapete */
+            --tapete-blue: #00566d; /* Azul oscuro */
+            --hole-color: #1a1a1a;
+            --border-highlight: rgba(255, 255, 255, 0.2);
+            --border-shadow: rgba(0, 0, 0, 0.4);
         }
 
         body {
             margin: 0;
-            background: var(--dark);
-            color: white;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a; /* Fondo muy oscuro */
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- MENÚ PRINCIPAL --- */
-        #main-menu {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, var(--secondary) 0%, var(--dark) 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            z-index: 100;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            color: white;
         }
 
-        .header-logo {
-            text-align: center;
-            margin-bottom: 40px;
+        #game-container {
+            position: relative;
+            width: 840px; /* Ancho total de la mesa con bordes */
+            height: 440px; /* Alto total de la mesa con bordes */
+            background: linear-gradient(to bottom, var(--table-wood-light), var(--table-wood-dark));
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8),
+                        inset 0 0 15px rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .header-logo h1 {
-            font-size: 4rem;
-            margin: 0;
-            background: linear-gradient(to bottom, #fff, #bdc3c7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 250px);
-            gap: 20px;
-        }
-
-        .game-card {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        #pool-table-surface {
+            width: 800px; /* Ancho real del tapete */
+            height: 400px; /* Alto real del tapete */
+            background-color: var(--tapete-red); /* Color del tapete, podemos cambiarlo */
+            border-radius: 10px;
             position: relative;
             overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5),
+                        0 0 15px rgba(0, 0, 0, 0.3);
         }
 
-        .game-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .game-card h3 { color: var(--accent); margin-top: 0; }
-        .game-card p { font-size: 0.9rem; color: #ccc; }
-        
-        .badge {
-            background: var(--accent);
-            color: black;
-            font-size: 0.7rem;
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-weight: bold;
+        /* Agujeros */
+        .hole {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--hole-color);
+            border-radius: 50%;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8),
+                        0 0 5px rgba(0, 0, 0, 0.3);
+            z-index: 1; /* Asegura que el agujero esté encima del tapete pero debajo de las bolas */
+        }
+        /* Posiciones de los agujeros */
+        .hole.top-left { top: -10px; left: -10px; }
+        .hole.top-mid { top: -10px; left: calc(50% - 20px); }
+        .hole.top-right { top: -10px; right: -10px; }
+        .hole.bottom-left { bottom: -10px; left: -10px; }
+        .hole.bottom-mid { bottom: -10px; left: calc(50% - 20px); }
+        .hole.bottom-right { bottom: -10px; right: -10px; }
+        
+        /* Línea de tiro (para referencia visual, luego se haría con JS) */
+        #shooting-line {
+            position: absolute;
+            left: 200px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        /* --- ÁREA DE JUEGO --- */
-        #game-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-        }
-
-        canvas {
-            border: 15px solid #3d2b1f;
-            border-radius: 10px;
-            background: #27ae60;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
-        }
-
-        .top-bar {
-            width: 800px;
+        /* Marcadores y UI (temporalmente aquí para ver la estructura) */
+        .ui-top-bar {
+            position: absolute;
+            top: -70px; /* Ajusta la posición para que quede arriba del todo */
+            width: 800px; /* Ancho de la mesa */
+            height: 50px;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            background: rgba(0,0,0,0.5);
-            padding: 10px 20px;
+            align-items: center;
+            padding: 0 20px;
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .btn-back {
-            background: #e74c3c;
-            border: none;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
-            cursor: pointer;
+        .player-info {
+            display: flex;
+            align-items: center;
         }
+        .player-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #f1c40f;
+            margin-right: 10px;
+        }
+        .player-info span {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .balls-left {
+            display: flex;
+            gap: 5px;
+        }
+        .ball-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        /* Colores de ejemplo para las bolas restantes */
+        .ball-icon.red { background-color: red; }
+        .ball-icon.yellow { background-color: yellow; }
+        .ball-icon.black { background-color: black; }
+
+        .chips {
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+        .chips img {
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="main-menu">
-        <div class="header-logo">
-            <p style="color: var(--accent); letter-spacing: 5px;">WORLD CLASS</p>
-            <h1>8 BALL POOL</h1>
+    <div id="game-container">
+        <div class="ui-top-bar">
+            <div class="player-info">
+                <img src="https://via.placeholder.com/40/007bff/ffffff?text=P1" alt="Jugador 1">
+                <span>Jugador 1</span>
+                <div class="balls-left" style="margin-left: 15px;">
+                    <div class="ball-icon red"></div>
+                    <div class="ball-icon red"></div>
+                    <div class="ball-icon yellow"></div>
+                </div>
+            </div>
+
+            <div class="chips">
+                <img src="https://via.placeholder.com/30/f1c40f/000000?text=$" alt="Fichas">
+                <span>5000</span>
+            </div>
+
+            <div class="player-info">
+                <div class="balls-left" style="margin-right: 15px;">
+                    <div class="ball-icon yellow"></div>
+                    <div class="ball-icon yellow"></div>
+                    <div class="ball-icon red"></div>
+                </div>
+                <span>Jugador 2</span>
+                <img src="https://via.placeholder.com/40/ffc107/ffffff?text=P2" alt="Jugador 2">
+            </div>
         </div>
 
-        <div class="menu-grid">
-            <div class="game-card" onclick="startMode('PRACTICE')">
-                <div class="badge">FREE</div>
-                <h3>PRÁCTICA</h3>
-                <p>Entrena tus tiros sin presión.</p>
+
+        <div id="pool-table-surface">
+            <div class="hole top-left"></div>
+            <div class="hole top-mid"></div>
+            <div class="hole top-right"></div>
+            <div class="hole bottom-left"></div>
+            <div class="hole bottom-mid"></div>
+            <div class="hole bottom-right"></div>
+
+            <div id="shooting-line"></div>
+
             </div>
-            <div class="game-card" onclick="startMode('1V1')" style="border-width: 3px;">
-                <div class="badge" style="background: #e74c3c; color: white;">HOT</div>
-                <h3>1 VS 1</h3>
-                <p>Compite contra un oponente local.</p>
-            </div>
-            <div class="game-card" onclick="startMode('TOURNAMENT')">
-                <h3>TORNEO</h3>
-                <p>Gana el trofeo de la liga.</p>
-            </div>
-        </div>
     </div>
 
-    <div id="game-screen">
-        <div class="top-bar">
-            <div>MODO: <span id="current-mode-text">PRÁCTICA</span></div>
-            <button class="btn-back" onclick="goToMenu()">SALIR AL MENÚ</button>
-        </div>
-        <canvas id="poolTable"></canvas>
-    </div>
-
-<script>
-    // Lógica básica de navegación
-    const mainMenu = document.getElementById('main-menu');
-    const gameScreen = document.getElementById('game-screen');
-    const modeText = document.getElementById('current-mode-text');
-
-    function startMode(mode) {
-        mainMenu.style.display = 'none';
-        gameScreen.style.display = 'flex';
-        modeText.innerText = mode;
-        // Aquí llamaríamos a la función de inicialización del juego de billar
-        initGame(); 
-    }
-
-    function goToMenu() {
-        gameScreen.style.display = 'none';
-        mainMenu.style.display = 'flex';
-    }
-
-    // --- (Aquí iría todo el código del motor de billar que ya tenemos) ---
-    // NOTA: Para no saturar este mensaje, usa la lógica de físicas que te pasé antes
-    // insertándola dentro de una función initGame()
-</script>
 </body>
 </html>
