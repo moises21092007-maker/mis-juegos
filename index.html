@@ -3,170 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Edit Profile Edition</title>
+    <title>Aura | Perfil Profesional</title>
     <style>
         :root {
-            --aura-main: linear-gradient(135deg, #8A2BE2, #00D4FF);
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.15);
+            --aura-gradient: linear-gradient(45deg, #00d4ff, #8a2be2);
+            --bg-black: #050505;
+            --panel-grey: #1c1c1e;
+            --text-grey: #a0a0a0;
         }
 
         body {
-            margin: 0; background: var(--bg); color: white;
-            font-family: 'Segoe UI', sans-serif; overflow: hidden;
+            margin: 0; background: var(--bg-black); color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
         }
 
-        /* --- NAVEGACIÓN Y VISTAS (Igual que antes) --- */
-        #main-app { height: 100vh; display: flex; flex-direction: column; }
-        header { padding: 15px 25px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-        .view { flex: 1; overflow-y: auto; padding: 20px; display: none; padding-bottom: 100px; }
-        .view.active { display: block; }
-
-        /* --- PERFIL --- */
-        .profile-container { text-align: center; }
-        .p-avatar { 
-            width: 100px; height: 100px; border-radius: 50%; 
-            background: var(--aura-main); margin: 0 auto 15px; padding: 3px;
-        }
-        .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--bg); object-fit: cover; }
-        
-        .btn-edit {
-            background: transparent; border: 1px solid var(--gold); 
-            color: white; padding: 8px 25px; border-radius: 20px; 
-            cursor: pointer; border-color: #00D4FF; font-weight: bold;
+        /* --- CONTENEDOR PERFIL --- */
+        .profile-header {
+            padding: 20px;
+            background: linear-gradient(to bottom, #111, var(--bg-black));
         }
 
-        /* --- VENTANA MODAL EDICIÓN (NUEVO) --- */
-        #edit-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
-            z-index: 3000; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box;
+        /* FOTO CON ARO DE LUZ */
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 25px;
+            margin-bottom: 15px;
         }
 
-        .edit-card {
-            background: var(--glass); border: 1px solid var(--border);
-            padding: 30px; border-radius: 25px; width: 100%; max-width: 400px;
+        .avatar-wrapper {
+            position: relative;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--aura-gradient);
         }
 
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-size: 0.8rem; opacity: 0.5; margin-bottom: 5px; }
-        .input-group input, .input-group textarea {
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-            color: white; padding: 12px; border-radius: 10px; outline: none; box-sizing: border-box;
+        .avatar-wrapper img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: black;
+            object-fit: cover;
+            border: 2px solid black;
         }
 
-        /* --- NAV INFERIOR --- */
-        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
-        .nav-btn { font-size: 1.5rem; cursor: pointer; opacity: 0.5; }
-        .nav-btn.active { opacity: 1; color: #00D4FF; }
+        .add-btn {
+            position: absolute; bottom: 0; right: 0;
+            background: white; color: black;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 18px;
+            border: 2px solid black;
+        }
+
+        /* ESTADÍSTICAS */
+        .stats-group {
+            display: flex; gap: 20px; flex-grow: 1;
+        }
+
+        .stat { text-align: center; }
+        .stat-val { font-size: 1.1rem; font-weight: bold; display: block; }
+        .stat-label { font-size: 0.8rem; color: var(--text-grey); }
+
+        /* NOMBRES */
+        .name-section { margin-bottom: 20px; }
+        .full-name { font-size: 1.3rem; font-weight: bold; margin: 0; }
+        .user-handle { font-size: 0.9rem; color: var(--text-grey); margin: 0; }
+
+        /* BOTONES ACCIÓN */
+        .btn-row {
+            display: flex; gap: 8px; margin-bottom: 10px;
+        }
+
+        .btn-grey {
+            flex: 1; background: var(--panel-grey); border: none;
+            color: white; padding: 10px; border-radius: 10px;
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+        }
+
+        .btn-icon { width: 45px; flex: none; }
+
+        /* LÍNEA DE TABS */
+        .tab-bar {
+            display: flex; border-top: 1px solid #222; margin-top: 10px;
+        }
+        .tab {
+            flex: 1; text-align: center; padding: 15px; font-size: 1.5rem;
+            opacity: 0.5; cursor: pointer;
+        }
+        .tab.active { opacity: 1; border-bottom: 2px solid white; }
+
+        /* ÁREA VACÍA (CREA TU PRIMERA...) */
+        .empty-state {
+            text-align: center; padding: 60px 20px;
+        }
+
+        .empty-illustration {
+            width: 150px; margin-bottom: 20px; opacity: 0.9;
+        }
+
+        .empty-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+        .empty-desc { color: var(--text-grey); font-size: 0.9rem; margin-bottom: 30px; }
+
+        .btn-blue {
+            background: #3662e3; color: white; border: none;
+            padding: 12px 35px; border-radius: 25px;
+            font-weight: bold; font-size: 1rem; cursor: pointer;
+        }
+
+        /* NAV INFERIOR */
+        nav {
+            position: fixed; bottom: 0; width: 100%; height: 60px;
+            background: black; border-top: 1px solid #222;
+            display: flex; justify-content: space-around; align-items: center;
+        }
+        .nav-icon { font-size: 1.4rem; opacity: 0.8; }
     </style>
 </head>
 <body>
 
-    <div id="main-app">
-        <header><div style="font-weight: 900; letter-spacing: 2px;">AURA</div></header>
-
-        <div id="home-view" class="view">
-            <div style="background: var(--glass); padding: 20px; border-radius: 20px;">
-                <p>Tu feed principal aparecerá aquí.</p>
+    <div class="profile-header">
+        <div class="avatar-section">
+            <div class="avatar-wrapper">
+                <img src="https://i.pravatar.cc/150?u=Moises" id="p-img">
+                <div class="add-btn">+</div>
+            </div>
+            <div class="stats-group">
+                <div class="stat"><span class="stat-val" id="num-posts">0</span><span class="stat-label">publicaciones</span></div>
+                <div class="stat"><span class="stat-val" id="num-fol">0</span><span class="stat-label">seguidores</span></div>
+                <div class="stat"><span class="stat-val" id="num-following">0</span><span class="stat-label">seguidos</span></div>
             </div>
         </div>
 
-        <div id="profile-view" class="view active">
-            <div class="profile-container">
-                <div class="p-avatar">
-                    <img id="display-img" src="https://i.pravatar.cc/150?u=Moises">
-                </div>
-                <h2 id="display-name">Moises</h2>
-                <p id="display-bio" style="opacity: 0.6;">Explorador de Auras | Creativo</p>
-                
-                <button class="btn-edit" onclick="openEditModal()">EDITAR PERFIL</button>
-            </div>
+        <div class="name-section">
+            <p class="full-name" id="display-name">Moi._.Lopez</p>
+            <p class="user-handle" id="display-handle">@moi_lopez</p>
         </div>
 
-        <nav>
-            <div class="nav-btn" onclick="switchTab('home-view', this)">🏠</div>
-            <div class="nav-btn">🔍</div>
-            <div class="nav-btn" style="background:var(--aura-main); width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; opacity:1;">+</div>
-            <div class="nav-btn">💬</div>
-            <div class="nav-btn active" onclick="switchTab('profile-view', this)">👤</div>
-        </nav>
-    </div>
-
-    <div id="edit-modal">
-        <div class="edit-card">
-            <h3 style="margin-top:0">Configurar Perfil</h3>
-            
-            <div class="input-group">
-                <label>Foto de Perfil</label>
-                <input type="file" id="edit-file" accept="image/*" onchange="previewImage(event)">
-            </div>
-
-            <div class="input-group">
-                <label>Nombre Público</label>
-                <input type="text" id="edit-name" placeholder="Tu nombre...">
-            </div>
-
-            <div class="input-group">
-                <label>Biografía (Vibe)</label>
-                <textarea id="edit-bio" rows="3" placeholder="Cuéntanos sobre tu energía..."></textarea>
-            </div>
-
-            <div style="display:flex; gap:10px;">
-                <button onclick="saveProfile()" style="flex:2; background:var(--aura-main); border:none; padding:12px; border-radius:10px; color:white; font-weight:bold; cursor:pointer;">GUARDAR</button>
-                <button onclick="closeEditModal()" style="flex:1; background:transparent; border:1px solid #ff4444; color:#ff4444; border-radius:10px; cursor:pointer;">X</button>
-            </div>
+        <div class="btn-row">
+            <button class="btn-grey" onclick="abrirEditor()">Editar perfil</button>
+            <button class="btn-grey">Compartir</button>
+            <button class="btn-grey btn-icon">👤+</button>
         </div>
     </div>
+
+    <div class="tab-bar">
+        <div class="tab active">▦</div>
+        <div class="tab">🔄</div>
+        <div class="tab">👤</div>
+    </div>
+
+    <div class="empty-state">
+        <img src="https://cdn-icons-png.flaticon.com/512/3815/3815525.png" class="empty-illustration">
+        <div class="empty-title">Crea tu primera publicación</div>
+        <div class="empty-desc">Personaliza este espacio.</div>
+        <button class="btn-blue">Crear</button>
+    </div>
+
+    <nav>
+        <div class="nav-icon">🏠</div>
+        <div class="nav-icon">🎬</div>
+        <div class="nav-icon">➕</div>
+        <div class="nav-icon">🔍</div>
+        <div class="nav-icon">👤</div>
+    </nav>
 
     <script>
-        // Cambiar entre pestañas
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
-        }
+        let publicaciones = 0;
+        let seguidores = 0;
 
-        // Abrir Modal de Edición
-        function openEditModal() {
-            document.getElementById('edit-name').value = document.getElementById('display-name').innerText;
-            document.getElementById('edit-bio').value = document.getElementById('display-bio').innerText;
-            document.getElementById('edit-modal').style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('edit-modal').style.display = 'none';
-        }
-
-        // Previsualizar imagen seleccionada
-        let tempImgData = null;
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){
-                tempImgData = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        // Guardar cambios
-        function saveProfile() {
-            const newName = document.getElementById('edit-name').value;
-            const newBio = document.getElementById('edit-bio').value;
-
-            if(newName.trim() !== "") {
-                document.getElementById('display-name').innerText = newName;
+        function abrirEditor() {
+            let nuevoNombre = prompt("Nuevo nombre:", document.getElementById('display-name').innerText);
+            if (nuevoNombre) {
+                document.getElementById('display-name').innerText = nuevoNombre;
+                // Lógica de ejemplo: si cambias nombre, simulamos que ganas un seguidor
+                seguidores++;
+                document.getElementById('num-fol').innerText = seguidores;
             }
-            document.getElementById('display-bio').innerText = newBio;
-            
-            if(tempImgData) {
-                document.getElementById('display-img').src = tempImgData;
-            }
-
-            closeEditModal();
         }
+        
+        // La lógica de "0" ya está puesta en el HTML por defecto.
     </script>
+
 </body>
 </html>
