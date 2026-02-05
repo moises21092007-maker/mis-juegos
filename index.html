@@ -3,190 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Perfil Profesional</title>
+    <title>Aura | Editar Perfil</title>
     <style>
         :root {
-            --aura-gradient: linear-gradient(45deg, #00d4ff, #8a2be2);
-            --bg-black: #050505;
-            --panel-grey: #1c1c1e;
-            --text-grey: #a0a0a0;
+            --bg-black: #000000;
+            --panel-grey: #121212;
+            --input-bg: #1c1c1e;
+            --blue-link: #0095f6;
+            --border-grey: #262626;
         }
 
         body {
             margin: 0; background: var(--bg-black); color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
             overflow-x: hidden;
         }
 
-        /* --- CONTENEDOR PERFIL --- */
-        .profile-header {
-            padding: 20px;
-            background: linear-gradient(to bottom, #111, var(--bg-black));
+        /* PANTALLA PRINCIPAL DEL PERFIL */
+        #profile-screen { display: block; }
+
+        /* PANTALLA DE EDICIÓN (ESTILO 2752.jpg) */
+        #edit-screen {
+            display: none; height: 100vh; background: var(--bg-black);
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
         }
 
-        /* FOTO CON ARO DE LUZ */
-        .avatar-section {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 25px;
-            margin-bottom: 15px;
+        .edit-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; border-bottom: 1px solid var(--border-grey);
         }
 
-        .avatar-wrapper {
-            position: relative;
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            padding: 3px;
-            background: var(--aura-gradient);
+        .edit-content { padding: 20px; overflow-y: auto; height: calc(100vh - 60px); }
+
+        .change-photo {
+            color: var(--blue-link); text-align: center; font-weight: 600;
+            margin-bottom: 25px; cursor: pointer; display: block;
         }
 
-        .avatar-wrapper img {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            background: black;
-            object-fit: cover;
-            border: 2px solid black;
+        /* ESTILO DE LOS CAMPOS (INPUTS) */
+        .input-group {
+            background: var(--input-bg); border-radius: 12px;
+            padding: 10px 15px; margin-bottom: 12px;
+            border: 1px solid var(--border-grey);
         }
 
-        .add-btn {
-            position: absolute; bottom: 0; right: 0;
-            background: white; color: black;
-            width: 24px; height: 24px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 18px;
-            border: 2px solid black;
+        .input-group label {
+            display: block; font-size: 0.75rem; color: #8e8e93; margin-bottom: 2px;
         }
 
-        /* ESTADÍSTICAS */
-        .stats-group {
-            display: flex; gap: 20px; flex-grow: 1;
+        .input-group input, .input-group textarea {
+            width: 100%; background: transparent; border: none;
+            color: white; font-size: 1rem; outline: none; padding: 0;
+            font-family: inherit;
         }
 
-        .stat { text-align: center; }
-        .stat-val { font-size: 1.1rem; font-weight: bold; display: block; }
-        .stat-label { font-size: 0.8rem; color: var(--text-grey); }
-
-        /* NOMBRES */
-        .name-section { margin-bottom: 20px; }
-        .full-name { font-size: 1.3rem; font-weight: bold; margin: 0; }
-        .user-handle { font-size: 0.9rem; color: var(--text-grey); margin: 0; }
-
-        /* BOTONES ACCIÓN */
-        .btn-row {
-            display: flex; gap: 8px; margin-bottom: 10px;
+        .option-link {
+            padding: 15px 0; border-bottom: 1px solid var(--border-grey);
+            color: white; font-size: 1rem; cursor: pointer;
         }
 
-        .btn-grey {
-            flex: 1; background: var(--panel-grey); border: none;
-            color: white; padding: 10px; border-radius: 10px;
-            font-weight: 600; font-size: 0.9rem; cursor: pointer;
-        }
+        .blue-option { color: var(--blue-link); border: none; font-size: 0.95rem; }
 
-        .btn-icon { width: 45px; flex: none; }
-
-        /* LÍNEA DE TABS */
-        .tab-bar {
-            display: flex; border-top: 1px solid #222; margin-top: 10px;
+        /* REUTILIZANDO ESTILOS DE LA ANTERIOR PARA EL PERFIL */
+        .aura-ring {
+            width: 100px; height: 100px; border-radius: 50%;
+            padding: 3px; background: linear-gradient(135deg, #00c6ff, #6e48aa);
+            margin: 20px auto;
         }
-        .tab {
-            flex: 1; text-align: center; padding: 15px; font-size: 1.5rem;
-            opacity: 0.5; cursor: pointer;
-        }
-        .tab.active { opacity: 1; border-bottom: 2px solid white; }
-
-        /* ÁREA VACÍA (CREA TU PRIMERA...) */
-        .empty-state {
-            text-align: center; padding: 60px 20px;
-        }
-
-        .empty-illustration {
-            width: 150px; margin-bottom: 20px; opacity: 0.9;
-        }
-
-        .empty-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
-        .empty-desc { color: var(--text-grey); font-size: 0.9rem; margin-bottom: 30px; }
-
-        .btn-blue {
-            background: #3662e3; color: white; border: none;
-            padding: 12px 35px; border-radius: 25px;
-            font-weight: bold; font-size: 1rem; cursor: pointer;
-        }
-
-        /* NAV INFERIOR */
-        nav {
-            position: fixed; bottom: 0; width: 100%; height: 60px;
-            background: black; border-top: 1px solid #222;
-            display: flex; justify-content: space-around; align-items: center;
-        }
-        .nav-icon { font-size: 1.4rem; opacity: 0.8; }
+        .aura-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
     </style>
 </head>
 <body>
 
-    <div class="profile-header">
-        <div class="avatar-section">
-            <div class="avatar-wrapper">
-                <img src="https://i.pravatar.cc/150?u=Moises" id="p-img">
-                <div class="add-btn">+</div>
+    <div id="profile-screen">
+        <div style="padding: 20px;">
+            <div class="aura-ring"><img id="main-photo" src="https://i.pravatar.cc/150?u=Moises"></div>
+            <h2 id="main-name" style="margin: 5px 0;">Moi_._Lopez</h2>
+            <p id="main-username" style="color: #8e8e93; margin: 0;">@moi_lopez_</p>
+            <p id="main-bio" style="margin-top: 10px;">📍 Estepona</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="openEdit()" style="flex:1; background:#262626; border:none; color:white; padding:10px; border-radius:8px; font-weight:600;">Editar perfil</button>
+                <button style="flex:1; background:#262626; border:none; color:white; padding:10px; border-radius:8px; font-weight:600;">Compartir</button>
             </div>
-            <div class="stats-group">
-                <div class="stat"><span class="stat-val" id="num-posts">0</span><span class="stat-label">publicaciones</span></div>
-                <div class="stat"><span class="stat-val" id="num-fol">0</span><span class="stat-label">seguidores</span></div>
-                <div class="stat"><span class="stat-val" id="num-following">0</span><span class="stat-label">seguidos</span></div>
+        </div>
+    </div>
+
+    <div id="edit-screen">
+        <div class="edit-header">
+            <span onclick="closeEdit()" style="font-size: 1.5rem; cursor:pointer;">✕</span>
+            <span style="font-size: 1.2rem; font-weight: bold;">Editar perfil</span>
+            <span onclick="saveProfile()" style="color: var(--blue-link); font-weight: bold; cursor:pointer;">✔️</span>
+        </div>
+
+        <div class="edit-content">
+            <span class="change-photo">Editar foto o avatar</span>
+
+            <div class="input-group">
+                <label>Nombre</label>
+                <input type="text" id="input-name" value="Moi_._Lopez">
             </div>
-        </div>
 
-        <div class="name-section">
-            <p class="full-name" id="display-name">Moi._.Lopez</p>
-            <p class="user-handle" id="display-handle">@moi_lopez</p>
-        </div>
+            <div class="input-group">
+                <label>Nombre de usuario</label>
+                <input type="text" id="input-username" value="moi_._lopez_">
+            </div>
 
-        <div class="btn-row">
-            <button class="btn-grey" onclick="abrirEditor()">Editar perfil</button>
-            <button class="btn-grey">Compartir</button>
-            <button class="btn-grey btn-icon">👤+</button>
+            <div class="input-group">
+                <label>Pronombres</label>
+                <input type="text" placeholder="Pronombres">
+            </div>
+
+            <div class="input-group">
+                <label>Presentación</label>
+                <input type="text" id="input-bio" value="📍 Estepona">
+            </div>
+
+            <div class="option-link blue-option">Añadir enlace</div>
+            <div class="option-link blue-option">Añadir banners</div>
+
+            <div class="input-group" style="margin-top: 20px;">
+                <label>Género</label>
+                <input type="text" value="Hombre" readonly>
+            </div>
+
+            <div class="option-link" style="display: flex; justify-content: space-between;">
+                Música <span style="color: #8e8e93;">Añade música a tu perfil ></span>
+            </div>
+
+            <div class="option-link blue-option" style="margin-top: 20px;">Cambiar a cuenta profesional</div>
+            <div class="option-link blue-option">Configuración de la información personal</div>
+            <div class="option-link blue-option" style="border:none;">Mostrar que tu perfil está verificado</div>
         </div>
     </div>
-
-    <div class="tab-bar">
-        <div class="tab active">▦</div>
-        <div class="tab">🔄</div>
-        <div class="tab">👤</div>
-    </div>
-
-    <div class="empty-state">
-        <img src="https://cdn-icons-png.flaticon.com/512/3815/3815525.png" class="empty-illustration">
-        <div class="empty-title">Crea tu primera publicación</div>
-        <div class="empty-desc">Personaliza este espacio.</div>
-        <button class="btn-blue">Crear</button>
-    </div>
-
-    <nav>
-        <div class="nav-icon">🏠</div>
-        <div class="nav-icon">🎬</div>
-        <div class="nav-icon">➕</div>
-        <div class="nav-icon">🔍</div>
-        <div class="nav-icon">👤</div>
-    </nav>
 
     <script>
-        let publicaciones = 0;
-        let seguidores = 0;
-
-        function abrirEditor() {
-            let nuevoNombre = prompt("Nuevo nombre:", document.getElementById('display-name').innerText);
-            if (nuevoNombre) {
-                document.getElementById('display-name').innerText = nuevoNombre;
-                // Lógica de ejemplo: si cambias nombre, simulamos que ganas un seguidor
-                seguidores++;
-                document.getElementById('num-fol').innerText = seguidores;
-            }
+        function openEdit() {
+            document.getElementById('edit-screen').style.display = 'block';
         }
-        
-        // La lógica de "0" ya está puesta en el HTML por defecto.
-    </script>
 
+        function closeEdit() {
+            document.getElementById('edit-screen').style.display = 'none';
+        }
+
+        function saveProfile() {
+            // Cogemos los valores de los inputs
+            const name = document.getElementById('input-name').value;
+            const username = document.getElementById('input-username').value;
+            const bio = document.getElementById('input-bio').value;
+
+            // Los aplicamos a la pantalla de perfil
+            document.getElementById('main-name').innerText = name;
+            document.getElementById('main-username').innerText = "@" + username;
+            document.getElementById('main-bio').innerText = bio;
+
+            // Cerramos la edición
+            closeEdit();
+        }
+    </script>
 </body>
 </html>
