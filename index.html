@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Original & Cam</title>
+    <title>Aura | Pro Cam</title>
     <style>
         :root { 
-            --bg: #050505; --panel: #121212; --border: #1a1a1a; 
+            --bg: #000; --panel: #121212; --border: #1a1a1a; 
             --rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
         }
-        body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
+        body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; height: 100vh; }
         
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* HEADER ORIGINAL */
-        .glass-header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(15px); border-bottom: 0.5px solid var(--border); }
+        /* HEADER */
+        .glass-header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); border-bottom: 0.5px solid var(--border); }
         .logo-text { font-size: 1.6rem; font-weight: 900; background: var(--rainbow); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 5s ease infinite; letter-spacing: 2px; }
 
         /* HISTORIAS */
         .stories-section { padding: 15px 0; border-bottom: 0.5px solid var(--border); }
         .stories-container { display: flex; gap: 14px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
-        .sq-story { position: relative; min-width: 68px; height: 68px; cursor: pointer; }
+        .sq-story { position: relative; min-width: 68px; height: 68px; }
         .rainbow-border { width: 100%; height: 100%; border-radius: 14px; background: var(--rainbow); background-size: 400% 400%; animation: rainbow-move 5s ease infinite; padding: 3px; box-sizing: border-box; }
         .placeholder-sq { width: 100%; height: 100%; border-radius: 11px; background: #111; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 
-        /* NAV CON BOTÓN X */
-        nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; }
+        /* NAV */
+        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; transition: 0.2s; }
         .nav-icon.active { opacity: 1; }
-        .center-x { width: 50px; height: 50px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; transform: translateY(-5px); }
+        .center-x { width: 55px; height: 55px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; transform: translateY(-8px); box-shadow: 0 4px 15px rgba(255,255,255,0.2); cursor: pointer; }
 
-        /* PANTALLA DE CÁMARA */
-        #cam-screen { position: fixed; inset: 0; background: black; z-index: 2000; display: none; flex-direction: column; }
-        #video-preview { width: 100%; height: 80%; object-fit: cover; }
-        .cam-controls { flex: 1; display: flex; justify-content: space-around; align-items: center; background: black; }
-        .shutter { width: 70px; height: 70px; border: 5px solid white; border-radius: 50%; background: transparent; }
+        /* CÁMARA FULL SCREEN */
+        #cam-screen { position: fixed; inset: 0; background: black; z-index: 5000; display: none; }
+        #video-preview { width: 100%; height: 100%; object-fit: cover; }
+        .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 20px; pointer-events: none; }
+        .cam-btn { pointer-events: auto; cursor: pointer; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .shutter-btn { width: 75px; height: 75px; border: 4px solid white; border-radius: 50%; pointer-events: auto; align-self: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -49,15 +50,18 @@
                 <div class="sq-story" onclick="openCam()"><div class="rainbow-border"><div class="placeholder-sq">👤</div></div></div>
             </div>
         </div>
-        <div style="padding:100px 20px; text-align:center; color:#1a1a1a; font-size:3.5rem; font-weight:900;">AURA</div>
+        <div style="padding:150px 20px; text-align:center; opacity:0.1; font-size:4rem; font-weight:900;">AURA</div>
     </div>
 
     <div id="v-search" class="view">
-        <div style="padding:20px;"><input type="text" placeholder="Buscar personas..." style="width:100%; background:#151515; border:1px solid #333; padding:12px; border-radius:10px; color:white; outline:none;"></div>
+        <div style="padding:15px;"><input type="text" placeholder="Buscar..." style="width:100%; background:#111; border:1px solid #222; padding:12px; border-radius:10px; color:white; outline:none;"></div>
+    </div>
+
+    <div id="v-reels" class="view">
+        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#333;">No hay vídeos ahora</div>
     </div>
 
     <div id="v-profile" class="view">
-        <header class="glass-header"><b>Perfil</b></header>
         <div style="padding:40px; text-align:center;">
             <center><div class="rainbow-border" style="width:100px; height:100px;"><div class="placeholder-sq">👤</div></div></center>
             <h2 style="margin-top:20px;">Tu Nombre</h2>
@@ -65,15 +69,13 @@
     </div>
 
     <div id="cam-screen">
-        <div style="padding:20px; position:absolute; top:0; width:100%; box-sizing:border-box; display:flex; justify-content:space-between; z-index:10;">
-            <span onclick="closeCam()" style="font-size:1.5rem; cursor:pointer;">✕</span>
-            <span>⚡️</span>
-        </div>
         <video id="video-preview" autoplay playsinline></video>
-        <div class="cam-controls">
-            <div style="width:40px;"></div>
-            <div class="shutter" onclick="alert('¡Foto capturada!')"></div>
-            <div style="font-size:1.5rem;" onclick="closeCam()">🔄</div>
+        <div class="cam-ui">
+            <div style="display:flex; justify-content:space-between;">
+                <span class="cam-btn" onclick="closeCam()" style="font-size:2rem;">✕</span>
+                <span class="cam-btn">⚡️</span>
+            </div>
+            <div class="shutter-btn" onclick="alert('Capturado')"></div>
         </div>
     </div>
 
@@ -90,8 +92,7 @@
 
         function showView(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active');
+            document.getElementById(id).classList.add('active');
             if(el) {
                 document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
                 el.classList.add('active');
@@ -102,11 +103,22 @@
             const camScreen = document.getElementById('cam-screen');
             const video = document.getElementById('video-preview');
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                // Pedimos cámara trasera por defecto para que sea más "social"
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" }, 
+                    audio: false 
+                });
                 video.srcObject = stream;
-                camScreen.style.display = 'flex';
+                camScreen.style.display = 'block';
             } catch (err) {
-                alert("No se pudo acceder a la cámara: " + err);
+                // Si falla la trasera (ej: en PC), pedimos cualquier cámara
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
+                    camScreen.style.display = 'block';
+                } catch(e) {
+                    alert("Error al abrir cámara: " + e.message);
+                }
             }
         }
 
