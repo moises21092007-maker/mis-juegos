@@ -3,90 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura Pro | Mega Filter Pack</title>
+    <title>Aura Pro | Master Elite</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@400;800&display=swap');
+
         :root { 
             --bg: #000; 
             --rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             --accent: #00ffd5;
             --border: #1a1a1a;
         }
+        
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* LOGO DECORADO CON AURA */
-        .logo-container { display: flex; justify-content: center; align-items: center; padding: 50px 0 20px; position: relative; }
-        .aura-circle {
-            position: absolute; width: 135px; height: 135px; border-radius: 50%;
-            border: 2px solid transparent; background: var(--rainbow); background-size: 400%;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: destination-out; mask-composite: exclude;
-            animation: move-bg 5s linear infinite; filter: blur(1px) drop-shadow(0 0 15px var(--accent));
+        /* --- HEADER ELITE (LOGO PROFESIONAL) --- */
+        .header-elite {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 60px 0 30px; position: relative;
         }
-        .aura-text {
-            font-size: 2.5rem; font-weight: 900; letter-spacing: 3px;
+        .aura-ring-pro {
+            position: absolute; width: 150px; height: 150px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255,255,255,0.2);
+            animation: rotate-ring 15s linear infinite;
+        }
+        .aura-glow-pro {
+            position: absolute; width: 140px; height: 140px;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0,255,213,0.2), inset 0 0 20px rgba(122,0,255,0.2);
+            border: 2px solid transparent;
+            background: var(--rainbow); background-size: 400%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            animation: move-bg 6s linear infinite;
+        }
+        .aura-text-pro {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem; font-weight: 900; letter-spacing: 6px;
             background: var(--rainbow); background-size: 400%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: move-bg 8s linear infinite; z-index: 2;
+            animation: move-bg 8s linear infinite;
+            z-index: 2; filter: drop-shadow(0 0 10px rgba(0,255,213,0.5));
         }
 
-        /* VISTAS */
-        .view { display: none; height: 100vh; width: 100%; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
+        /* SISTEMA DE VISTAS */
+        .view { display: none; height: 100vh; width: 100%; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
 
         /* STORIES */
         .stories-bar { display: flex; padding: 15px 20px; border-bottom: 1px solid var(--border); }
-        .s-ring { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--rainbow); background-size: 400%; animation: move-bg 5s linear infinite; }
+        .s-ring { 
+            width: 65px; height: 65px; border-radius: 50%; padding: 3px; 
+            background: var(--rainbow); background-size: 400%; animation: move-bg 5s linear infinite; 
+        }
         .s-inner { width: 100%; height: 100%; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 
-        /* ZONA VIDEO */
+        /* ZONA VIDEO (REELS) */
         .reel-ui { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #111, #000); }
 
-        /* PERFIL (LIMPIO) */
+        /* PERFIL LIMPIO */
         .p-info { padding: 40px 25px; }
-        .p-top { display: flex; align-items: center; gap: 30px; margin-bottom: 25px; }
+        .p-top { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; }
         .p-avatar { 
-            width: 90px; height: 90px; border-radius: 28px; background: var(--rainbow); 
+            width: 90px; height: 90px; border-radius: 30px; background: var(--rainbow); 
             background-size: 400%; animation: move-bg 5s linear infinite;
             display: flex; align-items: center; justify-content: center; font-size: 2.5rem; 
         }
-        .stat-n { color: var(--accent); font-size: 1.2rem; font-weight: 900; display: block; }
-        .p-btn { flex: 1; background: #0a0a0a; border: 1px solid #333; color: white; padding: 14px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .stat-n { color: var(--accent); font-size: 1.3rem; font-weight: 800; display: block; }
+        .p-btn { flex: 1; background: #0d0d0d; border: 1px solid #222; color: white; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .p-btn:active { transform: scale(0.95); background: #1a1a1a; }
+
+        /* NAVEGACIÓN */
+        nav { 
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 80px; 
+            background: rgba(5,5,5,0.95); backdrop-filter: blur(25px); 
+            border-radius: 40px; border: 1px solid #222; 
+            display: flex; justify-content: space-around; align-items: center; z-index: 4000; 
+        }
+        .n-btn { font-size: 1.7rem; opacity: 0.3; transition: 0.3s; cursor: pointer; }
+        .n-btn.active { opacity: 1; color: var(--accent); filter: drop-shadow(0 0 10px var(--accent)); }
+        .n-add { 
+            width: 65px; height: 65px; background: white; border-radius: 50%; color: black; 
+            font-size: 2.5rem; display: flex; align-items: center; justify-content: center; 
+            transform: translateY(-15px); box-shadow: 0 10px 30px rgba(0,255,213,0.3); cursor: pointer;
+        }
 
         /* CÁMARA */
         #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
 
-        /* NAVEGACIÓN */
-        nav { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px; background: rgba(5,5,5,0.95); backdrop-filter: blur(20px); border-radius: 40px; border: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 4000; }
-        .n-btn { font-size: 1.6rem; opacity: 0.3; cursor: pointer; }
-        .n-btn.active { opacity: 1; color: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); }
-        .n-add { width: 65px; height: 65px; background: white; border-radius: 50%; color: black; font-size: 2.4rem; display: flex; align-items: center; justify-content: center; transform: translateY(-15px); }
-
+        /* ANIMACIONES */
         @keyframes move-bg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes rotate-ring { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="view active">
-        <div class="logo-container">
-            <div class="aura-circle"></div>
-            <div class="aura-text">AURA</div>
+        <div class="header-elite">
+            <div class="aura-ring-pro"></div>
+            <div class="aura-glow-pro"></div>
+            <div class="aura-text-pro">AURA</div>
         </div>
+        
         <div class="stories-bar">
             <div class="story" onclick="openCam()">
                 <div class="s-ring"><div class="s-inner">+</div></div>
-                <span style="font-size:0.6rem; color:gray; display:block; text-align:center; margin-top:5px; font-weight:bold;">Mi Historia</span>
+                <span style="font-size:0.65rem; color:gray; display:block; text-align:center; margin-top:8px; font-weight:800; text-transform:uppercase;">Mi Historia</span>
             </div>
         </div>
-        <div style="text-align:center; margin-top:100px; color:#111; font-weight:900; font-size:1.5rem; letter-spacing:5px;">FEED VACÍO</div>
+        <div style="text-align:center; margin-top:80px; color:#111; font-weight:900; font-size:1.5rem; letter-spacing:10px;">PRO FEED</div>
     </div>
 
     <div id="view-reels" class="view">
         <div class="reel-ui">
-            <span style="font-size:4rem; filter: drop-shadow(0 0 10px var(--accent));">🎬</span>
-            <h3 style="color:var(--accent); letter-spacing:3px; font-weight:900;">VIDEO ZONE</h3>
-            <p style="color:gray; font-size:0.7rem;">Desliza para ver más</p>
+            <span style="font-size:5rem; filter: drop-shadow(0 0 15px var(--accent));">🎬</span>
+            <h3 style="color:var(--accent); letter-spacing:5px; font-weight:900; margin-top:20px;">VIDEO ZONE</h3>
+            <p style="color:gray; font-size:0.8rem;">Contenido de Aura Pro</p>
         </div>
     </div>
 
@@ -95,16 +128,16 @@
             <div class="p-top">
                 <div class="p-avatar">👤</div>
                 <div style="display:flex; flex:1; justify-content:space-around; text-align:center;">
-                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray;">PUBS</span></div>
-                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray;">FANS</span></div>
-                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray;">SIGUIENDO</span></div>
+                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray; font-weight:800;">PUBS</span></div>
+                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray; font-weight:800;">FANS</span></div>
+                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray; font-weight:800;">SIGUIENDO</span></div>
                 </div>
             </div>
             
-            <h2 style="margin:0; font-size:1.8rem;">Mi Perfil</h2>
+            <h2 style="margin:0; font-size:2.2rem; font-family: 'Orbitron', sans-serif; letter-spacing:2px;">Mi Perfil</h2>
             
-            <div style="display:flex; gap:10px; margin-top:30px;">
-                <button class="p-btn" onclick="alert('Editor abierto')">Editar perfil</button>
+            <div style="display:flex; gap:12px; margin-top:40px;">
+                <button class="p-btn" onclick="alert('Configuración de Perfil')">Editar perfil</button>
                 <button class="p-btn" onclick="shareProfile()">Compartir perfil</button>
             </div>
         </div>
@@ -112,17 +145,17 @@
 
     <div id="aura-cam">
         <video id="video-preview" autoplay playsinline></video>
-        <div style="position:absolute; top:40px; left:25px; font-size:2.2rem; cursor:pointer;" onclick="closeCam()">✕</div>
-        <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:center;">
-            <div style="width:80px; height:80px; border:5px solid white; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="alert('¡Click!')">
-                <div style="width:60px; height:60px; background:white; border-radius:50%;"></div>
+        <div style="position:absolute; top:40px; left:25px; font-size:2.5rem; cursor:pointer;" onclick="closeCam()">✕</div>
+        <div style="position:absolute; bottom:60px; width:100%; display:flex; justify-content:center;">
+            <div style="width:85px; height:85px; border:6px solid white; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="alert('¡Capturado!')">
+                <div style="width:65px; height:65px; background:white; border-radius:50%;"></div>
             </div>
         </div>
     </div>
 
     <nav>
         <div class="n-btn active" onclick="go('home', this)">🖼️</div>
-        <div class="n-btn" onclick="alert('Cargando filtros...')">🔍</div>
+        <div class="n-btn" onclick="alert('Buscando...')">🔍</div>
         <div class="n-add" onclick="openCam()">+</div>
         <div class="n-btn" onclick="go('reels', this)">🎬</div>
         <div class="n-btn" onclick="go('profile', this)">👤</div>
@@ -152,14 +185,14 @@
         }
 
         async function shareProfile() {
-            const data = { title: 'Aura Pro', text: '¡Mira mi perfil!', url: window.location.href };
+            const data = { title: 'Aura Pro', text: '¡Únete a mi Aura!', url: window.location.href };
             try {
                 if (navigator.share) { await navigator.share(data); }
                 else { 
                     await navigator.clipboard.writeText(window.location.href); 
-                    alert('¡Enlace copiado!'); 
+                    alert('¡Enlace copiado al portapapeles!'); 
                 }
-            } catch (e) { console.log('Error'); }
+            } catch (e) { console.log('Error sharing'); }
         }
     </script>
 </body>
