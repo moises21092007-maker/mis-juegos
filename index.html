@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | App Oficial</title>
+    <title>Aura | App Completa</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -11,38 +11,42 @@
             --aura-grad: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); 
         }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
-        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
+        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; position: relative; }
         .view.active { display: block; }
 
-        /* --- HOME (AURA BRAND) --- */
-        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
+        /* --- HOME & STORIES --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top:0; background: var(--bg); z-index: 10; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         .stories-container { display: flex; padding: 10px 20px; border-bottom: 0.5px solid var(--border); }
-        .story-ring { width: 70px; height: 70px; border-radius: 50%; padding: 3px; position: relative; background: var(--aura-grad); }
-        .story-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
+        .story-ring { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
+        .story-ring img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
 
-        /* --- BUSCAR (X FUNCIONAL) --- */
-        .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 15px; border-bottom: 1px solid var(--border); }
-        .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px 12px; }
+        /* --- VIDEO FEED (RECUPERADO) --- */
+        .v-container { width: 100%; height: 100%; background: #111 url('https://images.unsplash.com/photo-1550029402-226115b7c579?w=800') center/cover; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+        .v-info { padding: 20px; padding-bottom: 80px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
+        .v-actions { position: absolute; right: 15px; bottom: 100px; display: flex; flex-direction: column; gap: 15px; text-align: center; font-size: 1.5rem; }
+
+        /* --- BUSCADOR --- */
+        .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 10px; border-bottom: 1px solid var(--border); }
+        .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
-        .recent-item { display: flex; align-items: center; padding: 15px; gap: 12px; transition: opacity 0.3s; }
+        .recent-item { display: flex; align-items: center; padding: 15px; gap: 12px; transition: 0.3s; }
 
         /* --- PERFIL --- */
-        #view-profile { padding: 15px; }
-        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; margin-top: 20px; }
-        .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
-        .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .p-main { padding: 20px; }
+        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
+        .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
 
-        /* --- CÁMARA Y SUBIR (LO NUEVO) --- */
+        /* --- CAPAS CÁMARA Y MENÚ --- */
         #camera-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; }
         #upload-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
-        .upload-box { background: var(--panel); width: 85%; border-radius: 25px; padding: 25px; text-align: center; }
-        .opt-btn { background: var(--blue); color: white; padding: 18px; border-radius: 15px; margin-bottom: 12px; font-weight: bold; cursor: pointer; }
+        .u-box { background: var(--panel); width: 80%; padding: 25px; border-radius: 20px; text-align: center; }
+        .u-btn { background: var(--blue); color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; font-weight: bold; cursor: pointer; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; color: white; }
+        .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
     </style>
 </head>
@@ -51,26 +55,48 @@
     <div id="view-home" class="view active">
         <div class="home-header"><h1 class="brand-name">Aura</h1></div>
         <div class="stories-container">
-            <div class="story-ring"><img class="u-photo" src="https://i.pravatar.cc/150?u=moi"></div>
+            <div class="story-ring"><img class="u-img" src="https://i.pravatar.cc/150?u=moi"></div>
         </div>
-        <p style="text-align:center; margin-top:50px; color:var(--text-grey);">Bienvenido a tu inicio</p>
+        <div style="padding: 20px; text-align: center; color: var(--text-grey);">Mira tus historias aquí</div>
     </div>
 
     <div id="view-search" class="view">
         <div class="search-header"><span>‹</span><div class="search-bar"><input type="text" placeholder="Buscar"></div></div>
         <div style="padding:15px;"><b>Recientes</b></div>
         <div class="recent-item">
-            <div style="width:45px; height:45px; border-radius:50%; background:#333;"></div>
+            <div style="width:40px; height:40px; border-radius:50%; background:#333;"></div>
             <div style="flex:1;">Ayuntamiento de Estepona</div>
-            <div style="cursor:pointer;" onclick="eliminarReciente(this)">✕</div>
+            <div style="cursor:pointer;" onclick="this.parentElement.remove()">✕</div>
+        </div>
+    </div>
+
+    <div id="view-reels" class="view">
+        <div class="v-container">
+            <div class="v-info">
+                <b>fitnessshayla</b> <button style="background:none; border:1px solid white; color:white; border-radius:5px; padding:2px 8px; font-size:0.7rem;">Seguir</button>
+                <p>Mi primer vídeo en Aura 🚀</p>
+                <small>🎵 Sonido original</small>
+            </div>
+            <div class="v-actions">
+                <div>❤️<br><small style="font-size:0.7rem;">12k</small></div>
+                <div>💬<br><small style="font-size:0.7rem;">400</small></div>
+                <div>✈️</div>
+            </div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
-        <div style="display:flex; justify-content:space-between;"><b>moi_._lopez ∨</b></div>
-        <div class="p-ring"><img class="u-photo" src="https://i.pravatar.cc/150?u=moi"></div>
-        <div style="margin-top:15px;"><b id="d-name">moi_._Lopez</b><br><span id="d-bio" style="color:var(--text-grey);">📍 Estepona</span></div>
-        <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-p" onclick="openEdit()">Editar perfil</button></div>
+        <div class="p-main">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><b>moi_._lopez ∨</b> <span>☰</span></div>
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="p-ring"><img class="u-img" src="https://i.pravatar.cc/150?u=moi" style="width:100%; height:100%; border-radius:50%;"></div>
+                <div style="display:flex; gap:15px; text-align:center;">
+                    <div><b>104</b><br><small>seguidores</small></div>
+                    <div><b>247</b><br><small>seguidos</small></div>
+                </div>
+            </div>
+            <div style="margin-top:15px;"><b>moi_._Lopez</b><br><span style="color:var(--text-grey);">📍 Estepona</span></div>
+        </div>
     </div>
 
     <div id="camera-layer">
@@ -78,59 +104,42 @@
         <div style="position:absolute; top:20px; right:20px; font-size:2rem;" onclick="stopCamera()">✕</div>
     </div>
 
-    <div id="upload-menu" onclick="toggleUpload(false)">
-        <div class="upload-box" onclick="event.stopPropagation()">
-            <div class="opt-btn" onclick="startCamera()">📷 Grabar con Cámara</div>
-            <label class="opt-btn" style="background:#333;" for="gal-file">🖼️ Elegir de Galería</label>
-            <input type="file" id="gal-file" style="display:none" accept="image/*,video/*" onchange="handleFile(this)">
-            <div onclick="toggleUpload(false)" style="margin-top:10px; color:var(--text-grey);">Cancelar</div>
+    <div id="upload-menu" onclick="this.style.display='none'">
+        <div class="u-box" onclick="event.stopPropagation()">
+            <div class="u-btn" onclick="startCamera()">📷 Grabar Vídeo</div>
+            <label class="u-btn" style="background:#333; display:block;" for="gal">🖼️ Galería</label>
+            <input type="file" id="gal" style="display:none" onchange="alert('Archivo listo')">
         </div>
     </div>
 
     <nav>
         <div class="nav-icon active" onclick="tab('view-home', this)">🏠</div>
         <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
-        <div class="nav-icon" style="font-size:2.5rem; opacity:1;" onclick="toggleUpload(true)">+</div>
+        <div class="nav-icon" style="font-size:2.5rem; opacity:1;" onclick="document.getElementById('upload-menu').style.display='flex'">+</div>
+        <div class="nav-icon" onclick="tab('view-reels', this)">🎬</div>
         <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
     </nav>
 
     <script>
-        // Navegación básica
         function tab(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
 
-        // Eliminar recientes
-        function eliminarReciente(btn) {
-            btn.parentElement.style.opacity = '0';
-            setTimeout(() => btn.parentElement.remove(), 300);
-        }
-
-        // Lógica de Subida y Cámara
-        function toggleUpload(show) { document.getElementById('upload-menu').style.display = show ? 'flex' : 'none'; }
-
         async function startCamera() {
-            toggleUpload(false);
+            document.getElementById('upload-menu').style.display='none';
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                document.getElementById('video-feed').srcObject = stream;
+                const s = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('video-feed').srcObject = s;
                 document.getElementById('camera-layer').style.display = 'block';
-            } catch (e) { alert("Error al abrir cámara"); }
+            } catch (e) { alert("Sin acceso a cámara"); }
         }
 
         function stopCamera() {
-            const stream = document.getElementById('video-feed').srcObject;
-            if(stream) stream.getTracks().forEach(t => t.stop());
+            const s = document.getElementById('video-feed').srcObject;
+            if(s) s.getTracks().forEach(t => t.stop());
             document.getElementById('camera-layer').style.display = 'none';
-        }
-
-        function handleFile(input) {
-            if(input.files[0]) {
-                alert("Archivo seleccionado: " + input.files[0].name);
-                toggleUpload(false);
-            }
         }
     </script>
 </body>
