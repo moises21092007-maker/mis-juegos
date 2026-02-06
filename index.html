@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Versión Final</title>
+    <title>Aura | Sistema Robusto</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
 
@@ -11,74 +11,77 @@
             --bg: #000000; 
             --accent: #00ffd5;
             --rainbow: linear-gradient(45deg, #ff0055, #00ffd5, #cc00ff);
-            --glass: rgba(10, 10, 10, 0.95);
+            --glass: rgba(10, 10, 10, 0.98);
         }
 
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- PANTALLA DE ACCESO --- */
-        #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 25px; transition: 0.5s; }
+        /* --- SISTEMA DE ACCESO --- */
+        #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 25px; }
         .auth-box { width: 100%; max-width: 340px; text-align: center; }
-        .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 15px; outline: none; box-sizing: border-box; }
-        .btn-primary { width: 100%; background: #fff; color: #000; border: none; padding: 18px; border-radius: 40px; font-weight: 800; cursor: pointer; }
+        .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 15px; outline: none; box-sizing: border-box; font-size: 1rem; }
+        .btn-primary { width: 100%; background: #fff; color: #000; border: none; padding: 18px; border-radius: 40px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.95); }
 
-        /* --- APP CORE --- */
+        /* --- MODALES --- */
+        #edit-modal { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 9000; padding: 40px 25px; }
+
+        /* --- APP STRUCTURE --- */
         #main-app { display: none; opacity: 0; transition: 0.8s; height: 100vh; }
-        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 110px; box-sizing: border-box; }
+        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- INICIO: HISTORIAS + MURO DE FOTOS --- */
-        .header-elite { display: flex; flex-direction: column; align-items: center; padding: 40px 0 20px; }
+        /* --- ZONA 1: INICIO (FOTOS + HISTORIAS) --- */
+        .header-elite { display: flex; flex-direction: column; align-items: center; padding: 40px 0 10px; }
         .aura-logo { font-family: 'Orbitron'; font-size: 2.2rem; letter-spacing: 10px; }
         
-        .stories-container { display: flex; gap: 15px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #111; padding-bottom: 20px; }
+        .stories-container { display: flex; gap: 15px; padding: 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #111; }
         .stories-container::-webkit-scrollbar { display: none; }
-        .story-item { flex: 0 0 auto; text-align: center; width: 90px; }
-        .story-circle { width: 75px; height: 75px; background: #0a0a0a; border-radius: 25px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a; margin: 0 auto; }
+        .story-circle { width: 75px; height: 75px; background: #0a0a0a; border-radius: 25px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); cursor: pointer; }
         .story-circle.active-story::before { content: ''; position: absolute; inset: -3px; padding: 3px; border-radius: 28px; background: var(--rainbow); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-        .story-name { font-size: 0.65rem; font-weight: 700; margin-top: 8px; color: #aaa; text-transform: uppercase; }
+        
+        .post-card { width: 100%; margin-top: 10px; border-bottom: 1px solid #111; }
+        .post-header { padding: 15px; display: flex; align-items: center; gap: 12px; }
+        .mini-avatar { width: 32px; height: 32px; border-radius: 10px; background: #111; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; border: 1px solid #222; font-family: 'Orbitron'; }
+        .post-photo-area { width: 100%; aspect-ratio: 1/1; background: #050505; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #111; letter-spacing: 3px; font-size: 1.5rem; }
 
-        /* ZONA DE PUBLICACIONES (FOTOS) */
-        .feed-container { padding: 20px 0; }
-        .post-card { width: 100%; margin-bottom: 30px; background: #000; }
-        .post-header { padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
-        .post-user-avatar { width: 32px; height: 32px; border-radius: 10px; background: #111; border: 1px solid #222; }
-        .post-username { font-size: 0.85rem; font-weight: 800; }
-        .post-photo-area { width: 100%; aspect-ratio: 1/1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; border-top: 1px solid #111; border-bottom: 1px solid #111; }
-        .post-actions { padding: 12px 15px; display: flex; gap: 15px; font-size: 1.4rem; }
-        .post-info { padding: 0 15px; }
-
-        /* --- ZONA DE VÍDEOS (🎬) --- */
+        /* --- ZONA 2: VÍDEOS (🎬) --- */
         #view-reels { overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .video-feed { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #050505; }
+        .video-feed { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
         .v-ui { position: absolute; bottom: 130px; left: 20px; z-index: 10; }
-        .v-actions { position: absolute; bottom: 130px; right: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .v-actions { position: absolute; bottom: 130px; right: 20px; display: flex; flex-direction: column; gap: 20px; text-align: center; }
 
-        /* --- PERFIL --- */
+        /* --- ZONA 3: PERFIL --- */
         .p-card { padding: 30px 20px; }
-        .p-header { display: flex; align-items: center; gap: 20px; }
-        .p-avatar { width: 75px; height: 75px; border-radius: 25px; background: #111; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; color: var(--accent); font-size: 1.5rem; }
+        .p-main-avatar { width: 90px; height: 90px; border-radius: 30px; background: #0a0a0a; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; color: var(--accent); font-size: 2.2rem; font-weight: 900; }
         .p-stats { display: flex; flex: 1; justify-content: space-around; text-align: center; }
-        .stat-val { font-size: 1.1rem; font-weight: 800; display: block; }
-        .stat-label { font-size: 0.55rem; color: #555; text-transform: uppercase; }
-        .profile-actions { display: flex; gap: 10px; margin-top: 25px; }
-        .btn-profile { flex: 1; background: #111; color: white; border: 1px solid #222; padding: 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .stat-val { font-size: 1.2rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.6rem; color: #555; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- NAVEGACIÓN --- */
-        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 70px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
+        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
+        .n-btn { font-size: 1.6rem; opacity: 0.3; cursor: pointer; transition: 0.3s; }
         .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add { width: 52px; height: 52px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; transform: translateY(-5px); }
+        .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
         <div class="auth-box">
-            <h1 style="font-family:'Orbitron'; letter-spacing:10px;">AURA</h1>
+            <h1 style="font-family:'Orbitron'; letter-spacing:10px; margin:0;">AURA</h1>
+            <p style="font-size:0.6rem; color:#444; margin-bottom:40px; letter-spacing:3px; font-weight:900;">PHOTO & VIDEO ZONE</p>
             <input type="text" id="l-user" class="auth-input" placeholder="Nombre de usuario">
-            <button class="btn-primary" onclick="attemptAuth()">Entrar</button>
+            <button class="btn-primary" onclick="initApp()">Entrar</button>
         </div>
+    </div>
+
+    <div id="edit-modal">
+        <h2 style="font-family:'Orbitron'; margin-bottom:30px;">EDITAR PERFIL</h2>
+        <input type="text" id="edit-name" class="auth-input" placeholder="Nombre">
+        <textarea id="edit-bio" class="auth-input" style="height:120px; font-family:inherit;" placeholder="Biografía"></textarea>
+        <button class="btn-primary" onclick="updateProfile()">Guardar Cambios</button>
+        <button onclick="document.getElementById('edit-modal').style.display='none'" style="background:none; border:none; color:#555; width:100%; margin-top:20px; cursor:pointer;">Cancelar</button>
     </div>
 
     <div id="main-app">
@@ -87,55 +90,62 @@
             <div class="header-elite"><div class="aura-logo">AURA</div></div>
             <div class="stories-container">
                 <div class="story-item">
-                    <div class="story-circle active-story"><span style="font-size:2.5rem;">👤</span></div>
-                    <div class="story-name">Mi Historia</div>
+                    <div class="story-circle active-story my-avatar">?</div>
+                    <div style="font-size:0.6rem; text-align:center; margin-top:8px; font-weight:800; color:#555;">TU HISTORIA</div>
                 </div>
             </div>
             <div class="feed-container">
                 <div class="post-card">
-                    <div class="post-header"><div class="post-user-avatar"></div><span class="post-username">aura_official</span></div>
-                    <div class="post-photo-area"><span style="color:#111; font-weight:800; letter-spacing:5px;">ZONA DE FOTOS</span></div>
-                    <div class="post-actions">
+                    <div class="post-header">
+                        <div class="mini-avatar my-avatar">?</div>
+                        <b class="my-username-text" style="font-size:0.9rem;">Cargando...</b>
+                    </div>
+                    <div class="post-photo-area">PHOTO ZONE</div>
+                    <div style="padding:15px; font-size:1.5rem; display:flex; gap:15px;">
                         <span onclick="this.innerText=this.innerText=='🤍'?'❤️':'🤍'">🤍</span>
-                        <span>💬</span><span>✈️</span>
+                        <span>💬</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="view-search" class="view">
-            <div style="padding:40px 20px 0;"><h2 style="font-family:'Orbitron'; font-size:1.1rem;">EXPLORAR</h2></div>
-            <div style="background:#111; padding:15px; border-radius:15px; margin:20px; display:flex; align-items:center; gap:10px; border:1px solid #222;">
-                <span>🔍</span><input type="text" placeholder="Buscar..." style="background:transparent; border:none; color:white; outline:none; width:100%;">
+            <div style="padding:40px 25px 0;"><h2 style="font-family:'Orbitron'; font-size:1.2rem;">EXPLORAR</h2></div>
+            <div style="background:#0a0a0a; padding:18px; border-radius:20px; margin:20px; display:flex; align-items:center; gap:15px; border:1px solid #1a1a1a;">
+                <span>🔍</span><input type="text" placeholder="Buscar perfiles..." style="background:transparent; border:none; color:white; outline:none; width:100%; font-size:1rem;">
             </div>
         </div>
 
         <div id="view-reels" class="view">
             <div class="video-feed">
-                <div class="v-ui"><b>@video_zone</b><p>Contenido vertical aquí.</p></div>
-                <div class="v-actions">
-                    <div style="text-align:center;">🤍<br><small>0</small></div>
-                    <div style="text-align:center;">💬<br><small>0</small></div>
+                <div class="v-ui">
+                    <b style="font-size:1.1rem;">@video_zone</b>
+                    <p style="font-size:0.9rem; opacity:0.8;">Tu contenido vertical aparecerá aquí.</p>
                 </div>
-                <span style="font-size:4rem; opacity:0.05;">🎬</span>
+                <div class="v-actions">
+                    <div>❤️<br><small>0</small></div>
+                    <div>💬<br><small>0</small></div>
+                </div>
+                <span style="font-size:5rem; opacity:0.03;">🎬</span>
             </div>
         </div>
 
         <div id="view-profile" class="view">
             <div class="p-card">
-                <div style="text-align:right;"><span onclick="logout()" style="cursor:pointer; opacity:0.3; font-size:0.7rem;">CERRAR SESIÓN 🚪</span></div>
+                <div style="text-align:right;"><span onclick="logout()" style="cursor:pointer; opacity:0.2; font-size:0.7rem; font-weight:900; letter-spacing:1px;">CERRAR SESIÓN</span></div>
                 <div class="p-header">
-                    <div class="p-avatar" id="p-avatar-letter">?</div>
+                    <div class="p-main-avatar my-avatar">?</div>
                     <div class="p-stats">
-                        <div><span class="stat-val">0</span><span class="stat-label">Fotos</span></div>
-                        <div><span class="stat-val">0</span><span class="stat-label">Fans</span></div>
-                        <div><span class="stat-val">0</span><span class="stat-label">Siguiendo</span></div>
+                        <div><span class="stat-val" id="s-posts">0</span><span class="stat-label">Fotos</span></div>
+                        <div><span class="stat-val" id="s-fans">0</span><span class="stat-label">Fans</span></div>
+                        <div><span class="stat-val" id="s-following">0</span><span class="stat-label">Siguiendo</span></div>
                     </div>
                 </div>
-                <h2 id="p-username" style="font-family:'Orbitron'; margin:20px 0 5px;">Usuario</h2>
-                <div class="profile-actions">
-                    <button class="btn-profile">Editar perfil</button>
-                    <button class="btn-profile">Compartir</button>
+                <h2 class="my-username-text" style="font-family:'Orbitron'; margin:30px 0 8px; font-size:1.6rem; letter-spacing:1px;">Usuario</h2>
+                <p id="my-bio-text" style="color:#666; font-size:0.9rem; margin-bottom:25px; line-height:1.5;">Sin biografía...</p>
+                <div style="display:flex; gap:12px;">
+                    <button class="btn-primary" onclick="openEdit()" style="padding:14px; font-size:0.8rem;">Editar Perfil</button>
+                    <button class="btn-primary" style="padding:14px; font-size:0.8rem; background:#0a0a0a; color:white; border:1px solid #1a1a1a;">Compartir</button>
                 </div>
             </div>
         </div>
@@ -143,38 +153,100 @@
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
             <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add" onclick="alert('Subir contenido')">+</div>
+            <div class="n-add" onclick="alert('Accediendo a la cámara...')">+</div>
             <div class="n-btn" onclick="go('reels', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
 
     <script>
-        function attemptAuth() {
+        // --- MOTOR DE BASE DE DATOS LOCAL ---
+        let currentSession = null;
+        let db = {
+            name: "Nuevo Usuario",
+            bio: "Bienvenido a mi Aura.",
+            posts: 0, fans: 0, following: 0
+        };
+
+        function initApp() {
             const user = document.getElementById('l-user').value.trim();
-            if(user.length < 2) return;
-            localStorage.setItem('aura_session', user);
-            loadApp(user);
+            if(user.length < 2) return alert("Nombre no válido");
+            
+            currentSession = user;
+            const saved = localStorage.getItem('aura_db_' + user);
+            
+            if(saved) {
+                db = JSON.parse(saved);
+            } else {
+                db.name = user;
+                saveDB();
+            }
+            
+            localStorage.setItem('aura_active_user', user);
+            syncUI();
+            startApp();
         }
 
-        function loadApp(user) {
+        function saveDB() {
+            localStorage.setItem('aura_db_' + currentSession, JSON.stringify(db));
+        }
+
+        function syncUI() {
+            // Sincronizar nombres
+            document.querySelectorAll('.my-username-text').forEach(el => el.innerText = db.name);
+            document.getElementById('my-bio-text').innerText = db.bio;
+            
+            // Sincronizar avatares (iniciales)
+            const letter = db.name.charAt(0).toUpperCase();
+            document.querySelectorAll('.my-avatar').forEach(el => el.innerText = letter);
+            
+            // Sincronizar contadores
+            document.getElementById('s-posts').innerText = db.posts;
+            document.getElementById('s-fans').innerText = db.fans;
+            document.getElementById('s-following').innerText = db.following;
+        }
+
+        function openEdit() {
+            document.getElementById('edit-modal').style.display = 'block';
+            document.getElementById('edit-name').value = db.name;
+            document.getElementById('edit-bio').value = db.bio;
+        }
+
+        function updateProfile() {
+            db.name = document.getElementById('edit-name').value.trim();
+            db.bio = document.getElementById('edit-bio').value.trim();
+            saveDB();
+            syncUI();
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        function startApp() {
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             setTimeout(() => document.getElementById('main-app').style.opacity = '1', 50);
-            document.getElementById('p-username').innerText = user;
-            document.getElementById('p-avatar-letter').innerText = user.charAt(0).toUpperCase();
         }
 
-        function logout() { localStorage.removeItem('aura_session'); location.reload(); }
+        function logout() {
+            localStorage.removeItem('aura_active_user');
+            location.reload();
+        }
 
-        function go(viewId, btn) {
+        function go(id, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.n-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
+            document.getElementById('view-' + id).classList.add('active');
             btn.classList.add('active');
         }
 
-        window.onload = () => { if(localStorage.getItem('aura_session')) loadApp(localStorage.getItem('aura_session')); }
+        window.onload = () => {
+            const session = localStorage.getItem('aura_active_user');
+            if(session) {
+                currentSession = session;
+                db = JSON.parse(localStorage.getItem('aura_db_' + session));
+                syncUI();
+                startApp();
+            }
+        };
     </script>
 </body>
 </html>
