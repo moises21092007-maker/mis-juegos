@@ -13,106 +13,95 @@
         }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
         
+        /* --- LOGO DECORADO CON AURA --- */
+        .logo-container {
+            display: flex; justify-content: center; align-items: center;
+            padding: 50px 0 20px; position: relative;
+        }
+        .aura-circle {
+            position: absolute; width: 130px; height: 130px; border-radius: 50%;
+            border: 2px solid transparent; background: var(--rainbow); background-size: 400%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out; mask-composite: exclude;
+            animation: move-bg 5s linear infinite; filter: blur(1px) drop-shadow(0 0 15px var(--accent));
+        }
+        .aura-text {
+            font-size: 2.5rem; font-weight: 900; letter-spacing: 3px;
+            background: var(--rainbow); background-size: 400%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: move-bg 8s linear infinite; z-index: 2;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+        }
+
         /* SISTEMA DE VISTAS */
         .view { display: none; height: 100vh; width: 100%; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- LOGO ANIMADO (COMO ANTES) --- */
-        .aura-brand { 
-            padding: 20px 25px 5px; 
-            font-size: 2.2rem; 
-            font-weight: 900; 
-            letter-spacing: -1.5px; 
-            background: var(--rainbow);
-            background-size: 400%;
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            animation: move-bg 8s linear infinite;
-        }
-
-        /* --- HISTORIAS --- */
+        /* --- VISTA INICIO --- */
         .stories-bar { display: flex; padding: 15px 20px; border-bottom: 1px solid var(--border); }
         .s-ring { 
             width: 65px; height: 65px; border-radius: 50%; padding: 3px; 
-            background: var(--rainbow); background-size: 400%; 
-            animation: move-bg 5s linear infinite;
+            background: var(--rainbow); background-size: 400%; animation: move-bg 5s linear infinite;
         }
-        .s-inner { width: 100%; height: 100%; border-radius: 50%; background: #000; border: 2px solid black; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .s-inner { width: 100%; height: 100%; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 
-        /* --- VISTA VIDEO (REELS FUNCIONAL) --- */
-        .reel-container { height: 100vh; width: 100%; position: relative; background: #050505; display: flex; align-items: center; justify-content: center; }
-        .side-btn { text-align: center; font-size: 1.8rem; margin-bottom: 20px; }
+        /* --- VISTA VIDEO (FUNCIONANDO) --- */
+        .reel-container { height: 100vh; width: 100%; position: relative; background: radial-gradient(circle, #111, #000); display: flex; align-items: center; justify-content: center; }
+        .side-btn { text-align: center; font-size: 1.8rem; margin-bottom: 20px; filter: drop-shadow(0 0 5px var(--accent)); }
         .side-btn span { display: block; font-size: 0.7rem; font-weight: 900; color: var(--accent); }
 
-        /* --- VISTA PERFIL (0 SEGUIDORES / COLORES) --- */
+        /* --- VISTA PERFIL --- */
         .p-info { padding: 40px 25px; }
         .p-top { display: flex; align-items: center; gap: 30px; margin-bottom: 25px; }
         .p-avatar { 
-            width: 90px; height: 90px; border-radius: 28px; 
-            background: var(--rainbow); background-size: 400%;
-            animation: move-bg 5s linear infinite;
+            width: 90px; height: 90px; border-radius: 28px; background: var(--rainbow); 
+            background-size: 400%; animation: move-bg 5s linear infinite;
             display: flex; align-items: center; justify-content: center; font-size: 2.5rem; 
         }
         .stat-n { color: var(--accent); font-size: 1.2rem; font-weight: 900; display: block; }
-        .stat-t { font-size: 0.6rem; color: gray; text-transform: uppercase; }
         .p-btn { flex: 1; background: #0a0a0a; border: 1px solid #333; color: white; padding: 12px; border-radius: 12px; font-weight: 800; cursor: pointer; }
 
-        /* --- CÁMARA ESPEJO --- */
+        /* --- CÁMARA --- */
         #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 45px 25px; pointer-events: none; }
-        .shutter { 
-            width: 80px; height: 80px; border: 5px solid white; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; pointer-events: auto;
-        }
+        .shutter { width: 80px; height: 80px; border: 5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
 
-        /* --- NAVEGACIÓN NEÓN --- */
+        /* NAVEGACIÓN */
         nav { 
             position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px; 
-            background: rgba(5,5,5,0.9); backdrop-filter: blur(20px); 
+            background: rgba(5,5,5,0.95); backdrop-filter: blur(20px); 
             border-radius: 40px; border: 1px solid #222; 
             display: flex; justify-content: space-around; align-items: center; z-index: 4000; 
         }
         .n-btn { font-size: 1.6rem; opacity: 0.3; transition: 0.3s; cursor: pointer; }
         .n-btn.active { opacity: 1; color: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); }
-        .n-add { 
-            width: 65px; height: 65px; background: white; border-radius: 50%; 
-            color: black; font-size: 2.4rem; display: flex; align-items: center; 
-            justify-content: center; transform: translateY(-15px); 
-            box-shadow: 0 10px 25px rgba(0,255,213,0.4); 
-        }
+        .n-add { width: 65px; height: 65px; background: white; border-radius: 50%; color: black; font-size: 2.4rem; display: flex; align-items: center; justify-content: center; transform: translateY(-15px); box-shadow: 0 10px 25px rgba(0,255,213,0.4); }
 
-        @keyframes move-bg {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes move-bg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="view active">
-        <div class="aura-brand">AURA</div>
+        <div class="logo-container">
+            <div class="aura-circle"></div>
+            <div class="aura-text">AURA</div>
+        </div>
         <div class="stories-bar">
             <div class="story" onclick="openCam()">
                 <div class="s-ring"><div class="s-inner">+</div></div>
-                <span style="font-size:0.6rem; color:gray; display:block; text-align:center; margin-top:5px;">Mi Historia</span>
+                <span style="font-size:0.6rem; color:gray; display:block; text-align:center; margin-top:5px; font-weight:bold;">Mi Historia</span>
             </div>
         </div>
-        <div style="text-align:center; margin-top:100px; color:#111; font-weight:900; font-size:1.5rem;">AURA FEED</div>
-    </div>
-
-    <div id="view-search" class="view">
-        <div style="padding:40px 20px;">
-            <input type="text" placeholder="Buscar filtros..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#111; color:white; outline:none;">
-        </div>
+        <div style="text-align:center; margin-top:100px; color:#111; font-weight:900; font-size:1.5rem; letter-spacing:5px;">FEED</div>
     </div>
 
     <div id="view-reels" class="view">
         <div class="reel-container">
             <div style="text-align:center;">
                 <span style="font-size:4rem; filter: drop-shadow(0 0 10px var(--accent));">🎬</span>
-                <h3 style="color:var(--accent); letter-spacing:2px;">VIDEO ZONE</h3>
+                <h3 style="color:var(--accent); letter-spacing:3px; font-weight:900;">VIDEO ZONE</h3>
             </div>
             <div style="position:absolute; right:15px; bottom:130px;">
                 <div class="side-btn" style="color:#ff0055;">❤️<span>0</span></div>
@@ -127,13 +116,13 @@
             <div class="p-top">
                 <div class="p-avatar">👤</div>
                 <div style="display:flex; flex:1; justify-content:space-around; text-align:center;">
-                    <div><span class="stat-n">0</span><span class="stat-t">Pubs</span></div>
-                    <div><span class="stat-n">0</span><span class="stat-t">Seguidores</span></div>
-                    <div><span class="stat-n">0</span><span class="stat-t">Siguiendo</span></div>
+                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray;">PUBS</span></div>
+                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray;">FANS</span></div>
+                    <div><span class="stat-n">0</span><span style="font-size:0.6rem; color:gray;">SIGUIENDO</span></div>
                 </div>
             </div>
-            <h2 style="margin:0;">Mi Perfil</h2>
-            <p style="color:var(--accent); font-weight:bold; margin:5px 0 25px;">0 Seguidores | 0 Siguiendo</p>
+            <h2 style="margin:0; font-size:1.8rem;">Mi Perfil</h2>
+            <p style="color:var(--accent); font-weight:bold; margin:5px 0 30px;">0 Seguidores | 0 Siguiendo</p>
             <div style="display:flex; gap:10px;">
                 <button class="p-btn" onclick="alert('Editar Perfil')">Editar perfil</button>
                 <button class="p-btn" onclick="alert('Compartir Perfil')">Compartir perfil</button>
@@ -143,19 +132,15 @@
 
     <div id="aura-cam">
         <video id="video-preview" autoplay playsinline></video>
-        <div class="cam-ui">
-            <div style="pointer-events:auto; font-size:2rem;" onclick="closeCam()">✕</div>
-            <div style="display:flex; justify-content:center; padding-bottom:20px;">
-                <div class="shutter" onclick="alert('Capturado!')">
-                    <div style="width:60px; height:60px; background:white; border-radius:50%;"></div>
-                </div>
-            </div>
+        <div style="position:absolute; top:40px; left:25px; font-size:2.2rem; cursor:pointer;" onclick="closeCam()">✕</div>
+        <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:center;">
+            <div class="shutter" onclick="alert('Capturado!')"><div style="width:60px; height:60px; background:white; border-radius:50%;"></div></div>
         </div>
     </div>
 
     <nav>
         <div class="n-btn active" onclick="go('home', this)">🖼️</div>
-        <div class="n-btn" onclick="go('search', this)">🔍</div>
+        <div class="n-btn" onclick="alert('Cargando...')">🔍</div>
         <div class="n-add" onclick="openCam()">+</div>
         <div class="n-btn" onclick="go('reels', this)">🎬</div>
         <div class="n-btn" onclick="go('profile', this)">👤</div>
@@ -163,14 +148,12 @@
 
     <script>
         let stream = null;
-
         function go(v, btn) {
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
             document.getElementById('view-' + v).classList.add('active');
             btn.classList.add('active');
         }
-
         async function openCam() {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
@@ -178,7 +161,6 @@
                 document.getElementById('aura-cam').style.display = 'block';
             } catch(e) { alert("Cámara no disponible"); }
         }
-
         function closeCam() {
             if(stream) stream.getTracks().forEach(t => t.stop());
             document.getElementById('aura-cam').style.display = 'none';
