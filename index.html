@@ -3,214 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Definitive Edition</title>
+    <title>Aura | App Definitiva</title>
     <style>
         :root { 
             --bg: #000; --card: #0d0d0d; --border: #1a1a1a; 
             --rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             --accent: #00ffd5;
         }
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', -apple-system, sans-serif; overflow: hidden; height: 100vh; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
         
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 110px; box-sizing: border-box; }
-        .view.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .view.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CABECERAS GENERALES */
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.8rem; font-weight: 900; background: var(--rainbow); background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 5s infinite; letter-spacing: -1.5px; }
+        /* CABECERA */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.8rem; font-weight: 900; background: var(--rainbow); background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 5s infinite; letter-spacing: -1px; }
 
-        /* 1. ZONA FOTOS (HOME) */
-        .photo-grid { padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .photo-placeholder { aspect-ratio: 1; background: var(--card); border-radius: 20px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: #222; font-size: 2rem; }
+        /* ZONA FOTOS (HISTORIAS + FEED) */
+        .stories { display: flex; gap: 15px; padding: 20px; overflow-x: auto; scrollbar-width: none; }
+        .story { min-width: 65px; height: 65px; background: var(--rainbow); background-size: 400%; animation: rainbow-move 5s infinite; padding: 3px; border-radius: 18px; }
+        .story div { background: #000; width: 100%; height: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 
-        /* 2. ZONA BUSCADOR (CORREGIDO) */
-        .search-container { padding: 20px; }
-        .search-bar { width: 100%; background: #111; border: 1px solid #222; padding: 16px; border-radius: 20px; color: white; outline: none; margin-bottom: 25px; box-sizing: border-box; font-size: 1rem; }
-        .search-bar:focus { border-color: var(--accent); }
-        .user-card { display: flex; align-items: center; gap: 15px; background: var(--card); padding: 15px; border-radius: 22px; border: 1px solid var(--border); margin-bottom: 12px; }
-        .mini-avatar { width: 45px; height: 45px; border-radius: 12px; background: var(--rainbow); background-size: 400%; animation: rainbow-move 8s infinite; padding: 2px; }
+        /* ZONA BUSCAR */
+        .search-box { padding: 20px; }
+        .search-bar { width: 100%; background: #111; border: 1px solid #222; padding: 15px; border-radius: 15px; color: white; outline: none; margin-bottom: 20px; }
 
-        /* 3. ZONA VIDEOS (REELS ÚNICOS) */
-        .reels-wrapper { height: calc(100vh - 80px); scroll-snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
-        .reel-unit { height: 100%; width: 100%; scroll-snap-align: start; position: relative; background: #000; }
-        .reel-video { width: 100%; height: 100%; object-fit: cover; }
-        .reel-overlay { position: absolute; bottom: 40px; left: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        /* ZONA VIDEOS (SCROLL VERTICAL) */
+        .reels-container { height: calc(100vh - 80px); scroll-snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
+        .reel { height: 100%; width: 100%; scroll-snap-align: start; position: relative; }
+        .reel video { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 4. ZONA PERFIL (COMPLETO) */
-        .profile-header { background: var(--card); margin: 15px; border-radius: 30px; padding: 30px; border: 1px solid var(--border); position: relative; }
-        .p-avatar-main { width: 100px; height: 100px; background: var(--rainbow); background-size: 400%; animation: rainbow-move 5s infinite; padding: 4px; border-radius: 28px; margin: 0 auto 15px; }
-        .p-avatar-inner { background: #000; width: 100%; height: 100%; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
-        .p-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 25px 0; }
-        .p-stat-card { background: #000; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #151515; }
-        .p-stat-card b { display: block; font-size: 1.2rem; }
-        .p-stat-card small { color: #555; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px; }
-        .profile-actions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; padding: 0 15px; }
-        .p-btn { border: none; padding: 14px; border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .p-btn-edit { background: white; color: black; }
-        .p-btn-share { background: #1a1a1a; color: white; }
+        /* PERFIL COMPLETO */
+        .p-card { background: var(--card); margin: 15px; border-radius: 28px; padding: 25px; border: 1px solid var(--border); text-align: center; }
+        .p-avatar { width: 90px; height: 90px; background: var(--rainbow); background-size: 400%; animation: rainbow-move 5s infinite; padding: 3px; border-radius: 24px; margin: 0 auto 15px; }
+        .p-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .stat { background: #000; padding: 10px; border-radius: 15px; border: 1px solid #151515; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px; }
+        .btn { background: #1a1a1a; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-white { background: white; color: black; }
 
-        /* CÁMARA & FILTROS (RE-DISEÑADO) */
-        #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
-        #webcam-stream { width: 100%; height: 100%; object-fit: cover; }
+        /* CÁMARA PRO */
+        #cam-overlay { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
+        #cam-video { width: 100%; height: 100%; object-fit: cover; }
         .cam-ui { position: absolute; inset: 0; padding: 40px 25px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+        .cam-x { width: 45px; height: 45px; background: var(--rainbow); background-size: 400%; animation: rainbow-move 5s infinite; padding: 3px; border-radius: 50%; pointer-events: auto; }
+        .cam-x div { background: black; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
-        .cam-exit { width: 50px; height: 50px; background: var(--rainbow); background-size: 400%; animation: rainbow-move 5s infinite; padding: 3px; border-radius: 50%; pointer-events: auto; cursor: pointer; }
-        .cam-exit div { background: black; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; }
+        .cam-footer { background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 40px 0; pointer-events: auto; }
+        .mode-row { display: flex; justify-content: center; gap: 20px; font-size: 0.7rem; font-weight: bold; margin-bottom: 20px; }
+        .mode-active { color: var(--accent); }
+        .controls { display: flex; align-items: center; justify-content: space-evenly; }
+        .shutter { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; padding: 5px; }
+        .shutter div { width: 100%; height: 100%; background: white; border-radius: 50%; }
+        
+        #f-shelf { position: absolute; bottom: 0; width: 100%; background: #050505; border-radius: 30px 30px 0 0; transform: translateY(100%); transition: 0.4s ease; padding: 30px; box-sizing: border-box; z-index: 6000; }
+        #f-shelf.open { transform: translateY(0); }
 
-        .cam-filters-trigger { width: 60px; height: 60px; background: var(--rainbow); padding: 3px; border-radius: 18px; pointer-events: auto; cursor: pointer; align-self: flex-end; }
-        .cam-filters-trigger div { background: #111; width: 100%; height: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-
-        #filter-menu { position: absolute; bottom: 0; width: 100%; background: rgba(10,10,10,0.98); backdrop-filter: blur(30px); border-radius: 40px 40px 0 0; transform: translateY(100%); transition: 0.5s cubic-bezier(0, 1, 0.5, 1); padding: 35px; box-sizing: border-box; z-index: 6000; border-top: 1px solid #222; }
-        #filter-menu.active { transform: translateY(0); }
-        .filter-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .filter-item { min-width: 80px; text-align: center; pointer-events: auto; cursor: pointer; }
-        .filter-circle { width: 70px; height: 70px; border-radius: 20px; background: #222; margin-bottom: 10px; border: 2px solid transparent; transition: 0.3s; }
-        .filter-item:active .filter-circle { border-color: var(--accent); transform: scale(0.9); }
-
-        /* NAVEGACIÓN PRINCIPAL */
+        /* NAV */
         nav { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px; background: rgba(15,15,15,0.9); backdrop-filter: blur(20px); border-radius: 35px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { font-size: 1.6rem; opacity: 0.25; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { opacity: 1; color: var(--accent); text-shadow: 0 0 15px rgba(0,255,213,0.4); }
-        .nav-x { width: 65px; height: 65px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; transform: translateY(-18px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); cursor: pointer; }
+        .n-item { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
+        .n-item.active { opacity: 1; color: var(--accent); }
+        .n-x { width: 60px; height: 60px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; transform: translateY(-15px); }
     </style>
 </head>
 <body>
 
     <div id="v-photos" class="view active">
         <div class="header"><div class="logo">AURA</div><span>✉️</span></div>
-        <div class="photo-grid">
-            <div class="photo-placeholder">🖼️</div>
-            <div class="photo-placeholder">📸</div>
-            <div class="photo-placeholder">✨</div>
-            <div class="photo-placeholder">🌈</div>
+        <div class="stories">
+            <div class="story"><div>👤</div></div>
+            <div class="story" style="opacity: 0.2;"><div></div></div>
+            <div class="story" style="opacity: 0.1;"><div></div></div>
         </div>
+        <center style="margin-top: 100px; opacity: 0.1;"><h1>FEED DE FOTOS</h1></center>
     </div>
 
     <div id="v-search" class="view">
         <div class="header"><div class="logo">EXPLORAR</div></div>
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Buscar en el universo Aura..." oninput="simulateSearch(this.value)">
-            <div id="results">
-                <div class="user-card">
-                    <div class="mini-avatar"><div></div></div>
-                    <div><b>Aura Oficial</b><br><small style="color:gray;">@aura_app</small></div>
+        <div class="search-box">
+            <input type="text" class="search-bar" placeholder="Buscar personas reales...">
+            <div style="display:flex; align-items:center; gap:10px; background:var(--card); padding:15px; border-radius:20px;">
+                <div style="width:40px;height:40px;background:var(--rainbow);border-radius:10px;padding:2px;">
+                    <div style="background:#000;width:100%;height:100%;border-radius:8px;"></div>
                 </div>
+                <b>Aura Team</b>
             </div>
         </div>
     </div>
 
     <div id="v-videos" class="view">
-        <div class="reels-wrapper">
-            <div class="reel-unit">
-                <video class="reel-video" src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-city-2189-large.mp4" loop muted playsinline></video>
-                <div class="reel-overlay"><b>@NeonVibes</b><p>Explorando el futuro.</p></div>
+        <div class="reels-container">
+            <div class="reel">
+                <video src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-city-2189-large.mp4" loop muted playsinline id="rvid"></video>
             </div>
         </div>
     </div>
 
     <div id="v-profile" class="view">
-        <div class="profile-header">
-            <div class="p-avatar-main"><div class="p-avatar-inner">👤</div></div>
-            <center>
-                <h2 style="margin:0;">Tu Nombre</h2>
-                <p style="color:#555; margin:5px 0;">@usuario_aura</p>
-            </center>
-            <div class="p-stats-row">
-                <div class="p-stat-card"><b>0</b><small>Fotos</small></div>
-                <div class="p-stat-card"><b>0</b><small>Vídeos</small></div>
-                <div class="p-stat-card"><b>0</b><small>Aura</small></div>
+        <div class="p-card">
+            <div class="p-avatar"><div style="background:#000;width:100%;height:100%;border-radius:21px;display:flex;align-items:center;justify-content:center;font-size:2rem;">👤</div></div>
+            <h2>Tu Nombre</h2>
+            <p style="color:#555;">@usuario_aura</p>
+            <div class="p-stats">
+                <div class="stat"><b>0</b><br><small>FOTOS</small></div>
+                <div class="stat"><b>0</b><br><small>VÍDEOS</small></div>
+                <div class="stat"><b>0</b><br><small>AURA</small></div>
             </div>
-            <p style="text-align:center; color:#888; font-size:0.9rem;">Empiezas con 0 seguidores y 0 siguiendo. Hazlo real.</p>
         </div>
-        <div class="profile-actions">
-            <button class="p-btn p-btn-edit" onclick="alert('Editor de Perfil Abierto')">Editar Perfil</button>
-            <button class="p-btn p-btn-share" onclick="alert('Enlace copiado')">Compartir</button>
+        <div class="btn-row">
+            <button class="btn btn-white" onclick="alert('Editor')">Editar Perfil</button>
+            <button class="btn" onclick="alert('Copiado')">Compartir</button>
         </div>
     </div>
 
-    <div id="aura-cam">
-        <video id="webcam-stream" autoplay playsinline></video>
+    <div id="cam-overlay">
+        <video id="cam-video" autoplay playsinline></video>
         <div class="cam-ui">
-            <div class="cam-exit" onclick="closeAuraCam()"><div>✕</div></div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                <div style="width:50px;"></div> <div style="width:85px; height:85px; border:6px solid white; border-radius:50%; pointer-events:auto;" onclick="alert('Contenido Capturado')"></div>
-                <div class="cam-filters-trigger" onclick="toggleFilterMenu()"><div>✨</div></div>
+            <div class="cam-x" onclick="closeC()"><div>✕</div></div>
+            <div class="cam-footer">
+                <div class="mode-row">
+                    <span>LIVE</span><span class="mode-active">FOTO</span><span>VIDEO</span>
+                </div>
+                <div class="controls">
+                    <div style="width:40px;height:40px;border:2px solid white;border-radius:8px;overflow:hidden;" onclick="document.getElementById('gal').click()">
+                        <img id="prev" src="https://picsum.photos/50" style="width:100%;height:100%;">
+                    </div>
+                    <input type="file" id="gal" hidden>
+                    <div class="shutter" onclick="alert('Capturado')"><div></div></div>
+                    <div style="font-size:1.5rem;" onclick="document.getElementById('f-shelf').classList.toggle('open')">✨</div>
+                </div>
             </div>
         </div>
-        <div id="filter-menu">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <b style="font-size:1.3rem;">Filtros Únicos</b>
-                <span onclick="toggleFilterMenu()" style="color:var(--accent); font-weight:bold;">LISTO</span>
-            </div>
-            <div class="filter-scroll">
-                <div class="filter-item" onclick="applyAuraF('none')"><div class="filter-circle"></div>Original</div>
-                <div class="filter-item" onclick="applyAuraF('grayscale(1)')"><div class="filter-circle" style="background:#444;"></div>B&N</div>
-                <div class="filter-item" onclick="applyAuraF('hue-rotate(90deg) saturate(2)')"><div class="filter-circle" style="background:cyan;"></div>Neón</div>
-                <div class="filter-item" onclick="applyAuraF('sepia(1) brightness(0.8)')"><div class="filter-circle" style="background:orange;"></div>Retro</div>
-                <div class="filter-item" onclick="applyAuraF('invert(1)')"><div class="filter-circle" style="background:red;"></div>X-Ray</div>
-                <div class="filter-item" onclick="applyAuraF('contrast(1.5)')"><div class="filter-circle" style="background:white;"></div>Vivid</div>
+        <div id="f-shelf">
+            <div style="display:flex;justify-content:space-between;"><b>Filtros</b><span onclick="document.getElementById('f-shelf').classList.remove('open')">X</span></div>
+            <div style="display:flex;gap:15px;overflow-x:auto;margin-top:20px;">
+                <div onclick="document.getElementById('cam-video').style.filter='none'">Original</div>
+                <div onclick="document.getElementById('cam-video').style.filter='grayscale(1)'">Paris</div>
+                <div onclick="document.getElementById('cam-video').style.filter='sepia(1)'">Oslo</div>
+                <div onclick="document.getElementById('cam-video').style.filter='invert(1)'">Cyber</div>
             </div>
         </div>
     </div>
 
     <nav>
-        <div class="nav-item active" onclick="navigate('v-photos', this)">🖼️</div>
-        <div class="nav-item" onclick="navigate('v-search', this)">🔍</div>
-        <div class="nav-x" onclick="openAuraCam()">✕</div>
-        <div class="nav-item" onclick="navigate('v-videos', this)">🎬</div>
-        <div class="nav-item" onclick="navigate('v-profile', this)">👤</div>
+        <div class="n-item active" onclick="navTo('v-photos', this)">🖼️</div>
+        <div class="n-item" onclick="navTo('v-search', this)">🔍</div>
+        <div class="n-x" onclick="openC()">✕</div>
+        <div class="n-item" onclick="navTo('v-videos', this)">🎬</div>
+        <div class="n-item" onclick="navTo('v-profile', this)">👤</div>
     </nav>
 
     <script>
-        let auraStream = null;
-
-        function navigate(id, el) {
+        let s = null;
+        function navTo(id, el) {
             document.querySelectorAll('.view').forEach(v => {
                 v.classList.remove('active');
                 if(v.querySelector('video')) v.querySelector('video').pause();
             });
-            const activeView = document.getElementById(id);
-            activeView.classList.add('active');
-            if(id === 'v-videos') activeView.querySelector('video').play();
-
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(el) el.classList.add('active');
+            document.getElementById(id).classList.add('active');
+            if(id === 'v-videos') document.getElementById('rvid').play();
+            document.querySelectorAll('.n-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
         }
-
-        async function openAuraCam() {
+        async function openC() {
             try {
-                auraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                document.getElementById('webcam-stream').srcObject = auraStream;
-                document.getElementById('aura-cam').style.display = 'block';
-            } catch(e) { alert("Cámara no accesible."); }
+                s = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('cam-video').srcObject = s;
+                document.getElementById('cam-overlay').style.display = 'block';
+            } catch(e) { alert("Cámara no disponible"); }
         }
-
-        function closeAuraCam() {
-            if(auraStream) auraStream.getTracks().forEach(t => t.stop());
-            document.getElementById('aura-cam').style.display = 'none';
-            document.getElementById('filter-menu').classList.remove('active');
-        }
-
-        function toggleFilterMenu() {
-            document.getElementById('filter-menu').classList.toggle('active');
-        }
-
-        function applyAuraF(filter) {
-            document.getElementById('webcam-stream').style.filter = filter;
-        }
-
-        function simulateSearch(val) {
-            const res = document.getElementById('results');
-            if(val.length > 0) {
-                res.innerHTML = `<div class="user-card"><div class="mini-avatar"><div></div></div><div><b>${val}</b><br><small>Buscando...</small></div></div>`;
-            } else {
-                res.innerHTML = `<div class="user-card"><div class="mini-avatar"><div></div></div><div><b>Aura Oficial</b><br><small>@aura_app</small></div></div>`;
-            }
+        function closeC() {
+            if(s) s.getTracks().forEach(t => t.stop());
+            document.getElementById('cam-overlay').style.display = 'none';
         }
     </script>
 </body>
 </html>
-   
