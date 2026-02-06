@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura Pro | Final Elite</title>
+    <title>Aura Pro | Master Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@300;600;800&display=swap');
 
@@ -11,106 +11,87 @@
             --bg: #050505; 
             --rainbow: linear-gradient(45deg, #ff0055, #ffdd00, #00ffaa, #00aaff, #cc00ff);
             --accent: #00ffd5;
-            --glass: rgba(20, 20, 20, 0.9);
+            --glass: rgba(15, 15, 15, 0.9);
         }
 
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- LOGO AURA ELITE (IDÉNTICO A LA FOTO) --- */
+        /* --- LOGO AURA ELITE --- */
         .header-elite {
             display: flex; flex-direction: column; align-items: center;
-            padding: 40px 0 20px; position: relative;
+            padding: 50px 0 30px; position: relative;
             background: radial-gradient(circle at center, #151515 0%, #050505 80%);
         }
         .aura-visual {
-            position: relative; width: 150px; height: 150px;
+            position: relative; width: 160px; height: 160px;
             display: flex; align-items: center; justify-content: center;
         }
         .ring-segment {
             position: absolute; inset: 0; border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: #00ffd5; border-right-color: #ff0055;
-            animation: rotate-ring 8s linear infinite;
-            filter: drop-shadow(0 0 12px var(--accent));
+            border: 3px solid transparent; border-top-color: var(--accent); border-right-color: #ff0055;
+            animation: rotate-ring 8s linear infinite; filter: drop-shadow(0 0 12px var(--accent));
         }
         .ring-inner {
-            position: absolute; inset: 12px; border-radius: 50%;
+            position: absolute; inset: 15px; border-radius: 50%;
             border: 1px dashed rgba(255,255,255,0.2);
             animation: rotate-ring 15s linear reverse infinite;
         }
         .aura-text {
-            font-family: 'Orbitron', sans-serif; font-size: 2.4rem; font-weight: 900;
+            font-family: 'Orbitron', sans-serif; font-size: 2.5rem; font-weight: 900;
             letter-spacing: 5px; background: var(--rainbow); background-size: 400%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: move-bg 8s linear infinite; z-index: 5;
         }
 
-        /* --- BUSCADOR REAL --- */
-        .search-container { padding: 10px 25px 20px; }
-        .search-box {
-            background: #111; border: 1px solid #222; border-radius: 18px;
-            padding: 12px 18px; display: flex; align-items: center; gap: 12px;
-            transition: 0.3s;
-        }
-        .search-box input {
-            background: transparent; border: none; color: white; width: 100%;
-            outline: none; font-size: 0.95rem; font-family: 'Inter';
-        }
-        .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,213,0.15); }
-
         /* --- VISTAS --- */
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- STORIES --- */
-        .story-bar { display: flex; padding: 0 25px; gap: 15px; overflow-x: auto; }
-        .s-item { text-align: center; }
-        .s-circle {
-            width: 68px; height: 68px; border-radius: 50%; 
-            background: #151515; border: 2px solid #222;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s;
-        }
-        .s-circle.my-story { border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent); }
-        .s-circle span { font-size: 1.8rem; color: var(--accent); }
-
-        /* --- ZONA VIDEO (REELS) --- */
-        .reel-container { height: 100vh; width: 100%; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
-        .reel-info { position: absolute; right: 20px; bottom: 150px; display: flex; flex-direction: column; gap: 20px; text-align: center; }
-        .reel-icon { font-size: 1.8rem; filter: drop-shadow(0 0 5px var(--accent)); }
-        .reel-icon span { display: block; font-size: 0.7rem; font-weight: 800; color: var(--accent); margin-top: 5px; }
-
-        /* --- PERFIL (ESTADÍSTICAS 0) --- */
+        /* --- PERFIL LIMPIO (0 SEGUIDORES) --- */
         .p-card { padding: 30px 25px; }
-        .p-header { display: flex; align-items: center; gap: 25px; margin-bottom: 35px; }
+        .p-header { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; }
         .p-avatar { width: 90px; height: 90px; border-radius: 30px; background: var(--rainbow); background-size: 400%; animation: move-bg 5s linear infinite; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
-        .p-stats { display: flex; flex: 1; justify-content: space-around; }
+        .p-stats { display: flex; flex: 1; justify-content: space-around; text-align: center; }
         .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--accent); display: block; }
         .stat-label { font-size: 0.65rem; color: #666; font-weight: 800; text-transform: uppercase; }
-        .p-btn-row { display: flex; gap: 12px; margin-top: 20px; }
-        .p-btn { flex: 1; background: #111; border: 1px solid #333; color: white; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; }
+        .p-btn-row { display: flex; gap: 12px; margin-top: 30px; }
+        .p-btn { flex: 1; background: #111; border: 1px solid #333; color: white; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+
+        /* --- CÁMARA CON BUSCADOR DE FILTROS --- */
+        #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
+        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        
+        .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 20px; pointer-events: none; }
+        .cam-search-bar { 
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; pointer-events: auto;
+        }
+        .cam-search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; font-family: 'Inter'; }
+        
+        .filter-carousel { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; pointer-events: auto; }
+        .filter-item { 
+            min-width: 65px; height: 65px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .filter-item.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); background: rgba(0,255,213,0.1); }
 
         /* --- NAVEGACIÓN --- */
         nav { 
-            position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; 
-            background: var(--glass); backdrop-filter: blur(20px); border-radius: 38px; 
+            position: fixed; bottom: 25px; left: 20px; right: 20px; height: 80px; 
+            background: var(--glass); backdrop-filter: blur(25px); border-radius: 40px; 
             border: 1px solid rgba(255,255,255,0.05); display: flex; 
             justify-content: space-around; align-items: center; z-index: 2000; 
         }
-        .n-btn { font-size: 1.6rem; opacity: 0.3; cursor: pointer; transition: 0.3s; }
+        .n-btn { font-size: 1.7rem; opacity: 0.3; cursor: pointer; transition: 0.3s; }
         .n-btn.active { opacity: 1; color: var(--accent); filter: drop-shadow(0 0 10px var(--accent)); }
         .n-add { 
-            width: 60px; height: 60px; background: white; border-radius: 50%; color: black; 
-            font-size: 2.2rem; display: flex; align-items: center; justify-content: center; 
-            transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,255,213,0.3);
+            width: 65px; height: 65px; background: white; border-radius: 50%; color: black; 
+            font-size: 2.5rem; display: flex; align-items: center; justify-content: center; 
+            transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0,255,213,0.3); cursor: pointer;
         }
 
-        /* --- CÁMARA --- */
-        #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
-        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .cam-controls { position: absolute; bottom: 50px; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .shutter { width: 80px; height: 80px; border: 5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-
+        /* --- ANIMACIONES --- */
         @keyframes rotate-ring { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes move-bg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     </style>
@@ -124,36 +105,7 @@
                 <div class="ring-inner"></div>
                 <div class="aura-text">AURA</div>
             </div>
-        </div>
-
-        <div class="search-container">
-            <div class="search-box">
-                <span onclick="runSearch()">🔍</span>
-                <input type="text" id="search-input" placeholder="Buscar filtros mágicos..." onkeypress="handleSearch(event)">
-            </div>
-        </div>
-
-        <div class="story-bar">
-            <div class="s-item">
-                <div class="s-circle my-story" onclick="openCam()"><span>+</span></div>
-                <p style="font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 8px;">Mi Historia</p>
-            </div>
-        </div>
-
-        <div style="text-align:center; padding-top:80px; opacity:0.05; font-size:2rem; font-weight:900; letter-spacing:10px;">PRO FEED</div>
-    </div>
-
-    <div id="view-reels" class="view">
-        <div class="reel-container">
-            <div style="text-align:center;">
-                <span style="font-size:5rem; filter: drop-shadow(0 0 15px var(--accent));">🎬</span>
-                <h2 style="font-family:'Orbitron'; letter-spacing:5px;">VIDEO ZONE</h2>
-            </div>
-            <div class="reel-info">
-                <div class="reel-icon">❤️<span>0</span></div>
-                <div class="reel-icon">💬<span>0</span></div>
-                <div class="reel-icon" onclick="shareProfile()">✈️</div>
-            </div>
+            <p style="color: #222; margin-top: 30px; font-weight: 900; letter-spacing: 8px; font-family: 'Orbitron';">ELITE FEED</p>
         </div>
     </div>
 
@@ -162,85 +114,102 @@
             <div class="p-header">
                 <div class="p-avatar">👤</div>
                 <div class="p-stats">
-                    <div style="text-align:center;"><span class="stat-val">0</span><span class="stat-label">Pubs</span></div>
-                    <div style="text-align:center;"><span class="stat-val">0</span><span class="stat-label">Fans</span></div>
-                    <div style="text-align:center;"><span class="stat-val">0</span><span class="stat-label">Siguiendo</span></div>
+                    <div><span class="stat-val">0</span><span class="stat-label">Pubs</span></div>
+                    <div><span class="stat-val">0</span><span class="stat-label">Fans</span></div>
+                    <div><span class="stat-val">0</span><span class="stat-label">Siguiendo</span></div>
                 </div>
             </div>
-            
-            <h2 style="font-family:'Orbitron'; font-size:1.8rem; margin:0;">Mi Perfil</h2>
-            <p style="color:#444; font-size:0.8rem; margin:5px 0 25px;">Aura Pro Member</p>
-            
+            <h2 style="font-family:'Orbitron'; font-size:2rem; margin:0;">Mi Perfil</h2>
             <div class="p-btn-row">
                 <button class="p-btn" onclick="alert('Editor Pro')">Editar perfil</button>
-                <button class="p-btn" onclick="shareProfile()">Compartir perfil</button>
+                <button class="p-btn" onclick="shareAura()">Compartir perfil</button>
             </div>
         </div>
     </div>
 
     <div id="aura-cam">
         <video id="video-preview" autoplay playsinline></video>
-        <div style="position:absolute; top:40px; right:25px; font-size:2.5rem; cursor:pointer;" onclick="closeCam()">✕</div>
-        <div class="cam-controls">
-            <div class="shutter" onclick="alert('¡Foto Guardada!')">
-                <div style="width:60px; height:60px; background:white; border-radius:50%;"></div>
+        
+        <div class="cam-ui">
+            <div style="display: flex; align-items: center; gap: 15px; pointer-events: auto;">
+                <div class="cam-search-bar" style="flex: 1;">
+                    <span>🔍</span>
+                    <input type="text" id="filterInput" placeholder="Buscar filtro (Neon, Cyber, Retro...)" oninput="searchFilters()">
+                </div>
+                <div style="font-size: 2.5rem; cursor: pointer;" onclick="closeCam()">✕</div>
+            </div>
+
+            <div class="filter-carousel" id="filterList">
+                <div class="filter-item active" data-name="original">✨</div>
+                <div class="filter-item" data-name="neon flare">🌈</div>
+                <div class="filter-item" data-name="cyber aura">💠</div>
+                <div class="filter-item" data-name="retro vibe">🎞️</div>
+                <div class="filter-item" data-name="glitch art">👾</div>
+                <div class="filter-item" data-name="fire magic">🔥</div>
+            </div>
+
+            <div style="display: flex; justify-content: center; pointer-events: auto;">
+                <div style="width: 85px; height: 85px; border: 5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center;" onclick="alert('¡Aura capturada!')">
+                    <div style="width: 65px; height: 65px; background: white; border-radius: 50%;"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <nav>
         <div class="n-btn active" onclick="go('home', this)">🏠</div>
-        <div class="n-btn" onclick="document.getElementById('search-input').focus()">🔍</div>
         <div class="n-add" onclick="openCam()">+</div>
-        <div class="n-btn" onclick="go('reels', this)">🎬</div>
         <div class="n-btn" onclick="go('profile', this)">👤</div>
     </nav>
 
     <script>
         let stream = null;
 
-        // Navegación entre vistas
-        function go(target, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.n-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-' + target).classList.add('active');
+        // Navegación
+        function go(v, btn) {
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
+            document.getElementById('view-' + v).classList.add('active');
             if(btn) btn.classList.add('active');
         }
 
-        // Buscador funcional
-        function handleSearch(e) {
-            if (e.key === 'Enter') runSearch();
-        }
-        function runSearch() {
-            const val = document.getElementById('search-input').value;
-            if(val) alert('Buscando en Aura Pro: ' + val);
-        }
-
-        // Cámara Espejo Pro
+        // Cámara
         async function openCam() {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
                 document.getElementById('video-preview').srcObject = stream;
                 document.getElementById('aura-cam').style.display = 'block';
-            } catch(e) { alert("Acceso a cámara denegado o no disponible."); }
+            } catch(e) { alert("Cámara no disponible"); }
         }
+
         function closeCam() {
-            if(stream) stream.getTracks().forEach(track => track.stop());
+            if(stream) stream.getTracks().forEach(t => t.stop());
             document.getElementById('aura-cam').style.display = 'none';
         }
 
-        // Función Compartir Real
-        async function shareProfile() {
-            const data = { title: 'Aura Pro', text: '¡Únete a mi Aura!', url: window.location.href };
-            try {
-                if (navigator.share) await navigator.share(data);
-                else {
-                    await navigator.clipboard.writeText(window.location.href);
-                    alert('¡Enlace de Aura Pro copiado!');
+        // BUSCADOR DE FILTROS REAL
+        function searchFilters() {
+            let filter = document.getElementById('filterInput').value.toLowerCase();
+            let items = document.querySelectorAll('.filter-item');
+            
+            items.forEach(item => {
+                let text = item.getAttribute('data-name');
+                if (text.includes(filter)) {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
                 }
-            } catch (e) { console.log('Share error'); }
+            });
+        }
+
+        // Compartir
+        async function shareAura() {
+            if (navigator.share) {
+                await navigator.share({ title: 'Aura Pro', url: window.location.href });
+            } else {
+                alert('Link copiado!');
+            }
         }
     </script>
 </body>
 </html>
-       
