@@ -3,43 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Camera Fixed</title>
+    <title>Aura | Live Camera</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
         :root { --bg: #000; --accent: #00ffd5; --glass: rgba(15,15,15,0.98); }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- LOGIN --- */
-        #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .auth-box { width: 100%; max-width: 340px; text-align: center; }
-        .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 12px; outline: none; box-sizing: border-box; }
-        .btn-main { width: 100%; padding: 18px; border-radius: 40px; border: none; background: var(--accent); color: #000; font-weight: 800; cursor: pointer; }
-
-        /* --- APP --- */
+        /* --- LOGIN & APP --- */
+        #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
         #main-app { display: none; height: 100vh; }
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- FEED --- */
+        /* --- CÁMARA EN VIVO (ESTILO TIKTOK) --- */
+        #camera-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
+        #camera-video { width: 100%; height: 100%; object-fit: cover; }
+        .cam-ui { position: absolute; bottom: 50px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 30px; }
+        .snap-btn { width: 80px; height: 80px; border-radius: 50%; border: 5px solid white; background: rgba(255,255,255,0.2); cursor: pointer; }
+        .close-cam { position: absolute; top: 40px; left: 20px; font-size: 2rem; color: white; border: none; background: none; }
+
+        /* --- FEED & VIDEO ZONE --- */
         .aura-logo { font-family: 'Orbitron'; font-size: 2rem; letter-spacing: 8px; text-align: center; padding: 40px 0 10px; }
-        .post-card { width: 100%; border-bottom: 1px solid #111; padding-bottom: 15px; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        .post-card { width: 100%; border-bottom: 1px solid #111; margin-bottom: 15px; }
         .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #050505; }
-
-        /* --- VIDEO FEED --- */
-        .video-item { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
+        .video-item { height: 100vh; scroll-snap-align: start; position: relative; }
         .v-player { width: 100%; height: 100%; object-fit: cover; }
-        .v-ui { position: absolute; bottom: 150px; left: 20px; }
-
-        /* --- MENÚ SUBIR (CORRECCIÓN X) --- */
-        #upload-menu { position: fixed; bottom: -100%; left: 0; right: 0; background: var(--glass); padding: 30px 20px; border-radius: 30px 30px 0 0; z-index: 9999; transition: 0.3s; border-top: 1px solid #222; }
-        #upload-menu.active { bottom: 0; }
-        .upload-opt { width: 100%; padding: 20px; border-radius: 20px; background: #111; border: 1px solid #222; color: white; font-weight: 700; margin-bottom: 10px; cursor: pointer; text-align: center; }
-        .upload-opt:active { background: #222; }
 
         /* --- NAV --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; }
         .n-btn.active { opacity: 1; color: var(--accent); }
         .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); }
     </style>
@@ -47,10 +39,11 @@
 <body>
 
     <div id="auth-overlay">
-        <div class="auth-box">
-            <h1 class="aura-logo">AURA</h1>
-            <input type="email" id="acc-email" class="auth-input" placeholder="Tu Email">
-            <button class="btn-main" onclick="handleAuth()">ENTRAR</button>
+        <div style="text-align:center;">
+            <h1 style="font-family:'Orbitron'; letter-spacing:10px;">AURA</h1>
+            <input type="email" id="acc-email" placeholder="Email" style="padding:15px; border-radius:10px; border:none; width:80%;">
+            <br><br>
+            <button onclick="handleAuth()" style="padding:15px 40px; border-radius:30px; border:none; background:var(--accent); font-weight:800;">ENTRAR</button>
         </div>
     </div>
 
@@ -60,17 +53,6 @@
             <div id="feed-photos"></div>
         </div>
 
-        <div id="view-search" class="view">
-            <div style="padding:50px 20px;">
-                <div style="background:#111; padding:15px; border-radius:15px; border:1px solid #222; color:#555;">🔍 Buscar personas o etiquetas...</div>
-                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:2px; margin-top:20px;">
-                    <div style="aspect-ratio:1/1; background:#050505;"></div>
-                    <div style="aspect-ratio:1/1; background:#050505;"></div>
-                    <div style="aspect-ratio:1/1; background:#050505;"></div>
-                </div>
-            </div>
-        </div>
-
         <div id="view-video" class="view" style="padding:0; overflow-y:scroll; scroll-snap-type: y mandatory;">
             <div id="feed-videos"></div>
         </div>
@@ -78,38 +60,37 @@
         <div id="view-profile" class="view">
             <div style="padding:40px 20px;">
                 <h2 class="u-name" style="font-family:'Orbitron';">Usuario</h2>
-                <div style="color:#555; font-size:0.8rem;">0 seguidores · 0 siguiendo</div>
-                <button onclick="logout()" style="margin-top:20px; background:none; border:none; color:#222; font-size:0.6rem;">CERRAR SESIÓN</button>
+                <p>0 Seguidores | 0 Siguiendo</p>
             </div>
         </div>
 
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
-            <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add" onclick="toggleUploadMenu(true)">+</div>
+            <div class="n-btn" onclick="go('home', this)">🔍</div>
+            <div class="n-add" onclick="openLiveCamera()">+</div>
             <div class="n-btn" onclick="go('video', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
 
-    <div id="upload-menu">
-        <div style="width:40px; height:4px; background:#333; margin:0 auto 20px; border-radius:10px;"></div>
-        <div class="upload-opt" onclick="triggerFile('photo')">📸 SUBIR FOTO (Muro)</div>
-        <div class="upload-opt" onclick="triggerFile('video')">🎬 SUBIR VÍDEO (Video Zone)</div>
-        <button onclick="toggleUploadMenu(false)" style="width:100%; background:none; border:none; color:#ff0055; font-weight:800; padding:15px;">CANCELAR</button>
+    <div id="camera-screen">
+        <video id="camera-video" autoplay playsinline></video>
+        <button class="close-cam" onclick="closeLiveCamera()">✕</button>
+        <div class="cam-ui">
+            <div class="snap-btn" onclick="takeSnapshot()"></div>
+        </div>
+        <canvas id="cam-canvas" style="display:none;"></canvas>
     </div>
-
-    <input type="file" id="f-photo" hidden accept="image/*" onchange="upload('photo', this)">
-    <input type="file" id="f-video" hidden accept="video/*" onchange="upload('video', this)">
 
     <script>
         let user = { email: "", name: "Usuario", posts: [], videos: [] };
+        let stream = null;
 
         function handleAuth() {
             const em = document.getElementById('acc-email').value;
             if(!em.includes('@')) return;
             user.email = em;
-            const saved = localStorage.getItem('aura_vfinal_'+em);
+            const saved = localStorage.getItem('aura_cam_'+em);
             if(saved) user = JSON.parse(saved);
             else user.name = em.split('@')[0];
             localStorage.setItem('aura_session', em);
@@ -118,32 +99,37 @@
             render();
         }
 
-        function toggleUploadMenu(show) {
-            document.getElementById('upload-menu').classList.toggle('active', show);
-        }
-
-        function triggerFile(type) {
-            toggleUploadMenu(false);
-            if(type === 'photo') document.getElementById('f-photo').click();
-            else document.getElementById('f-video').click();
-        }
-
-        function upload(type, input) {
-            if (input.files && input.files[0]) {
-                const r = new FileReader();
-                r.onload = e => {
-                    const data = { src: e.target.result };
-                    if(type === 'photo') {
-                        user.posts.unshift(data);
-                        go('home');
-                    } else {
-                        user.videos.unshift(data);
-                        go('video');
-                    }
-                    save(); render();
-                };
-                r.readAsDataURL(input.files[0]);
+        // --- FUNCIONES DE CÁMARA EN VIVO ---
+        async function openLiveCamera() {
+            const constraints = { video: { facingMode: "environment" }, audio: false };
+            try {
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                document.getElementById('camera-video').srcObject = stream;
+                document.getElementById('camera-screen').style.display = 'block';
+            } catch (err) {
+                alert("No se pudo acceder a la cámara. Revisa los permisos.");
             }
+        }
+
+        function closeLiveCamera() {
+            if (stream) stream.getTracks().forEach(track => track.stop());
+            document.getElementById('camera-screen').style.display = 'none';
+        }
+
+        function takeSnapshot() {
+            const video = document.getElementById('camera-video');
+            const canvas = document.getElementById('cam-canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            const photoData = canvas.toDataURL('image/jpeg');
+            user.posts.unshift({ src: photoData, likes: 0 });
+            
+            save(); 
+            render();
+            closeLiveCamera();
+            go('home');
         }
 
         function go(v, btn) {
@@ -155,32 +141,20 @@
 
         function render() {
             document.querySelectorAll('.u-name').forEach(el => el.innerText = user.name);
-            
-            // Render Fotos (Inicio)
             const fPhotos = document.getElementById('feed-photos');
             fPhotos.innerHTML = user.posts.map(p => `
                 <div class="post-card">
-                    <div class="post-header"><b>${user.name}</b></div>
+                    <div class="post-header" style="padding:10px;"><b>${user.name}</b></div>
                     <img src="${p.src}" class="post-img">
-                </div>
-            `).join('');
-
-            // Render Vídeos (Video Zone)
-            const fVideos = document.getElementById('feed-videos');
-            fVideos.innerHTML = user.videos.map(v => `
-                <div class="video-item" style="scroll-snap-align:start;">
-                    <video src="${v.src}" class="v-player" autoplay loop muted playsinline></video>
-                    <div class="v-ui"><b>@${user.name}</b></div>
                 </div>
             `).join('');
         }
 
-        function save() { localStorage.setItem('aura_vfinal_'+user.email, JSON.stringify(user)); }
-        function logout() { localStorage.clear(); location.reload(); }
+        function save() { localStorage.setItem('aura_cam_'+user.email, JSON.stringify(user)); }
 
         window.onload = () => {
             const s = localStorage.getItem('aura_session');
-            if(s) { user.email = s; const d = localStorage.getItem('aura_vfinal_'+s); if(d) user = JSON.parse(d); document.getElementById('auth-overlay').style.display='none'; document.getElementById('main-app').style.display='block'; render(); }
+            if(s) { user.email = s; const d = localStorage.getItem('aura_cam_'+s); if(d) user = JSON.parse(d); document.getElementById('auth-overlay').style.display='none'; document.getElementById('main-app').style.display='block'; render(); }
         }
     </script>
 </body>
