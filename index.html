@@ -3,122 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Cyber Edition</title>
+    <title>Aura | Rainbow Edition</title>
     <style>
         :root { 
             --bg: #050505; --panel: #101010; --border: #1a1a1a; 
-            --blue-aura: #00f2ff; /* Cian brillante */
-            --lime-aura: #adff2f; /* Lima eléctrico */
             --text-grey: #808080;
-            /* Nuevo Gradiente Aura */
-            --aura-grad: linear-gradient(135deg, var(--blue-aura), var(--lime-aura));
+            /* Gradiente de colorines animado */
+            --rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
         }
         body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
         
+        /* Animación para que los colores se muevan */
+        @keyframes rainbow-move {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* HEADER CON EL NUEVO LOGO CIAN */
+        /* LOGO CON COLORINES */
         .glass-header {
             position: sticky; top: 0; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; background: rgba(5, 5, 5, 0.9);
+            padding: 15px 20px; background: rgba(5, 5, 5, 0.95);
             backdrop-filter: blur(15px); border-bottom: 0.5px solid var(--border);
         }
-        .logo-container { position: relative; display: flex; align-items: center; justify-content: center; }
         .logo-text { 
-            font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; 
-            background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            z-index: 2; 
-        }
-        .logo-glow { 
-            position: absolute; width: 140%; height: 140%; 
-            border: 1.5px solid var(--blue-aura); border-radius: 50%; 
-            opacity: 0.6; filter: blur(5px); box-shadow: 0 0 15px var(--blue-aura); 
+            font-size: 1.6rem; font-weight: 900; letter-spacing: 2px;
+            background: var(--rainbow);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-move 5s ease infinite;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
         }
 
-        /* BARRA HISTORIAS */
+        /* HISTORIAS CON BORDE DE COLORINES */
         .stories-section { padding: 15px 0; border-bottom: 0.5px solid var(--border); }
-        .stories-title { padding: 0 20px 10px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; color: var(--text-grey); }
         .stories-container { display: flex; gap: 14px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
         
         .sq-story { position: relative; min-width: 68px; height: 68px; cursor: pointer; }
-        .sq-img { width: 100%; height: 100%; border-radius: 14px; overflow: hidden; border: 2.5px solid var(--border); }
-        .sq-img img { width: 100%; height: 100%; object-fit: cover; }
+        .sq-img { 
+            width: 100%; height: 100%; border-radius: 14px; overflow: hidden; 
+            padding: 3px; /* Espacio para el borde de color */
+            background: var(--rainbow);
+            background-size: 400% 400%;
+            animation: rainbow-move 5s ease infinite;
+            box-sizing: border-box;
+        }
+        .sq-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 11px; background: black; }
         
-        .my-story .sq-img { border-color: var(--blue-aura); box-shadow: 0 0 8px rgba(0, 242, 255, 0.3); }
         .add-badge { 
-            position: absolute; bottom: -4px; right: -4px; background: var(--blue-aura); 
+            position: absolute; bottom: -4px; right: -4px; background: white; 
             border: 2px solid #000; width: 22px; height: 22px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #000;
         }
 
-        /* BOTONES PERFIL */
-        .action-btn { 
-            flex: 1; background: #151515; border: 1px solid var(--border); 
-            color: white; padding: 12px; border-radius: 10px; font-weight: 600; 
-            font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+        /* PERFIL CON FOTO DE COLORINES */
+        .profile-pic-rainbow {
+            width: 90px; height: 90px; border-radius: 18px;
+            background: var(--rainbow);
+            background-size: 400% 400%;
+            animation: rainbow-move 5s ease infinite;
+            padding: 4px; box-sizing: border-box;
         }
-        .action-btn:active { transform: scale(0.96); border-color: var(--blue-aura); }
+        .profile-pic-rainbow img { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; background: black; }
 
-        /* NAV CIAN */
+        /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.4rem; opacity: 0.3; transition: 0.3s; filter: grayscale(1); }
-        .nav-icon.active { opacity: 1; filter: grayscale(0) drop-shadow(0 0 5px var(--blue-aura)); }
+        .nav-icon { font-size: 1.4rem; opacity: 0.4; }
+        .nav-icon.active { opacity: 1; filter: drop-shadow(0 0 5px white); }
 
-        /* VISUALIZADOR DE HISTORIAS */
-        #story-viewer { 
-            display: none; position: fixed; inset: 0; background: black; z-index: 20000; 
-            flex-direction: column; 
-        }
-        #story-progress-fill { height: 100%; background: var(--aura-grad); width: 0%; }
-
-        /* EDITOR / CÁMARA */
-        #edit-modal, #cam-overlay { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .action-btn { flex: 1; background: #151515; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="v-home" class="view active">
         <header class="glass-header">
-            <div class="logo-container"><div class="logo-text">AURA</div><div class="logo-glow"></div></div>
-            <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.4rem; filter: drop-shadow(0 0 5px var(--blue-aura));">📩</div>
+            <div class="logo-text">AURA</div>
+            <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.4rem;">📩</div>
         </header>
 
         <div class="stories-section">
-            <div class="stories-title">Historias</div>
             <div class="stories-container">
-                <div class="sq-story my-story">
+                <div class="sq-story">
                     <div class="sq-img" onclick="openStoryViewer(true)"><img src="https://i.pravatar.cc/150?u=me"></div>
                     <div class="add-badge" onclick="openCam()">+</div>
                 </div>
-                <div class="sq-story" onclick="openStoryViewer(false)"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=a8"></div></div>
-                <div class="sq-story" onclick="openStoryViewer(false)"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=a9"></div></div>
+                <div class="sq-story" onclick="openStoryViewer(false)"><div class="sq-img" style="background:var(--border);"><img src="https://i.pravatar.cc/150?u=a1"></div></div>
             </div>
         </div>
-        
-        <div style="height: 50vh; display: flex; align-items: center; justify-content: center;">
-            <p style="color: var(--text-grey); font-size: 0.8rem; letter-spacing: 2px;">SIN ACTIVIDAD RECIENTE</p>
-        </div>
-    </div>
-
-    <div id="v-search" class="view">
-        <div style="padding: 20px;"><input type="text" placeholder="Buscar en la red..." style="width:100%; background:#111; border:1px solid var(--border); padding:14px; border-radius:12px; color:white; outline:none;"></div>
     </div>
 
     <div id="v-profile" class="view">
-        <header class="glass-header"><b id="h-user" style="color: var(--blue-aura);">user-1</b></header>
+        <header class="glass-header"><b id="h-user">user-1</b></header>
         <div style="padding:25px;">
             <div style="display:flex; align-items:center; gap:25px; margin-bottom:20px;">
-                <div class="sq-img" style="width:85px; height:85px; border-color: var(--blue-aura);"><img src="https://i.pravatar.cc/150?u=me"></div>
+                <div class="profile-pic-rainbow">
+                    <img src="https://i.pravatar.cc/150?u=me">
+                </div>
                 <div style="display:flex; flex:1; justify-content:space-around; text-align:center;">
-                    <div><b>0</b><br><small style="color:var(--text-grey)">Posts</small></div>
-                    <div><b>0</b><br><small style="color:var(--text-grey)">Seguidores</small></div>
-                    <div><b>0</b><br><small style="color:var(--text-grey)">Siguiendo</small></div>
+                    <div><b>0</b><br><small>Posts</small></div>
+                    <div><b>0</b><br><small>Seguidores</small></div>
+                    <div><b>0</b><br><small>Siguiendo</small></div>
                 </div>
             </div>
             <b id="p-name" style="font-size: 1.2rem;">Tu Nombre</b><br>
-            <span id="p-user" style="color:var(--blue-aura); font-size: 0.9rem;">@user-1</span>
+            <span id="p-user" style="color:var(--text-grey);">@user-1</span>
             
             <div style="display:flex; gap:12px; margin-top:25px;">
                 <button class="action-btn" onclick="openEdit()">EDITAR PERFIL</button>
@@ -127,30 +121,24 @@
         </div>
     </div>
 
+    <div id="edit-modal" style="position:fixed; top:100%; left:0; width:100%; height:100%; background:black; z-index:10000; transition:0.5s;">
+        <header class="glass-header"><span onclick="closeEdit()">Cancelar</span><b>Editar</b><span onclick="saveEdit()" style="color:#00f2ff; font-weight:bold;">Listo</span></header>
+        <div style="padding:20px;">
+            <input type="text" id="in-name" placeholder="Nombre" style="width:100%; background:none; border-bottom:1px solid #262626; color:white; padding:15px 0; outline:none; margin-bottom:10px;">
+            <input type="text" id="in-user" placeholder="Usuario" style="width:100%; background:none; border-bottom:1px solid #262626; color:white; padding:15px 0; outline:none;">
+        </div>
+    </div>
+
     <nav>
         <div class="nav-icon active" onclick="showView('v-home', this)">🏠</div>
         <div class="nav-icon" onclick="showView('v-search', this)">🔍</div>
-        <div class="nav-icon" onclick="openCam()" style="opacity:1; filter:none; font-size: 1.8rem; color: var(--blue-aura);">⊕</div>
+        <div class="nav-icon" onclick="openCam()" style="font-size:1.8rem;">+</div>
         <div class="nav-icon" onclick="showView('v-reels', this)">🎬</div>
         <div class="nav-icon" onclick="showView('v-profile', this)">👤</div>
     </nav>
 
-    <div id="story-viewer">
-        <div style="display:flex; gap:4px; padding:10px; position:absolute; top:0; width:100%; box-sizing:border-box; z-index:10;">
-            <div style="flex:1; height:3px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;"><div id="story-progress-fill"></div></div>
-        </div>
-        <div style="padding:40px 20px; display:flex; justify-content:space-between; align-items:center; z-index:10;">
-            <b id="st-user" style="color: var(--blue-aura);">Usuario</b>
-            <span onclick="closeStoryViewer()" style="font-size:2rem; cursor:pointer;">✕</span>
-        </div>
-        <div style="flex:1; display:flex; align-items:center; justify-content:center; color: var(--text-grey);">
-            <p>HISTORIA VACÍA</p>
-        </div>
-    </div>
-
     <script>
-        let storyTimer;
-
+        // Guardado automático de nombre y usuario
         window.onload = () => {
             const n = localStorage.getItem('aura_n');
             const u = localStorage.getItem('aura_u');
@@ -171,27 +159,24 @@
             const u = document.getElementById('h-user').innerText;
             try {
                 await navigator.share({ title: 'Aura', text: `Sígueme en Aura: @${u}`, url: window.location.href });
-            } catch(e) { alert("Link copiado al portapapeles"); navigator.clipboard.writeText(window.location.href); }
+            } catch(e) { alert("Link copiado"); navigator.clipboard.writeText(window.location.href); }
         }
 
-        function openStoryViewer(isMine) {
-            const viewer = document.getElementById('story-viewer');
-            const fill = document.getElementById('story-progress-fill');
-            document.getElementById('st-user').innerText = isMine ? "TU HISTORIA" : "AMIGO";
-            viewer.style.display = 'flex';
-            fill.style.transition = "none"; fill.style.width = "0%";
-            setTimeout(() => { fill.style.transition = "5s linear"; fill.style.width = "100%"; }, 100);
-            storyTimer = setTimeout(closeStoryViewer, 5100);
+        function openEdit() { document.getElementById('edit-modal').style.top = '0'; }
+        function closeEdit() { document.getElementById('edit-modal').style.top = '100%'; }
+        function saveEdit() {
+            const n = document.getElementById('in-name').value;
+            const u = document.getElementById('in-user').value;
+            document.getElementById('p-name').innerText = n;
+            document.getElementById('p-user').innerText = '@'+u;
+            document.getElementById('h-user').innerText = u;
+            localStorage.setItem('aura_n', n);
+            localStorage.setItem('aura_u', u);
+            closeEdit();
         }
 
-        function closeStoryViewer() { document.getElementById('story-viewer').style.display = 'none'; clearTimeout(storyTimer); }
-
-        async function openCam() {
-            try {
-                const s = await navigator.mediaDevices.getUserMedia({video:true});
-                document.getElementById('cam-overlay').style.top = '0';
-            } catch(e) { alert("Cámara no activa"); }
-        }
+        // Cámara básica
+        async function openCam() { alert("Cámara lista (simulada)"); }
     </script>
 </body>
 </html>
