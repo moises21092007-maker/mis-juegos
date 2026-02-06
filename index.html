@@ -2,214 +2,361 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Full & Restored</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Aura Premium | Professional Social App</title>
     <style>
         :root { 
-            --bg: #000; --panel: #1c1c1e; --border: #262626; 
-            --blue: #0095f6; --text-grey: #8e8e93;
-            --aura-grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); 
+            --bg: #000; --panel: #121212; --border: #262626; 
+            --blue: #0095f6; --text-grey: #a8a8a8;
+            --aura-grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
-        body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
-        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
-        .view.active { display: block; }
 
-        /* HEADER */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); background: black; }
-        .brand { font-size: 1.8rem; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        body { 
+            margin: 0; background: var(--bg); color: white; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica; 
+            overflow: hidden; user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- LAYOUT SISTEMA --- */
+        .app-container { height: 100vh; display: flex; flex-direction: column; }
+        .view { flex: 1; display: none; overflow-y: auto; overflow-x: hidden; position: relative; }
+        .view.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CABECERAS PROFESIONALES --- */
+        .glass-header {
+            sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px); border-bottom: 0.5px solid var(--border);
+        }
+        .logo { font-size: 1.6rem; font-weight: 800; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+
+        /* --- STORIES (SISTEMA DE ANILLO ACTIVO) --- */
+        .stories-container { display: flex; gap: 15px; padding: 15px; overflow-x: auto; scrollbar-width: none; }
+        .stories-container::-webkit-scrollbar { display: none; }
+        .story-node { flex-shrink: 0; width: 68px; text-align: center; }
+        .ring { 
+            width: 64px; height: 64px; border-radius: 50%; 
+            background: var(--aura-grad); padding: 2.5px; 
+            position: relative; transition: transform 0.2s;
+        }
+        .ring:active { transform: scale(0.92); }
+        .ring img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
+        .add-icon { 
+            position: absolute; bottom: 2px; right: 2px; 
+            background: var(--blue); border: 2px solid black; 
+            border-radius: 50%; width: 18px; height: 18px; 
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+        }
+
+        /* --- FEED (TARJETAS PROFESIONALES) --- */
+        .post { margin-bottom: 20px; }
+        .post-header { display: flex; align-items: center; padding: 10px; gap: 10px; }
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; }
+        .post-img { width: 100%; aspect-ratio: 1/1; background: #111; object-fit: cover; }
+        .post-actions { display: flex; gap: 18px; padding: 12px; font-size: 1.4rem; }
+        .post-likes { padding: 0 12px; font-weight: 600; font-size: 0.9rem; }
+
+        /* --- BUSCADOR TIPO EXPLORE --- */
+        .search-wrapper { padding: 10px 15px; position: sticky; top: 0; background: black; z-index: 10; }
+        .search-input-box { 
+            background: #262626; border-radius: 10px; padding: 8px 12px;
+            display: flex; align-items: center; gap: 10px; color: var(--text-grey);
+        }
+        .search-input-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
+        .grid-explore { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .grid-item { aspect-ratio: 1/1; background: #111; }
+
+        /* --- REELS (FULL SCREEN EXPERIENCE) --- */
+        #view-reels { snap-type: y mandatory; background: black; }
+        .reel-unit { 
+            height: 100vh; width: 100%; snap-align: start; 
+            position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 80px 20px; box-sizing: border-box;
+        }
+        .reel-overlay { position: absolute; bottom: 100px; left: 15px; z-index: 5; }
+        .reel-side { position: absolute; bottom: 120px; right: 15px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+
+        /* --- PERFIL PROFESIONAL --- */
+        .profile-hero { padding: 20px; }
+        .prof-top { display: flex; align-items: center; gap: 30px; margin-bottom: 20px; }
+        .prof-stats { display: flex; flex: 1; justify-content: space-around; }
+        .stat-v { text-align: center; }
+        .stat-v b { display: block; font-size: 1.1rem; }
+        .stat-v span { font-size: 0.8rem; color: var(--text-grey); }
+        .prof-bio { font-size: 0.9rem; line-height: 1.4; margin-bottom: 20px; }
+        .prof-btns { display: flex; gap: 8px; }
+        .p-btn { flex: 1; background: #262626; border: none; color: white; padding: 8px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; }
+
+        /* --- CÁMARA ENGINE (FILTROS Y PANEL) --- */
+        #cam-overlay { display: none; position: fixed; inset: 0; background: black; z-index: 9000; }
+        #camera-canvas { width: 100%; height: 100%; object-fit: cover; }
+        .cam-ui-top { position: absolute; top: 40px; width: 100%; display: flex; justify-content: space-between; padding: 0 25px; box-sizing: border-box; }
+        .cam-ui-bottom { position: absolute; bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 30px; }
         
-        /* STORIES */
-        .stories { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); }
-        .story-me { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); cursor: pointer; position: relative; }
-        .story-me img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
-
-        /* BUSCADOR */
-        .search-bar { background: #262626; border-radius: 10px; margin: 15px; padding: 12px; display: flex; gap: 10px; }
-        .search-bar input { background: transparent; border: none; color: white; flex: 1; outline: none; }
-        .res-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
-        .res-item img { width: 45px; height: 45px; border-radius: 50%; }
-
-        /* REELS */
-        #view-reels { snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
-        .reel { height: 100vh; width: 100%; snap-align: start; display: flex; align-items: center; justify-content: center; background: #080808; }
-
-        /* --- PERFIL RESTAURADO --- */
-        .profile-header { padding: 20px; text-align: center; }
-        .p-avatar { width: 90px; height: 90px; border-radius: 50%; padding: 3px; background: var(--aura-grad); margin: 0 auto 12px; }
-        .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
-        .p-stats-row { display: flex; justify-content: center; gap: 25px; margin: 20px 0; }
-        .stat-item { text-align: center; cursor: pointer; }
-        .stat-item b { display: block; font-size: 1.2rem; }
-        .stat-item span { font-size: 0.8rem; color: var(--text-grey); }
-        .edit-btn { background: var(--panel); border: none; color: white; padding: 10px 0; border-radius: 8px; font-weight: 600; width: 85%; cursor: pointer; }
-
-        /* CÁMARA Y FILTROS */
-        #cam-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 7000; }
-        #video-feed { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        #dog-mask { display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); font-size: 150px; z-index: 7005; pointer-events: none; }
-        .cam-btns { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: space-around; align-items: center; z-index: 7500; }
-        .shutter { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; cursor: pointer; }
+        #filter-drawer { 
+            position: absolute; bottom: -400px; width: 100%; background: rgba(18,18,18,0.95);
+            border-radius: 20px 20px 0 0; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 20px; box-sizing: border-box; z-index: 9500;
+        }
+        #filter-drawer.visible { transform: translateY(-400px); }
+        .drawer-handle { width: 40px; height: 4px; background: #444; border-radius: 2px; margin: 0 auto 15px; }
         
-        #filter-panel { position: absolute; bottom: -300px; width: 100%; height: 220px; background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); transition: bottom 0.4s ease; z-index: 8000; padding: 20px; box-sizing: border-box; }
-        #filter-panel.open { bottom: 0; }
-        .f-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 15px 5px; scrollbar-width: none; }
-        .f-box { min-width: 70px; text-align: center; font-size: 0.8rem; cursor: pointer; }
-        .f-circle { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; }
+        /* MÁSCARA PERRITO PROFESIONAL */
+        #dog-effect { 
+            display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); 
+            font-size: 160px; pointer-events: none; z-index: 9100; text-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
 
-        /* FILTROS CSS */
-        .f-neon { filter: hue-rotate(150deg) saturate(1.5); }
-        .f-retro { filter: sepia(0.5) contrast(1.2); }
-        .f-bw { filter: grayscale(1); }
+        /* FILTROS TÉCNICOS */
+        .filter-monochrome { filter: grayscale(1) contrast(1.2); }
+        .filter-vibrant { filter: saturate(1.8) contrast(1.1); }
+        .filter-sepia-gold { filter: sepia(0.4) brightness(1.1) contrast(1.1); }
 
-        /* NAV */
-        nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.6rem; opacity: 0.4; color: white; cursor: pointer; }
-        .nav-icon.active { opacity: 1; }
+        /* --- NAVEGACIÓN (TAB BAR) --- */
+        nav { 
+            position: fixed; bottom: 0; width: 100%; height: 60px;
+            background: black; border-top: 0.5px solid var(--border);
+            display: flex; justify-content: space-around; align-items: center;
+            padding-bottom: var(--safe-bottom); z-index: 1000;
+        }
+        .nav-btn { font-size: 1.5rem; color: white; opacity: 0.5; transition: 0.2s; cursor: pointer; }
+        .nav-btn.active { opacity: 1; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <div id="view-home" class="view active">
-        <div class="header"><div class="brand">Aura</div></div>
-        <div class="stories">
-            <div class="story-me js-open-cam">
-                <img src="https://i.pravatar.cc/150?u=user1">
-            </div>
-        </div>
-        <div style="text-align:center; padding:50px; color:var(--text-grey);">No hay publicaciones nuevas.</div>
-    </div>
-
-    <div id="view-search" class="view">
-        <div class="search-bar">🔍 <input type="text" id="js-search-input" placeholder="Buscar perfil..."></div>
-        <div id="js-results"></div>
-    </div>
-
-    <div id="view-reels" class="view">
-        <div class="reel"><p style="color:#222;">Reel 1</p></div>
-        <div class="reel"><p style="color:#222;">Reel 2</p></div>
-    </div>
-
-    <div id="view-profile" class="view">
-        <div class="profile-header">
-            <div style="font-weight: bold; margin-bottom: 15px;">user-1</div>
-            <div class="p-avatar">
-                <img src="https://i.pravatar.cc/150?u=user1">
-            </div>
-            <div style="font-weight: bold; font-size: 1.1rem;">@user-1</div>
-            
-            <div class="p-stats-row">
-                <div class="stat-item"><b>0</b><span>Posts</span></div>
-                <div class="stat-item"><b>0</b><span>Seguidores</span></div>
-                <div class="stat-item"><b>0</b><span>Siguiendo</span></div>
-            </div>
-            
-            <button class="edit-btn">Editar perfil</button>
-        </div>
-    </div>
-
-    <div id="cam-layer">
-        <video id="video-feed" autoplay playsinline></video>
-        <div id="dog-mask">🐶</div>
-        <div id="js-close-cam" style="position:absolute; top:25px; left:25px; font-size:2rem; cursor:pointer;">✕</div>
+    <div class="app-container">
         
-        <div class="cam-btns">
-            <button id="js-btn-filters" style="background:none; border:none; color:white; font-size:2.2rem; cursor:pointer;">✨</button>
-            <div class="shutter" id="js-take-photo"></div>
-            <button id="js-btn-exit" style="background:none; border:none; color:white; font-size:2.2rem; cursor:pointer;">🔄</button>
+        <section id="home" class="view active">
+            <header class="glass-header">
+                <div class="logo">Aura</div>
+                <div style="display:flex; gap:20px; font-size:1.3rem;"><span>➕</span><span>❤️</span><span>💬</span></div>
+            </header>
+            
+            <div class="stories-container">
+                <div class="story-node" id="trigger-cam-story">
+                    <div class="ring"><img src="https://i.pravatar.cc/150?u=user1"><div class="add-icon">+</div></div>
+                    <small style="font-size: 0.7rem; color: var(--text-grey);">Tu historia</small>
+                </div>
+            </div>
+
+            <article class="post">
+                <div class="post-header"><img src="https://i.pravatar.cc/150?u=2"> <b>RealFriend_2026</b></div>
+                <div class="post-img" style="background-image:url('https://picsum.photos/600/600'); background-size:cover;"></div>
+                <div class="post-actions"><span>❤️</span><span>💬</span><span>✈️</span></div>
+                <div class="post-likes">1.240 Me gusta</div>
+            </article>
+        </section>
+
+        <section id="explore" class="view">
+            <div class="search-wrapper">
+                <div class="search-input-box">🔍 <input type="text" id="global-search" placeholder="Buscar perfiles o etiquetas..."></div>
+            </div>
+            <div id="search-feedback" style="padding:0 20px;"></div>
+            <div class="grid-explore">
+                <div class="grid-item" style="background:url('https://picsum.photos/200/200?1')"></div>
+                <div class="grid-item" style="background:url('https://picsum.photos/200/200?2')"></div>
+                <div class="grid-item" style="background:url('https://picsum.photos/200/200?3')"></div>
+                <div class="grid-item" style="background:url('https://picsum.photos/200/200?4')"></div>
+                <div class="grid-item" style="background:url('https://picsum.photos/200/200?5')"></div>
+                <div class="grid-item" style="background:url('https://picsum.photos/200/200?6')"></div>
+            </div>
+        </section>
+
+        <section id="reels" class="view">
+            <div class="reel-unit" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/400/800?r1'); background-size: cover;">
+                <div class="reel-overlay"><b>@aura_creator</b><br><small>Disfrutando del 2026 ✨ #vibe</small></div>
+                <div class="reel-side"><span>❤️<br><small>12k</small></span><span>💬<br><small>400</small></span><span>✈️</span></div>
+            </div>
+        </section>
+
+        <section id="profile" class="view">
+            <header class="glass-header">
+                <b>user-1</b>
+                <span>☰</span>
+            </header>
+            <div class="profile-hero">
+                <div class="prof-top">
+                    <div class="ring" style="width:80px; height:80px;"><img src="https://i.pravatar.cc/150?u=user1"></div>
+                    <div class="prof-stats">
+                        <div class="stat-v"><b>0</b><span>Posts</span></div>
+                        <div class="stat-v"><b>850</b><span>Seguidores</span></div>
+                        <div class="stat-v"><b>420</b><span>Siguiendo</span></div>
+                    </div>
+                </div>
+                <div class="prof-bio">
+                    <b>@user-1</b><br>
+                    Digital Architect & Creator ⚡️<br>
+                    <span style="color:var(--blue)">linktr.ee/user1_aura</span>
+                </div>
+                <div class="prof-btns">
+                    <button class="p-btn">Editar perfil</button>
+                    <button class="p-btn">Compartir perfil</button>
+                </div>
+            </div>
+        </section>
+
+        <nav>
+            <div class="nav-btn active" data-target="home">🏠</div>
+            <div class="nav-btn" data-target="explore">🔍</div>
+            <div class="nav-btn" id="master-add" style="font-size:2rem; opacity:1;">➕</div>
+            <div class="nav-btn" data-target="reels">🎬</div>
+            <div class="nav-btn" data-target="profile">👤</div>
+        </nav>
+    </div>
+
+    <div id="cam-overlay">
+        <video id="camera-canvas" autoplay playsinline></video>
+        <div id="dog-effect">🐶</div>
+        
+        <div class="cam-ui-top">
+            <span id="close-cam-btn" style="font-size:1.5rem;">✕</span>
+            <span style="font-size:1.5rem;">⚙️</span>
         </div>
 
-        <div id="filter-panel">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <b>FILTROS</b>
-                <span id="js-close-panel" style="cursor:pointer; padding:5px;">Cerrar ✕</span>
+        <div class="cam-ui-bottom">
+            <div id="open-filters-panel" style="background:rgba(0,0,0,0.5); padding:10px 20px; border-radius:20px; font-size:0.9rem; border:1px solid #444;">✨ Filtros</div>
+            <div style="width:80px; height:80px; border:6px solid white; border-radius:50%; box-shadow:0 0 15px rgba(0,0,0,0.5);" id="capture-trigger"></div>
+            <div style="color:white; font-size:0.8rem; letter-spacing:2px;">HISTORIA</div>
+        </div>
+
+        <div id="filter-drawer">
+            <div class="drawer-handle"></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <b style="font-size:0.9rem;">BIBLIOTECA DE FILTROS</b>
+                <span id="close-drawer" style="color:var(--blue); font-weight:600; font-size:0.8rem;">HECHO</span>
             </div>
-            <div class="f-scroll">
-                <div class="f-box active" data-f="0"><div class="f-circle">🚫</div>Normal</div>
-                <div class="f-box" data-f="1"><div class="f-circle">🐶</div>Perrito</div>
-                <div class="f-box" data-f="2"><div class="f-circle" style="background:cyan;"></div>Neon</div>
-                <div class="f-box" data-f="3"><div class="f-circle" style="background:sepia;"></div>Retro</div>
-                <div class="f-box" data-f="4"><div class="f-circle" style="background:#444;"></div>B&N</div>
+            <div class="f-scroll" style="display:flex; gap:15px; overflow-x:auto; padding-bottom:10px;">
+                <div class="f-box-pro active" data-f="0">
+                    <div style="width:60px; height:60px; border-radius:15px; background:#333; margin-bottom:5px; border:2px solid var(--blue); display:flex; align-items:center; justify-content:center;">🚫</div>
+                    <small>Original</small>
+                </div>
+                <div class="f-box-pro" data-f="1">
+                    <div style="width:60px; height:60px; border-radius:15px; background:#333; margin-bottom:5px; border:2px solid transparent; display:flex; align-items:center; justify-content:center; font-size:2rem;">🐶</div>
+                    <small>Perrito</small>
+                </div>
+                <div class="f-box-pro" data-f="2">
+                    <div style="width:60px; height:60px; border-radius:15px; background:linear-gradient(135deg, #00f2fe, #4facfe); margin-bottom:5px; border:2px solid transparent;"></div>
+                    <small>Vibrante</small>
+                </div>
+                <div class="f-box-pro" data-f="3">
+                    <div style="width:60px; height:60px; border-radius:15px; background:#555; filter:grayscale(1); margin-bottom:5px; border:2px solid transparent;"></div>
+                    <small>B&N</small>
+                </div>
+                <div class="f-box-pro" data-f="4">
+                    <div style="width:60px; height:60px; border-radius:15px; background:sepia(1); margin-bottom:5px; border:2px solid transparent;"></div>
+                    <small>Sepia</small>
+                </div>
             </div>
         </div>
     </div>
-
-    <nav>
-        <div class="nav-icon active" data-target="view-home">🏠</div>
-        <div class="nav-icon" data-target="view-search">🔍</div>
-        <div class="nav-icon js-open-cam" style="color:white; font-size:2.2rem;">+</div>
-        <div class="nav-icon" data-target="view-reels">🎬</div>
-        <div class="nav-icon" data-target="view-profile">👤</div>
-    </nav>
 
     <script>
-        // Datos
-        const users = [{u:"user-1", i:"https://i.pravatar.cc/150?u=user1"}];
-        const fConfig = [{c:'',d:false},{c:'',d:true},{c:'f-neon',d:false},{c:'f-retro',d:false},{c:'f-bw',d:false}];
+        // --- GESTIÓN DE ESTADO ---
+        const State = {
+            currentView: 'home',
+            filters: [
+                { class: '', dog: false },
+                { class: '', dog: true },
+                { class: 'filter-vibrant', dog: false },
+                { class: 'filter-monochrome', dog: false },
+                { class: 'filter-sepia-gold', dog: false }
+            ],
+            stream: null
+        };
 
-        // Selectores
-        const navIcons = document.querySelectorAll('.nav-icon[data-target]');
-        const views = document.querySelectorAll('.view');
-        const video = document.getElementById('video-feed');
-        const camView = document.getElementById('cam-layer');
-
-        // Navegación
-        navIcons.forEach(icon => {
-            icon.addEventListener('click', () => {
-                const target = icon.getAttribute('data-target');
-                views.forEach(v => v.classList.remove('active'));
-                navIcons.forEach(n => n.classList.remove('active'));
+        // --- NAVEGACIÓN ---
+        document.querySelectorAll('.nav-btn[data-target]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.target;
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                
                 document.getElementById(target).classList.add('active');
-                icon.classList.add('active');
+                btn.classList.add('active');
+                State.currentView = target;
             });
         });
 
-        // Cámara
-        const startCam = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({video: true});
-                video.srcObject = stream;
-                camView.style.display = 'block';
-            } catch(e) { alert("Sin cámara"); }
+        // --- MOTOR DE CÁMARA ---
+        const toggleCamera = async (show) => {
+            const overlay = document.getElementById('cam-overlay');
+            const video = document.getElementById('camera-canvas');
+
+            if (show) {
+                try {
+                    State.stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: "user" }, 
+                        audio: false 
+                    });
+                    video.srcObject = State.stream;
+                    overlay.style.display = 'block';
+                } catch (err) {
+                    alert("Error: No se pudo acceder a la cámara.");
+                }
+            } else {
+                if (State.stream) {
+                    State.stream.getTracks().forEach(t => t.stop());
+                }
+                overlay.style.display = 'none';
+                document.getElementById('filter-drawer').classList.remove('visible');
+            }
         };
 
-        const stopCam = () => {
-            const stream = video.srcObject;
-            if(stream) stream.getTracks().forEach(t => t.stop());
-            camView.style.display = 'none';
-        };
-
-        document.querySelectorAll('.js-open-cam').forEach(el => el.addEventListener('click', startCam));
-        document.getElementById('js-close-cam').addEventListener('click', stopCam);
-        document.getElementById('js-btn-exit').addEventListener('click', stopCam);
-        document.getElementById('js-take-photo').addEventListener('click', () => alert("¡Click!"));
-
-        // Filtros
-        document.getElementById('js-btn-filters').addEventListener('click', () => {
-            document.getElementById('filter-panel').classList.add('open');
+        // Eventos Cámara
+        document.getElementById('master-add').addEventListener('click', () => toggleCamera(true));
+        document.getElementById('trigger-cam-story').addEventListener('click', () => toggleCamera(true));
+        document.getElementById('close-cam-btn').addEventListener('click', () => toggleCamera(false));
+        document.getElementById('open-filters-panel').addEventListener('click', () => {
+            document.getElementById('filter-drawer').classList.add('visible');
+        });
+        document.getElementById('close-drawer').addEventListener('click', () => {
+            document.getElementById('filter-drawer').classList.remove('visible');
         });
 
-        document.getElementById('js-close-panel').addEventListener('click', () => {
-            document.getElementById('filter-panel').classList.remove('open');
-        });
-
-        document.querySelectorAll('.f-box').forEach(box => {
+        // --- GESTIÓN DE FILTROS ---
+        document.querySelectorAll('.f-box-pro').forEach((box, index) => {
             box.addEventListener('click', () => {
-                const idx = box.getAttribute('data-f');
-                document.querySelectorAll('.f-box').forEach(b => b.classList.remove('active'));
-                box.classList.add('active');
-                video.className = fConfig[idx].c;
-                document.getElementById('dog-mask').style.display = fConfig[idx].d ? 'block' : 'none';
+                // UI
+                document.querySelectorAll('.f-box-pro').forEach(b => b.style.borderColor = 'transparent');
+                box.style.borderColor = 'var(--blue)';
+                
+                // Lógica
+                const filter = State.filters[index];
+                const video = document.getElementById('camera-canvas');
+                const dog = document.getElementById('dog-effect');
+                
+                video.className = filter.class;
+                dog.style.display = filter.dog ? 'block' : 'none';
             });
         });
 
-        // Buscador
-        document.getElementById('js-search-input').addEventListener('input', (e) => {
+        // --- BUSCADOR REAL-TIME ---
+        document.getElementById('global-search').addEventListener('input', (e) => {
             const q = e.target.value.toLowerCase();
-            const res = document.getElementById('js-results');
-            res.innerHTML = '';
-            if(q) users.filter(x => x.u.includes(q)).forEach(u => {
-                res.innerHTML += `<div class="res-item"><img src="${u.i}"><b>${u.u}</b></div>`;
-            });
+            const feedback = document.getElementById('search-feedback');
+            if (q === 'user-1' || q === '@user-1') {
+                feedback.innerHTML = `<div style="display:flex; align-items:center; gap:10px; padding:15px 0;">
+                    <img src="https://i.pravatar.cc/150?u=user1" style="width:40px; border-radius:50%;">
+                    <div><b>user-1</b><br><small style="color:grey">Tu Perfil</small></div>
+                </div>`;
+            } else {
+                feedback.innerHTML = q ? `<p style="color:grey; font-size:0.8rem;">Buscando "${q}"...</p>` : '';
+            }
+        });
+
+        // Captura Simulada
+        document.getElementById('capture-trigger').addEventListener('click', () => {
+            const shutter = document.getElementById('capture-trigger');
+            shutter.style.background = 'white';
+            setTimeout(() => {
+                shutter.style.background = 'transparent';
+                alert("Foto guardada en Galería Aura");
+                toggleCamera(false);
+            }, 100);
         });
     </script>
 </body>
