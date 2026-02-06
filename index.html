@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Pro Edition</title>
+    <title>Aura | Ultra Edition 2026</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
         :root { --bg: #000; --accent: #00ffd5; --glass: rgba(10,10,10,0.96); }
@@ -20,30 +20,32 @@
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- PERFIL --- */
-        .p-avatar { width: 90px; height: 90px; border-radius: 30px; background: #111; border: 2px solid var(--accent); overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .p-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-p { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #222; background: #0a0a0a; color: white; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
-
-        /* --- FEED --- */
+        /* --- FEED FOTOS --- */
         .aura-logo { font-family: 'Orbitron'; font-size: 2rem; letter-spacing: 8px; text-align: center; padding: 40px 0 10px; }
         .post-card { width: 100%; border-bottom: 1px solid #111; padding-bottom: 15px; }
         .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
         .post-img { width: 100%; aspect-ratio: 1/1; background: #050505; object-fit: cover; }
-        .post-actions { padding: 12px 15px; display: flex; gap: 20px; font-size: 1.5rem; }
-        .like-btn.active { color: #ff0055; }
+        
+        /* --- VIDEO ZONE (VERTICAL) --- */
+        .video-feed { height: 100vh; scroll-snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
+        .video-item { height: 100vh; scroll-snap-align: start; position: relative; background: #000; display: flex; align-items: center; }
+        .v-player { width: 100%; height: 100%; object-fit: cover; }
+        .v-ui { position: absolute; bottom: 140px; left: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+        /* --- BUSCADOR EXPLORAR --- */
+        .grid-explore { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
+        .grid-item { aspect-ratio: 1/1; background: #111; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #222; }
+
+        /* --- NAV --- */
+        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
+        .n-btn.active { opacity: 1; color: var(--accent); }
+        .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); }
 
         /* --- MODALES --- */
         .modal { display: none; position: fixed; inset: 0; background: #000; z-index: 9000; padding: 30px; }
         #comment-sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 60vh; background: var(--glass); border-top: 1px solid #222; border-radius: 30px 30px 0 0; z-index: 9500; transition: 0.4s; padding: 20px; }
         #comment-sheet.active { bottom: 0; }
-
-        /* --- NAV --- */
-        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; }
-        .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); }
     </style>
 </head>
 <body>
@@ -59,73 +61,70 @@
     <div id="main-app">
         <div id="view-home" class="view active">
             <div class="aura-logo">AURA</div>
-            <div id="feed"></div>
+            <div id="feed-photos"></div>
+        </div>
+
+        <div id="view-search" class="view">
+            <div style="padding:50px 20px 20px;">
+                <div style="background:#111; padding:15px; border-radius:15px; margin-bottom:20px;">🔍 Buscar en Aura...</div>
+                <div class="grid-explore" id="explore-grid">
+                    <div class="grid-item">AURA</div><div class="grid-item">EXPLORE</div><div class="grid-item">2026</div>
+                    <div class="grid-item"></div><div class="grid-item"></div><div class="grid-item"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-video" class="view" style="padding-bottom:0; overflow:hidden;">
+            <div id="feed-videos" class="video-feed">
+                <div class="video-item"><div class="v-ui"><b>@aura_oficial</b><p>Sube tu primer vídeo...</p></div></div>
+            </div>
         </div>
 
         <div id="view-profile" class="view">
             <div style="padding:40px 20px;">
                 <div style="display:flex; align-items:center; gap:20px;">
-                    <div class="p-avatar">
-                        <img class="u-img" src="" style="display:none;">
+                    <div style="width:80px; height:80px; border-radius:25px; background:#111; overflow:hidden; border:2px solid var(--accent);">
+                        <img class="u-img" src="" style="display:none; width:100%; height:100%; object-fit:cover;">
                         <span class="u-init" style="font-size:2rem; font-family:'Orbitron';">?</span>
                     </div>
                     <div>
                         <h2 class="u-name" style="font-family:'Orbitron'; margin:0;">Usuario</h2>
-                        <p id="u-bio" style="color:#666; font-size:0.8rem; margin:5px 0;">Mi bio...</p>
+                        <div style="font-size:0.7rem; color:#444; margin-top:5px;">0 Seguidores | 0 Siguiendo</div>
                     </div>
                 </div>
-                <div class="profile-btns">
-                    <button class="btn-p" onclick="document.getElementById('edit-modal').style.display='block'">Editar Perfil</button>
-                    <button class="btn-p" onclick="shareProfile()">Compartir</button>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button class="btn-main" style="flex:1; padding:12px; font-size:0.8rem; background:#111; color:white; border:1px solid #222;" onclick="document.getElementById('edit-modal').style.display='block'">Editar Perfil</button>
+                    <button class="btn-main" style="flex:1; padding:12px; font-size:0.8rem; background:#111; color:white; border:1px solid #222;" onclick="alert('Enlace copiado')">Compartir</button>
                 </div>
-                <button onclick="logout()" style="margin-top:30px; background:none; border:none; color:#222; font-size:0.7rem;">CERRAR SESIÓN</button>
             </div>
         </div>
 
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
-            <div class="n-btn" onclick="go('home', this)">🔍</div>
-            <div class="n-add" onclick="document.getElementById('post-file').click()">+</div>
-            <div class="n-btn" onclick="go('home', this)">🎬</div>
+            <div class="n-btn" onclick="go('search', this)">🔍</div>
+            <div class="n-add" onclick="showUploadOptions()">+</div>
+            <div class="n-btn" onclick="go('video', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
-        <input type="file" id="post-file" hidden accept="image/*" onchange="publish(this)">
+        <input type="file" id="file-photo" hidden accept="image/*" onchange="publishContent(this, 'photo')">
+        <input type="file" id="file-video" hidden accept="video/*" onchange="publishContent(this, 'video')">
     </div>
 
     <div id="edit-modal" class="modal">
-        <h2 style="font-family:'Orbitron';">EDITAR PERFIL</h2>
-        <div style="width:80px; height:80px; background:#111; border-radius:20px; margin:20px auto; overflow:hidden;" onclick="document.getElementById('avatar-file').click()">
-            <img class="u-img" src="" style="display:none; width:100%; height:100%; object-fit:cover;">
-            <div style="text-align:center; padding-top:30px; font-size:10px;">FOTO</div>
-        </div>
-        <input type="file" id="avatar-file" hidden accept="image/*" onchange="updateAvatar(this)">
-        <input type="text" id="in-name" class="auth-input" placeholder="Nombre">
-        <textarea id="in-bio" class="auth-input" style="height:80px;" placeholder="Biografía"></textarea>
-        <button class="btn-main" onclick="saveProfile()" style="background:#fff; color:#000;">GUARDAR</button>
-        <button onclick="document.getElementById('edit-modal').style.display='none'" style="width:100%; margin-top:15px; background:none; border:none; color:#444;">CANCELAR</button>
-    </div>
-
-    <div id="comment-sheet">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <b>COMENTARIOS</b>
-            <span onclick="document.getElementById('comment-sheet').classList.remove('active')">✕</span>
-        </div>
-        <div id="comment-list" style="height:70%; overflow-y:auto;"></div>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="in-comment" class="auth-input" style="margin:0; flex:1;" placeholder="Escribe...">
-            <button onclick="sendComment()" style="background:var(--accent); border:none; border-radius:15px; padding:0 15px;">↑</button>
-        </div>
+        <h2 style="font-family:'Orbitron';">EDITAR</h2>
+        <input type="text" id="in-name" class="auth-input" placeholder="Nuevo Nombre">
+        <button class="btn-main" onclick="saveProfile()">GUARDAR</button>
+        <button onclick="document.getElementById('edit-modal').style.display='none'" style="width:100%; background:none; border:none; color:#444; margin-top:15px;">Cerrar</button>
     </div>
 
     <script>
-        let user = { email: "", name: "Usuario", bio: "Bio...", photo: "", posts: [] };
-        let activeIdx = null;
+        let user = { email: "", name: "Usuario", photo: "", posts: [], videos: [] };
 
         function handleAuth() {
             const em = document.getElementById('acc-email').value;
             if(!em.includes('@')) return;
             user.email = em;
-            const saved = localStorage.getItem('aura_p_'+em);
+            const saved = localStorage.getItem('aura_ultra_'+em);
             if(saved) user = JSON.parse(saved);
             else user.name = em.split('@')[0];
             localStorage.setItem('aura_session', em);
@@ -134,101 +133,80 @@
             render();
         }
 
-        function updateAvatar(input) {
-            if (input.files && input.files[0]) {
-                const r = new FileReader();
-                r.onload = e => { user.photo = e.target.result; render(); };
-                r.readAsDataURL(input.files[0]);
-            }
+        function showUploadOptions() {
+            const opt = confirm("¿Quieres subir un VÍDEO? (Pulsa CANCELAR para subir FOTO)");
+            if(opt) document.getElementById('file-video').click();
+            else document.getElementById('file-photo').click();
         }
 
-        function saveProfile() {
-            user.name = document.getElementById('in-name').value;
-            user.bio = document.getElementById('in-bio').value;
-            save(); render();
-            document.getElementById('edit-modal').style.display='none';
-        }
-
-        function publish(input) {
+        function publishContent(input, type) {
             if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = e => {
-                    user.posts.unshift({ img: e.target.result, likes: 0, liked: false, comments: [] });
+                    const item = { src: e.target.result, likes: 0, liked: false };
+                    if(type === 'photo') {
+                        user.posts.unshift(item);
+                        go('home');
+                    } else {
+                        user.videos.unshift(item);
+                        go('video');
+                    }
                     save(); render();
                 };
                 r.readAsDataURL(input.files[0]);
             }
         }
 
-        function toggleLike(i) {
-            const p = user.posts[i];
-            p.liked ? (p.likes--, p.liked=false) : (p.likes++, p.liked=true);
-            save(); render();
-        }
-
-        function openComments(i) {
-            activeIdx = i;
-            document.getElementById('comment-list').innerHTML = user.posts[i].comments.map(c => `<div style="margin-bottom:10px; font-size:0.9rem;"><b>${c.u}:</b> ${c.t}</div>`).join('');
-            document.getElementById('comment-sheet').classList.add('active');
-        }
-
-        function sendComment() {
-            const t = document.getElementById('in-comment').value;
-            if(!t) return;
-            user.posts[activeIdx].comments.push({ u: user.name, t: t });
-            document.getElementById('in-comment').value = "";
-            save(); openComments(activeIdx);
-        }
-
-        function shareProfile() {
-            if (navigator.share) {
-                navigator.share({ title: 'Aura', text: 'Mira mi perfil', url: window.location.href });
-            } else {
-                alert("Enlace copiado al portapapeles");
-            }
-        }
-
-        function save() { localStorage.setItem('aura_p_'+user.email, JSON.stringify(user)); }
-
-        function render() {
-            document.querySelectorAll('.u-name').forEach(el => el.innerText = user.name);
-            document.getElementById('u-bio').innerText = user.bio;
-            document.getElementById('in-name').value = user.name;
-            document.getElementById('in-bio').value = user.bio;
-            const init = user.name[0].toUpperCase();
-            document.querySelectorAll('.u-init').forEach(el => { el.innerText = init; el.style.display = user.photo ? 'none' : 'block'; });
-            document.querySelectorAll('.u-img').forEach(el => { if(user.photo) { el.src = user.photo; el.style.display = 'block'; } });
-
-            document.getElementById('feed').innerHTML = user.posts.map((p, i) => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div style="width:30px; height:30px; border-radius:8px; background:#222; overflow:hidden;">
-                            ${user.photo ? `<img src="${user.photo}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="display:flex; justify-content:center; align-items:center; height:100%; font-size:0.7rem;">${init}</span>`}
-                        </div>
-                        <b>${user.name}</b>
-                    </div>
-                    <img src="${p.img}" class="post-img" ondblclick="toggleLike(${i})">
-                    <div class="post-actions">
-                        <span class="like-btn ${p.liked?'active':''}" onclick="toggleLike(${i})">${p.liked?'❤️':'🤍'}</span>
-                        <span onclick="openComments(${i})">💬</span>
-                    </div>
-                    <div style="padding:0 15px; font-size:0.8rem; font-weight:800;">${p.likes} likes</div>
-                </div>
-            `).join('');
-        }
-
         function go(v, btn) {
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
             document.getElementById('view-'+v).classList.add('active');
-            btn.classList.add('active');
+            if(btn) btn.classList.add('active');
+            else { // Si se llama desde publishContent
+                document.querySelectorAll('.n-btn').forEach(b => {
+                    if((v=='home' && b.innerText=='🏠') || (v=='video' && b.innerText=='🎬')) b.classList.add('active');
+                });
+            }
         }
 
-        function logout() { localStorage.clear(); location.reload(); }
+        function render() {
+            document.querySelectorAll('.u-name').forEach(el => el.innerText = user.name);
+            const init = user.name[0].toUpperCase();
+            document.querySelectorAll('.u-init').forEach(el => el.innerText = init);
+
+            // Render Fotos
+            const fPhotos = document.getElementById('feed-photos');
+            fPhotos.innerHTML = user.posts.map((p, i) => `
+                <div class="post-card">
+                    <div class="post-header"><b>${user.name}</b></div>
+                    <img src="${p.src}" class="post-img">
+                    <div style="padding:10px 15px;">❤️ ${p.likes} likes</div>
+                </div>
+            `).join('');
+
+            // Render Vídeos
+            const fVideos = document.getElementById('feed-videos');
+            if(user.videos.length > 0) {
+                fVideos.innerHTML = user.videos.map(v => `
+                    <div class="video-item">
+                        <video src="${v.src}" class="v-player" autoplay loop muted playsinline></video>
+                        <div class="v-ui"><b>@${user.name}</b><p>Nuevo vídeo en Aura</p></div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function saveProfile() {
+            user.name = document.getElementById('in-name').value;
+            save(); render();
+            document.getElementById('edit-modal').style.display='none';
+        }
+
+        function save() { localStorage.setItem('aura_ultra_'+user.email, JSON.stringify(user)); }
 
         window.onload = () => {
             const s = localStorage.getItem('aura_session');
-            if(s) { user.email = s; const d = localStorage.getItem('aura_p_'+s); if(d) user = JSON.parse(d); document.getElementById('auth-overlay').style.display='none'; document.getElementById('main-app').style.display='block'; render(); }
+            if(s) { user.email = s; const d = localStorage.getItem('aura_ultra_'+s); if(d) user = JSON.parse(d); document.getElementById('auth-overlay').style.display='none'; document.getElementById('main-app').style.display='block'; render(); }
         }
     </script>
 </body>
