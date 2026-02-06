@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Juego Completo</title>
+    <title>Aura | JS Professional Edition</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -13,39 +13,41 @@
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- 1. INICIO (FOTOS) --- */
+        /* HEADER Y STORIES */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); background: black; }
-        .brand { font-size: 1.8rem; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .brand { font-size: 1.8rem; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; cursor: default; }
         .stories { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); }
-        .story-me { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
+        .story-me { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); cursor: pointer; }
         .story-me img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
 
-        /* --- 2. BUSCADOR --- */
+        /* BUSCADOR */
         .search-bar { background: #262626; border-radius: 10px; margin: 15px; padding: 12px; display: flex; gap: 10px; }
         .search-bar input { background: transparent; border: none; color: white; flex: 1; outline: none; }
         .res-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
         .res-item img { width: 45px; height: 45px; border-radius: 50%; }
 
-        /* --- 3. REELS (VÍDEOS) --- */
+        /* REELS */
         #view-reels { snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
         .reel { height: 100vh; width: 100%; snap-align: start; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #111; }
 
-        /* --- CÁMARA PRO CON PANEL --- */
+        /* CÁMARA */
         #cam-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 7000; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         #dog-mask { display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); font-size: 150px; z-index: 7005; pointer-events: none; }
         
         .cam-btns { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: space-around; align-items: center; z-index: 7500; }
-        .shutter { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; }
+        .shutter { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; cursor: pointer; }
+        .btn-icon { background: none; border: none; color: white; font-size: 2.2rem; cursor: pointer; }
 
+        /* PANEL FILTROS */
         #filter-panel { 
             position: absolute; bottom: -300px; width: 100%; height: 220px; 
             background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); 
-            transition: bottom 0.4s ease; z-index: 8000; padding: 20px; 
+            transition: bottom 0.4s ease; z-index: 8000; padding: 20px; box-sizing: border-box;
         }
         #filter-panel.open { bottom: 0; }
-        .f-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 15px 5px; }
-        .f-box { min-width: 70px; text-align: center; font-size: 0.8rem; }
+        .f-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 15px 5px; scrollbar-width: none; }
+        .f-box { min-width: 70px; text-align: center; font-size: 0.8rem; cursor: pointer; }
         .f-circle { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; background: #222; }
         .f-box.active .f-circle { border-color: var(--blue); background: var(--blue); }
 
@@ -65,7 +67,7 @@
     <div id="view-home" class="view active">
         <div class="header"><div class="brand">Aura</div></div>
         <div class="stories">
-            <div class="story-me" onclick="startCam()">
+            <div id="open-cam-story" class="story-me">
                 <img src="https://i.pravatar.cc/150?u=user1">
             </div>
         </div>
@@ -73,8 +75,8 @@
     </div>
 
     <div id="view-search" class="view">
-        <div class="search-bar">🔍 <input type="text" id="si" placeholder="Buscar perfil..." oninput="search()"></div>
-        <div id="rs"></div>
+        <div class="search-bar">🔍 <input type="text" id="search-input" placeholder="Buscar perfil..."></div>
+        <div id="search-results"></div>
     </div>
 
     <div id="view-reels" class="view">
@@ -92,82 +94,124 @@
     <div id="cam-layer">
         <video id="video-feed" autoplay playsinline></video>
         <div id="dog-mask">🐶</div>
-        <div style="position:absolute; top:25px; left:25px; font-size:2rem;" onclick="stopCam()">✕</div>
+        <div id="close-cam" style="position:absolute; top:25px; left:25px; font-size:2rem; cursor:pointer;">✕</div>
         
         <div class="cam-btns">
-            <button onclick="toggleF()" style="background:none; border:none; color:white; font-size:2.2rem;">✨</button>
-            <div class="shutter" onclick="alert('¡Foto!')"></div>
-            <button onclick="stopCam()" style="background:none; border:none; color:white; font-size:2.2rem;">🔄</button>
+            <button id="btn-toggle-filters" class="btn-icon">✨</button>
+            <div id="shutter-action" class="shutter"></div>
+            <button id="btn-switch-cam" class="btn-icon">🔄</button>
         </div>
 
         <div id="filter-panel">
             <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
                 <b>FILTROS</b>
-                <span onclick="toggleF()">Cerrar ✕</span>
+                <span id="close-filter-panel" style="cursor:pointer;">Cerrar ✕</span>
             </div>
             <div class="f-scroll">
-                <div class="f-box active" onclick="apply(0, this)"><div class="f-circle">🚫</div>Normal</div>
-                <div class="f-box" onclick="apply(1, this)"><div class="f-circle">🐶</div>Perrito</div>
-                <div class="f-box" onclick="apply(2, this)"><div class="f-circle" style="background:cyan;"></div>Neon</div>
-                <div class="f-box" onclick="apply(3, this)"><div class="f-circle" style="background:sepia;"></div>Retro</div>
-                <div class="f-box" onclick="apply(4, this)"><div class="f-circle" style="background:#555;"></div>B&N</div>
+                <div class="f-box active" data-index="0"><div class="f-circle">🚫</div>Normal</div>
+                <div class="f-box" data-index="1"><div class="f-circle">🐶</div>Perrito</div>
+                <div class="f-box" data-index="2"><div class="f-circle" style="background:cyan;"></div>Neon</div>
+                <div class="f-box" data-index="3"><div class="f-circle" style="background:sepia;"></div>Retro</div>
+                <div class="f-box" data-index="4"><div class="f-circle" style="background:#555;"></div>B&N</div>
             </div>
         </div>
     </div>
 
-    <nav>
-        <div class="nav-icon active" onclick="tab('view-home', this)">🏠</div>
-        <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
-        <div class="nav-icon" style="color:white; font-size:2.2rem;" onclick="startCam()">+</div>
-        <div class="nav-icon" onclick="tab('view-reels', this)">🎬</div>
-        <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
+    <nav id="main-nav">
+        <div class="nav-icon active" data-view="view-home">🏠</div>
+        <div class="nav-icon" data-view="view-search">🔍</div>
+        <div class="nav-icon" id="nav-add" style="color:white; font-size:2.2rem;">+</div>
+        <div class="nav-icon" data-view="view-reels">🎬</div>
+        <div class="nav-icon" data-view="view-profile">👤</div>
     </nav>
 
     <script>
-        const udb = [{u:"user-1", i:"https://i.pravatar.cc/150?u=user1"}];
-        const fdb = [{c:'',d:false},{c:'',d:true},{c:'f-neon',d:false},{c:'f-retro',d:false},{c:'f-bw',d:false}];
+        // --- BASE DE DATOS Y ESTADOS ---
+        const users = [{u:"user-1", i:"https://i.pravatar.cc/150?u=user1"}];
+        const filters = [
+            {c:'', d:false}, {c:'', d:true}, {c:'f-neon', d:false}, 
+            {c:'f-retro', d:false}, {c:'f-bw', d:false}
+        ];
 
-        function toggleF() { document.getElementById('filter-panel').classList.toggle('open'); }
-        
-        function apply(i, el) {
-            const v = document.getElementById('video-feed');
-            const m = document.getElementById('dog-mask');
-            document.querySelectorAll('.f-box').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            v.className = fdb[i].c;
-            m.style.display = fdb[i].d ? 'block' : 'none';
-        }
+        // --- SELECTORES ---
+        const navIcons = document.querySelectorAll('.nav-icon');
+        const views = document.querySelectorAll('.view');
+        const searchInput = document.getElementById('search-input');
+        const resultsDiv = document.getElementById('search-results');
+        const camLayer = document.getElementById('cam-layer');
+        const videoFeed = document.getElementById('video-feed');
+        const dogMask = document.getElementById('dog-mask');
+        const filterPanel = document.getElementById('filter-panel');
+        const filterBoxes = document.querySelectorAll('.f-box');
 
-        function search() {
-            const q = document.getElementById('si').value.toLowerCase();
-            const r = document.getElementById('rs');
-            r.innerHTML = '';
-            if(q) udb.filter(x => x.u.includes(q)).forEach(u => {
-                r.innerHTML += `<div class="res-item"><img src="${u.i}"><b>${u.u}</b></div>`;
+        // --- LÓGICA DE NAVEGACIÓN ---
+        navIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                const targetView = icon.getAttribute('data-view');
+                if (targetView) {
+                    views.forEach(v => v.classList.remove('active'));
+                    navIcons.forEach(n => n.classList.remove('active'));
+                    document.getElementById(targetView).classList.add('active');
+                    icon.classList.add('active');
+                }
             });
-        }
+        });
 
-        function tab(id, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-        }
+        // --- BUSCADOR ---
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            resultsDiv.innerHTML = '';
+            if (query) {
+                users.filter(user => user.u.includes(query)).forEach(user => {
+                    const item = document.createElement('div');
+                    item.className = 'res-item';
+                    item.innerHTML = `<img src="${user.i}"><b>${user.u}</b>`;
+                    resultsDiv.appendChild(item);
+                });
+            }
+        });
 
-        async function startCam() {
+        // --- CÁMARA ---
+        const startCamera = async () => {
             try {
-                const s = await navigator.mediaDevices.getUserMedia({video: true});
-                document.getElementById('video-feed').srcObject = s;
-                document.getElementById('cam-layer').style.display = 'block';
-            } catch(e) { alert("Cámara bloqueada"); }
-        }
+                const stream = await navigator.mediaDevices.getUserMedia({video: true});
+                videoFeed.srcObject = stream;
+                camLayer.style.display = 'block';
+            } catch(e) { alert("Cámara no disponible"); }
+        };
 
-        function stopCam() {
-            const s = document.getElementById('video-feed').srcObject;
-            if(s) s.getTracks().forEach(t => t.stop());
-            document.getElementById('cam-layer').style.display = 'none';
-            document.getElementById('filter-panel').classList.remove('open');
-        }
+        const stopCamera = () => {
+            const stream = videoFeed.srcObject;
+            if(stream) stream.getTracks().forEach(track => track.stop());
+            camLayer.style.display = 'none';
+            filterPanel.classList.remove('open');
+        };
+
+        document.getElementById('nav-add').addEventListener('click', startCamera);
+        document.getElementById('open-cam-story').addEventListener('click', startCamera);
+        document.getElementById('close-cam').addEventListener('click', stopCamera);
+        document.getElementById('btn-switch-cam').addEventListener('click', stopCamera);
+        document.getElementById('shutter-action').addEventListener('click', () => alert('¡Foto capturada!'));
+
+        // --- FILTROS ---
+        document.getElementById('btn-toggle-filters').addEventListener('click', () => {
+            filterPanel.classList.toggle('open');
+        });
+
+        document.getElementById('close-filter-panel').addEventListener('click', () => {
+            filterPanel.classList.remove('open');
+        });
+
+        filterBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const idx = box.getAttribute('data-index');
+                filterBoxes.forEach(b => b.classList.remove('active'));
+                box.classList.add('active');
+                
+                videoFeed.className = filters[idx].c;
+                dogMask.style.display = filters[idx].d ? 'block' : 'none';
+            });
+        });
     </script>
 </body>
 </html>
