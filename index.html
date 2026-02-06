@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Red Social Completa</title>
+    <title>Aura | Versión Final</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
 
@@ -16,112 +16,126 @@
 
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- ACCESO --- */
+        /* --- PANTALLA DE ACCESO --- */
         #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 25px; transition: 0.5s; }
         .auth-box { width: 100%; max-width: 340px; text-align: center; }
         .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 15px; outline: none; box-sizing: border-box; }
         .btn-primary { width: 100%; background: #fff; color: #000; border: none; padding: 18px; border-radius: 40px; font-weight: 800; cursor: pointer; }
 
-        /* --- APP STRUCTURE --- */
+        /* --- APP CORE --- */
         #main-app { display: none; opacity: 0; transition: 0.8s; height: 100vh; }
-        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
+        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 110px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- 1. INICIO (FOTOS) --- */
-        .header-elite { display: flex; flex-direction: column; align-items: center; padding: 50px 0 20px; }
-        .aura-logo { font-family: 'Orbitron'; font-size: 2.5rem; letter-spacing: 10px; }
-        .story-square { width: 130px; height: 130px; background: #0a0a0a; border-radius: 30px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a; margin-left: 20px; }
-        .story-square::before { content: ''; position: absolute; inset: 0; padding: 3px; border-radius: 30px; background: var(--rainbow); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+        /* --- INICIO: HISTORIAS + MURO DE FOTOS --- */
+        .header-elite { display: flex; flex-direction: column; align-items: center; padding: 40px 0 20px; }
+        .aura-logo { font-family: 'Orbitron'; font-size: 2.2rem; letter-spacing: 10px; }
+        
+        .stories-container { display: flex; gap: 15px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #111; padding-bottom: 20px; }
+        .stories-container::-webkit-scrollbar { display: none; }
+        .story-item { flex: 0 0 auto; text-align: center; width: 90px; }
+        .story-circle { width: 75px; height: 75px; background: #0a0a0a; border-radius: 25px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a; margin: 0 auto; }
+        .story-circle.active-story::before { content: ''; position: absolute; inset: -3px; padding: 3px; border-radius: 28px; background: var(--rainbow); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+        .story-name { font-size: 0.65rem; font-weight: 700; margin-top: 8px; color: #aaa; text-transform: uppercase; }
 
-        /* --- 2. BUSCADOR --- */
-        .search-bar { background: #111; padding: 15px; border-radius: 15px; margin: 20px; display: flex; align-items: center; gap: 10px; border: 1px solid #222; }
-        .search-bar input { background: transparent; border: none; color: white; outline: none; width: 100%; }
+        /* ZONA DE PUBLICACIONES (FOTOS) */
+        .feed-container { padding: 20px 0; }
+        .post-card { width: 100%; margin-bottom: 30px; background: #000; }
+        .post-header { padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
+        .post-user-avatar { width: 32px; height: 32px; border-radius: 10px; background: #111; border: 1px solid #222; }
+        .post-username { font-size: 0.85rem; font-weight: 800; }
+        .post-photo-area { width: 100%; aspect-ratio: 1/1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; border-top: 1px solid #111; border-bottom: 1px solid #111; }
+        .post-actions { padding: 12px 15px; display: flex; gap: 15px; font-size: 1.4rem; }
+        .post-info { padding: 0 15px; }
 
-        /* --- 3. VIDEOS (REELS) --- */
+        /* --- ZONA DE VÍDEOS (🎬) --- */
         #view-reels { overflow-y: scroll; scroll-snap-type: y mandatory; }
         .video-feed { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #050505; }
-        .v-ui { position: absolute; bottom: 120px; left: 20px; z-index: 10; }
-        .v-actions { position: absolute; bottom: 120px; right: 20px; display: flex; flex-direction: column; gap: 20px; }
-        .btn-follow { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; margin-left: 8px; cursor: pointer; }
-        .btn-follow.following { background: var(--accent); color: black; }
+        .v-ui { position: absolute; bottom: 130px; left: 20px; z-index: 10; }
+        .v-actions { position: absolute; bottom: 130px; right: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
 
-        /* --- 4. PERFIL --- */
+        /* --- PERFIL --- */
         .p-card { padding: 30px 20px; }
         .p-header { display: flex; align-items: center; gap: 20px; }
-        .p-avatar { width: 80px; height: 80px; border-radius: 25px; background: #111; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; color: var(--accent); font-size: 1.8rem; }
+        .p-avatar { width: 75px; height: 75px; border-radius: 25px; background: #111; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; color: var(--accent); font-size: 1.5rem; }
         .p-stats { display: flex; flex: 1; justify-content: space-around; text-align: center; }
         .stat-val { font-size: 1.1rem; font-weight: 800; display: block; }
-        .stat-label { font-size: 0.6rem; color: #555; text-transform: uppercase; }
-        .profile-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-profile { flex: 1; background: #111; color: white; border: 1px solid #222; padding: 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+        .stat-label { font-size: 0.55rem; color: #555; text-transform: uppercase; }
+        .profile-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-profile { flex: 1; background: #111; color: white; border: 1px solid #222; padding: 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
 
         /* --- NAVEGACIÓN --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 70px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
         .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
         .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; transform: translateY(-5px); }
+        .n-add { width: 52px; height: 52px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; transform: translateY(-5px); }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
-        <div class="auth-box" id="login-section">
+        <div class="auth-box">
             <h1 style="font-family:'Orbitron'; letter-spacing:10px;">AURA</h1>
-            <p style="color:#444; margin-bottom:30px;">BIENVENIDO</p>
-            <input type="text" id="l-user" class="auth-input" placeholder="Usuario">
-            <input type="password" id="l-pass" class="auth-input" placeholder="Contraseña">
+            <input type="text" id="l-user" class="auth-input" placeholder="Nombre de usuario">
             <button class="btn-primary" onclick="attemptAuth()">Entrar</button>
         </div>
     </div>
 
     <div id="main-app">
+        
         <div id="view-home" class="view active">
             <div class="header-elite"><div class="aura-logo">AURA</div></div>
-            <div class="story-square">
-                <span style="font-size:3.5rem;">👤</span>
+            <div class="stories-container">
+                <div class="story-item">
+                    <div class="story-circle active-story"><span style="font-size:2.5rem;">👤</span></div>
+                    <div class="story-name">Mi Historia</div>
+                </div>
             </div>
-            <p style="margin-left:25px; font-weight:800; font-size:0.75rem; margin-top:10px;">MI HISTORIA</p>
+            <div class="feed-container">
+                <div class="post-card">
+                    <div class="post-header"><div class="post-user-avatar"></div><span class="post-username">aura_official</span></div>
+                    <div class="post-photo-area"><span style="color:#111; font-weight:800; letter-spacing:5px;">ZONA DE FOTOS</span></div>
+                    <div class="post-actions">
+                        <span onclick="this.innerText=this.innerText=='🤍'?'❤️':'🤍'">🤍</span>
+                        <span>💬</span><span>✈️</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="view-search" class="view">
-            <div style="padding:40px 20px 10px;">
-                <h2 style="font-family:'Orbitron'; font-size:1.2rem;">EXPLORAR</h2>
-            </div>
-            <div class="search-bar">
-                <span>🔍</span>
-                <input type="text" placeholder="Buscar personas o tendencias...">
+            <div style="padding:40px 20px 0;"><h2 style="font-family:'Orbitron'; font-size:1.1rem;">EXPLORAR</h2></div>
+            <div style="background:#111; padding:15px; border-radius:15px; margin:20px; display:flex; align-items:center; gap:10px; border:1px solid #222;">
+                <span>🔍</span><input type="text" placeholder="Buscar..." style="background:transparent; border:none; color:white; outline:none; width:100%;">
             </div>
         </div>
 
         <div id="view-reels" class="view">
             <div class="video-feed">
-                <div class="v-ui">
-                    <b>@aura_creators</b> <button class="btn-follow" onclick="toggleFollow(this)">Seguir</button>
-                    <p>Contenido exclusivo en video 🎬</p>
-                </div>
+                <div class="v-ui"><b>@video_zone</b><p>Contenido vertical aquí.</p></div>
                 <div class="v-actions">
-                    <div style="text-align:center;" onclick="this.style.color='#ff0055'">❤️<br><small>24</small></div>
-                    <div style="text-align:center;">💬<br><small>5</small></div>
+                    <div style="text-align:center;">🤍<br><small>0</small></div>
+                    <div style="text-align:center;">💬<br><small>0</small></div>
                 </div>
-                <span style="font-size:4rem; opacity:0.1;">🎬</span>
+                <span style="font-size:4rem; opacity:0.05;">🎬</span>
             </div>
         </div>
 
         <div id="view-profile" class="view">
             <div class="p-card">
-                <div style="text-align:right; margin-bottom:10px;"><span onclick="logout()" style="cursor:pointer; opacity:0.3; font-size:0.8rem;">SALIR 🚪</span></div>
+                <div style="text-align:right;"><span onclick="logout()" style="cursor:pointer; opacity:0.3; font-size:0.7rem;">CERRAR SESIÓN 🚪</span></div>
                 <div class="p-header">
                     <div class="p-avatar" id="p-avatar-letter">?</div>
                     <div class="p-stats">
-                        <div><span class="stat-val">0</span><span class="stat-label">Pubs</span></div>
+                        <div><span class="stat-val">0</span><span class="stat-label">Fotos</span></div>
                         <div><span class="stat-val">0</span><span class="stat-label">Fans</span></div>
-                        <div><span class="stat-val" id="following-count">0</span><span class="stat-label">Siguiendo</span></div>
+                        <div><span class="stat-val">0</span><span class="stat-label">Siguiendo</span></div>
                     </div>
                 </div>
-                <h2 id="p-username" style="font-family:'Orbitron'; margin:15px 0 5px;">Usuario</h2>
+                <h2 id="p-username" style="font-family:'Orbitron'; margin:20px 0 5px;">Usuario</h2>
                 <div class="profile-actions">
-                    <button class="btn-profile" onclick="alert('Editar')">Editar perfil</button>
-                    <button class="btn-profile" onclick="alert('Enlace copiado')">Compartir</button>
+                    <button class="btn-profile">Editar perfil</button>
+                    <button class="btn-profile">Compartir</button>
                 </div>
             </div>
         </div>
@@ -129,20 +143,18 @@
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
             <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add" onclick="alert('Abrir cámara')">+</div>
+            <div class="n-add" onclick="alert('Subir contenido')">+</div>
             <div class="n-btn" onclick="go('reels', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
 
     <script>
-        let followCount = 0;
-
         function attemptAuth() {
-            const u = document.getElementById('l-user').value;
-            if(u.length < 2) return alert("Escribe un nombre");
-            localStorage.setItem('aura_session', u);
-            loadApp(u);
+            const user = document.getElementById('l-user').value.trim();
+            if(user.length < 2) return;
+            localStorage.setItem('aura_session', user);
+            loadApp(user);
         }
 
         function loadApp(user) {
@@ -162,21 +174,7 @@
             btn.classList.add('active');
         }
 
-        function toggleFollow(btn) {
-            if(btn.innerText === 'Seguir') {
-                btn.innerText = 'Siguiendo'; btn.classList.add('following');
-                followCount++;
-            } else {
-                btn.innerText = 'Seguir'; btn.classList.remove('following');
-                followCount--;
-            }
-            document.getElementById('following-count').innerText = followCount;
-        }
-
-        window.onload = () => {
-            const s = localStorage.getItem('aura_session');
-            if(s) loadApp(s);
-        }
+        window.onload = () => { if(localStorage.getItem('aura_session')) loadApp(localStorage.getItem('aura_session')); }
     </script>
 </body>
 </html>
