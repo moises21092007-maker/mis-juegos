@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura</title>
+    <title>Aura | Red Social</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
 
@@ -17,7 +17,7 @@
 
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- PANTALLA DE ENTRADA --- */
+        /* --- LOGIN & REGISTRO --- */
         #auth-overlay {
             position: fixed; inset: 0; background: var(--bg); z-index: 10000;
             display: flex; align-items: center; justify-content: center; padding: 25px;
@@ -26,115 +26,106 @@
         .auth-box { width: 100%; max-width: 340px; animation: fadeIn 0.8s ease; }
         .auth-header { text-align: center; margin-bottom: 40px; }
         .auth-header h1 { font-family: 'Orbitron'; font-size: 2.5rem; letter-spacing: 12px; margin: 0; }
-        .auth-header p { font-size: 0.9rem; color: #555; margin-top: 10px; font-weight: 500; }
+        .auth-header p { font-size: 0.9rem; color: #555; margin-top: 10px; }
 
-        .form-group { position: relative; margin-bottom: 15px; }
         .auth-input {
             width: 100%; background: var(--input-bg); border: 1px solid #1a1a1a; 
-            padding: 18px 20px; border-radius: 16px; color: white; font-size: 0.95rem;
-            outline: none; transition: 0.3s; box-sizing: border-box;
+            padding: 18px 20px; border-radius: 16px; color: white; margin-bottom: 15px;
+            outline: none; box-sizing: border-box;
         }
-        .auth-input:focus { border-color: #333; background: #111; }
 
         .btn-primary {
             width: 100%; background: #fff; color: #000; border: none; padding: 18px; 
-            border-radius: 40px; font-weight: 800; font-size: 0.95rem; cursor: pointer;
-            transition: 0.3s; margin-top: 10px;
+            border-radius: 40px; font-weight: 800; cursor: pointer;
         }
-        .btn-primary:active { transform: scale(0.96); }
 
-        .auth-footer { text-align: center; margin-top: 30px; font-size: 0.9rem; color: #666; }
-        .auth-footer b { color: var(--accent); cursor: pointer; }
+        /* --- APP --- */
+        #main-app { display: none; opacity: 0; transition: opacity 0.8s ease; height: 100vh; }
+        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
+        .view.active { display: block; }
 
-        /* --- APP INTERIOR --- */
-        #main-app { display: none; opacity: 0; transition: opacity 0.8s ease; }
-        
+        /* --- HOME --- */
         .header-elite { display: flex; flex-direction: column; align-items: center; padding: 50px 0 20px; }
-        .aura-logo { font-family: 'Orbitron'; font-size: 2.8rem; font-weight: 900; letter-spacing: 12px; }
-
-        /* --- MI HISTORIA CUADRADA --- */
-        .home-content { padding: 0 25px; }
+        .aura-logo { font-family: 'Orbitron'; font-size: 2.8rem; letter-spacing: 12px; }
         .story-square { 
             width: 135px; height: 135px; background: #0a0a0a; border-radius: 30px; 
             display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a;
-            cursor: pointer;
         }
         .story-square::before {
             content: ''; position: absolute; inset: 0; padding: 3px; border-radius: 30px;
             background: var(--rainbow); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude;
         }
-        .story-label { margin-top: 15px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; color: #fff; }
+
+        /* --- ZONA DE VIDEOS (REELS) --- */
+        #view-reels { overflow-y: scroll; scroll-snap-type: y mandatory; padding-bottom: 0; }
+        .video-feed { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #050505; border-bottom: 1px solid #111; }
+        .v-ui { position: absolute; bottom: 120px; left: 20px; z-index: 10; }
+        .v-actions { position: absolute; bottom: 120px; right: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
 
         /* --- PERFIL --- */
-        .p-card { padding: 30px 25px; }
-        .p-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-        .p-avatar { 
-            width: 90px; height: 90px; border-radius: 32px; background: #111; 
-            border: 1px solid #222; display: flex; align-items: center; justify-content: center; 
-            font-size: 2.5rem; font-family: 'Orbitron'; font-weight: 900; color: var(--accent);
-        }
-        .p-stats { display: flex; flex: 1; justify-content: center; gap: 20px; text-align: center; }
-        .stat-val { font-size: 1.2rem; font-weight: 800; display: block; }
-        .stat-label { font-size: 0.6rem; color: #555; font-weight: 900; text-transform: uppercase; }
+        .p-card { padding: 30px 20px; }
+        .p-header { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+        .p-avatar { width: 85px; height: 85px; border-radius: 30px; background: #111; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; color: var(--accent); font-size: 2rem; }
+        .p-stats { display: flex; flex: 1; justify-content: space-around; text-align: center; }
+        .stat-val { font-size: 1.1rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.6rem; color: #555; text-transform: uppercase; }
 
-        /* --- NAVEGACIÓN --- */
-        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 38px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #1a1a1a; z-index: 2000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
+        /* --- NAV --- */
+        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 70px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; transition: 0.3s; }
         .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add { width: 60px; height: 60px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-8px); cursor: pointer; }
+        .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; transform: translateY(-5px); }
 
-        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; }
-        .view.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
         <div class="auth-box" id="login-section">
-            <div class="auth-header">
-                <h1>AURA</h1>
-                <p>Bienvenido de nuevo</p>
-            </div>
-            <div class="form-group"><input type="text" id="l-user" class="auth-input" placeholder="Nombre de usuario"></div>
-            <div class="form-group"><input type="password" id="l-pass" class="auth-input" placeholder="Contraseña"></div>
+            <div class="auth-header"><h1>AURA</h1><p>Bienvenido de nuevo</p></div>
+            <input type="text" id="l-user" class="auth-input" placeholder="Usuario">
+            <input type="password" id="l-pass" class="auth-input" placeholder="Contraseña">
             <button class="btn-primary" onclick="attemptAuth('login')">Entrar</button>
-            <div class="auth-footer">¿No tienes cuenta? <b onclick="switchAuth('reg')">Regístrate</b></div>
+            <p style="text-align:center; margin-top:20px; font-size:0.9rem; color:#666;">¿No tienes cuenta? <b style="color:var(--accent); cursor:pointer;" onclick="switchAuth('reg')">Regístrate</b></p>
         </div>
 
         <div class="auth-box" id="reg-section" style="display:none;">
-            <div class="auth-header">
-                <h1>AURA</h1>
-                <p>Únete a la comunidad</p>
-            </div>
-            <div class="form-group"><input type="text" id="r-user" class="auth-input" placeholder="Elige un usuario"></div>
-            <div class="form-group"><input type="password" id="r-pass" class="auth-input" placeholder="Crea una contraseña"></div>
+            <div class="auth-header"><h1>AURA</h1><p>Crea tu cuenta</p></div>
+            <input type="text" id="r-user" class="auth-input" placeholder="Elige usuario">
+            <input type="password" id="r-pass" class="auth-input" placeholder="Contraseña">
             <button class="btn-primary" onclick="attemptAuth('reg')">Registrarme</button>
-            <div class="auth-footer">¿Ya tienes cuenta? <b onclick="switchAuth('login')">Inicia sesión</b></div>
+            <p style="text-align:center; margin-top:20px; font-size:0.9rem; color:#666;">¿Ya tienes cuenta? <b style="color:var(--accent); cursor:pointer;" onclick="switchAuth('login')">Entrar</b></p>
         </div>
     </div>
 
     <div id="main-app">
         <div id="view-home" class="view active">
             <div class="header-elite"><div class="aura-logo">AURA</div></div>
-            <div class="home-content">
-                <div style="display: inline-block;">
-                    <div class="story-square" onclick="alert('Abriendo cámara para historia...')">
-                        <span id="story-avatar" style="font-size:3.5rem;">👤</span>
-                    </div>
-                    <div class="story-label">Mi Historia</div>
-                </div>
+            <div style="padding: 0 25px;">
+                <div class="story-square"><span style="font-size:3.5rem;">👤</span></div>
+                <p style="font-weight:800; font-size:0.8rem; margin-top:10px;">Mi Historia</p>
             </div>
         </div>
 
         <div id="view-search" class="view">
-            <div style="padding:40px 25px;">
-                <h2 style="font-family:'Orbitron'; font-size:1.1rem; letter-spacing:2px;">Explorar</h2>
-                <div style="background:#111; padding:18px; border-radius:20px; margin-top:20px; border:1px solid #222;">
-                    <input type="text" placeholder="Buscar personas..." style="background:transparent; border:none; color:white; outline:none; width:100%; font-size:1rem;">
-                </div>
+            <div style="padding:40px 20px;">
+                <h2 style="font-family:'Orbitron'; font-size:1.2rem;">Explorar</h2>
+                <div style="background:#111; padding:15px; border-radius:15px; margin-top:20px; color:#444;">🔍 Buscar...</div>
+            </div>
+        </div>
+
+        <div id="view-reels" class="view">
+            <div class="video-feed">
+                <div class="v-ui"><b>@aura_pro</b><p>Explorando la nueva interfaz 🚀</p></div>
+                <div class="v-actions"><span>❤️</span><span>💬</span><span>✈️</span></div>
+                <span style="font-size:4rem; opacity:0.2;">🎬 Vídeo 1</span>
+            </div>
+            <div class="video-feed" style="background:#080808;">
+                <div class="v-ui"><b>@vibe_check</b><p>Vibras de viernes noche #Aura</p></div>
+                <div class="v-actions"><span>❤️</span><span>💬</span><span>✈️</span></div>
+                <span style="font-size:4rem; opacity:0.2;">🎬 Vídeo 2</span>
             </div>
         </div>
 
@@ -148,31 +139,25 @@
                         <div><span class="stat-val">0</span><span class="stat-label">Siguiendo</span></div>
                     </div>
                 </div>
-                <h2 id="p-username" style="font-family:'Orbitron'; margin:0; letter-spacing:1px;">Usuario</h2>
-                <p style="color:#666; margin:10px 0 25px; font-size:0.95rem;">Miembro de Aura.</p>
-                <button class="btn-primary" style="background:#111; color:#fff; border:1px solid #222;" onclick="logout()">Cerrar sesión</button>
-                
-                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:3px; margin-top:30px;">
-                    <div style="aspect-ratio:1/1; background:#0a0a0a; border-radius:4px;"></div>
-                    <div style="aspect-ratio:1/1; background:#0a0a0a; border-radius:4px;"></div>
-                    <div style="aspect-ratio:1/1; background:#0a0a0a; border-radius:4px;"></div>
-                </div>
+                <h2 id="p-username" style="font-family:'Orbitron'; margin:0;">Usuario</h2>
+                <p style="color:#666; margin:10px 0 20px;">Miembro de Aura Elite.</p>
+                <button class="btn-primary" style="background:#111; color:#fff; border:1px solid #333; height:45px; padding:0;" onclick="logout()">Cerrar sesión</button>
             </div>
         </div>
 
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
             <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add" onclick="alert('Cámara Aura activada')">+</div>
+            <div class="n-add" onclick="alert('Cámara abierta')">+</div>
+            <div class="n-btn" onclick="go('reels', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
 
     <script>
-        // Carga automática si ya hay sesión
         window.onload = () => {
-            const savedUser = localStorage.getItem('aura_session');
-            if(savedUser) loadApp(savedUser);
+            const session = localStorage.getItem('aura_session');
+            if(session) loadApp(session);
         };
 
         function switchAuth(type) {
@@ -182,22 +167,20 @@
 
         function attemptAuth(type) {
             if(type === 'reg') {
-                const u = document.getElementById('r-user').value.trim();
-                const p = document.getElementById('r-pass').value.trim();
-                if(u.length < 3) return alert("El nombre es muy corto");
+                const u = document.getElementById('r-user').value;
+                const p = document.getElementById('r-pass').value;
+                if(u.length < 3) return alert("Nombre muy corto");
                 localStorage.setItem('aura_db_u', u);
                 localStorage.setItem('aura_db_p', p);
                 localStorage.setItem('aura_session', u);
                 loadApp(u);
             } else {
-                const u = document.getElementById('l-user').value.trim();
-                const p = document.getElementById('l-pass').value.trim();
+                const u = document.getElementById('l-user').value;
+                const p = document.getElementById('l-pass').value;
                 if(u === localStorage.getItem('aura_db_u') && p === localStorage.getItem('aura_db_p')) {
                     localStorage.setItem('aura_session', u);
                     loadApp(u);
-                } else {
-                    alert("Usuario o contraseña incorrectos");
-                }
+                } else { alert("Datos incorrectos"); }
             }
         }
 
@@ -205,18 +188,14 @@
             document.getElementById('auth-overlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('auth-overlay').style.display = 'none';
-                const app = document.getElementById('main-app');
-                app.style.display = 'block';
-                setTimeout(() => app.style.opacity = '1', 50);
+                document.getElementById('main-app').style.display = 'block';
+                setTimeout(() => document.getElementById('main-app').style.opacity = '1', 50);
                 document.getElementById('p-username').innerText = user;
                 document.getElementById('p-avatar-letter').innerText = user.charAt(0).toUpperCase();
             }, 500);
         }
 
-        function logout() {
-            localStorage.removeItem('aura_session');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('aura_session'); location.reload(); }
 
         function go(v, btn) {
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
