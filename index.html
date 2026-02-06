@@ -3,129 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | App Final</title>
+    <title>Aura | Juego Completo v2</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
             --blue: #0095f6; --text-grey: #8e8e93; 
             --aura-grad: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); 
         }
-        body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
-        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
+        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- HOME --- */
+        /* --- HOME: LOGO Y FOTO DE PERFIL --- */
         .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .stories-bar { display: flex; padding: 10px 20px; border-bottom: 0.5px solid var(--border); }
+        .story-circle { width: 70px; height: 70px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; }
+        .story-circle img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
+        .plus-story { position: absolute; bottom: 2px; right: 2px; background: var(--blue); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid black; font-size: 14px; font-weight: bold; }
 
-        /* --- VÍDEO FEED --- */
-        .v-container { width: 100%; height: 100%; background: #111 url('https://images.unsplash.com/photo-1550029402-226115b7c579?w=800') center/cover; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
-        .v-info { padding: 20px; padding-bottom: 80px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
-        .v-actions { position: absolute; right: 15px; bottom: 100px; display: flex; flex-direction: column; gap: 15px; text-align: center; }
+        /* --- BUSCADOR (FIXED) --- */
+        .search-container { padding: 10px 15px; }
+        .search-box { background: #262626; border-radius: 10px; display: flex; align-items: center; padding: 8px 12px; gap: 10px; }
+        .search-box input { background: transparent; border: none; color: white; flex: 1; outline: none; }
+        .recent-list { padding: 15px; }
+        .recent-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; transition: 0.3s; }
+        .recent-item img { width: 45px; height: 45px; border-radius: 50%; background: #333; }
 
-        /* --- PERFIL COMPLETO (RESTAURADO) --- */
-        .p-main { padding: 15px; }
-        .p-top { display: flex; align-items: center; gap: 25px; margin-top: 20px; }
-        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; }
-        .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
-        .stats { display: flex; gap: 20px; text-align: center; flex: 1; justify-content: space-around; }
-        .stat-val { font-weight: bold; font-size: 1.1rem; display: block; }
-        .stat-lab { font-size: 0.8rem; color: var(--text-grey); }
-        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        /* --- PERFIL (RESTAURADO) --- */
+        .profile-container { padding: 15px; }
+        .p-header { display: flex; align-items: center; gap: 30px; margin: 20px 0; }
+        .p-avatar { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
+        .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
+        .p-stats { display: flex; gap: 20px; text-align: center; }
+        .p-stats b { display: block; font-size: 1.1rem; }
+        .p-stats span { font-size: 0.8rem; color: var(--text-grey); }
+        .p-buttons { display: flex; gap: 10px; margin: 20px 0; }
+        .btn-action { flex: 1; background: var(--panel); border: none; color: white; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; }
         
-        /* Ilustración Bienvenida (2751.jpg) */
-        .welcome-box { margin-top: 40px; background: #121212; border-radius: 15px; overflow: hidden; text-align: center; }
-        .welcome-img { padding: 40px; font-size: 50px; opacity: 0.7; }
-        .welcome-bar { background: var(--blue); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .welcome-card { background: #121212; border-radius: 15px; overflow: hidden; margin-top: 30px; text-align: center; }
+        .welcome-card .icon { padding: 40px; font-size: 40px; }
+        .welcome-footer { background: var(--blue); padding: 12px; display: flex; justify-content: space-between; font-weight: bold; }
 
-        /* CAPAS CÁMARA */
-        #camera-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; }
-        #video-feed { width: 100%; height: 100%; object-fit: cover; }
-        #upload-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
+        /* --- NAVEGACIÓN --- */
+        nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; transition: 0.2s; }
+        .nav-icon.active { opacity: 1; transform: scale(1.1); }
+        .nav-plus { font-size: 2.2rem; opacity: 1; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* NAV */
-        nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.5rem; opacity: 0.5; color: white; cursor: pointer; }
-        .nav-icon.active { opacity: 1; }
+        /* --- CÁMARA --- */
+        #cam-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; }
+        #webcam { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="view active">
-        <div class="home-header"><h1 class="brand-name">Aura</h1></div>
-        <div style="padding:20px; text-align:center; color:var(--text-grey);">Historias de Aura</div>
+        <div class="home-header">
+            <h1 class="brand-name">Aura</h1>
+            <span>❤️</span>
+        </div>
+        <div class="stories-bar">
+            <div class="story-circle">
+                <img src="https://i.pravatar.cc/150?u=moi" class="user-photo-sync">
+                <div class="plus-story">+</div>
+            </div>
+        </div>
+        <div style="padding: 50px; text-align: center; color: var(--text-grey);">No hay publicaciones nuevas.</div>
+    </div>
+
+    <div id="view-search" class="view">
+        <div class="search-container">
+            <div class="search-box">🔍 <input type="text" placeholder="Buscar"></div>
+        </div>
+        <div class="recent-list">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <b>Recientes</b>
+                <span style="color:var(--blue); font-size:0.9rem;" onclick="document.querySelectorAll('.recent-item').forEach(i => i.remove())">Ver todo</span>
+            </div>
+            <div class="recent-item">
+                <img src="https://i.pravatar.cc/100?u=est">
+                <div style="flex:1;"><b>Ayuntamiento de Estepona</b><br><small style="color:var(--text-grey);">1 miembro nuevo</small></div>
+                <div style="cursor:pointer;" onclick="this.parentElement.remove()">✕</div>
+            </div>
+        </div>
     </div>
 
     <div id="view-reels" class="view">
-        <div class="v-container">
-            <div class="v-info">
-                <b>fitnessshayla</b> <button style="background:none; border:1px solid white; color:white; border-radius:5px; padding:2px 8px; font-size:0.7rem;">Seguir</button>
-                <p>Explorando el mundo Aura 🚀</p>
-            </div>
-            <div class="v-actions">
-                <div>❤️<br><small>12k</small></div>
-                <div>💬<br><small>400</small></div>
+        <div style="width:100%; height:100%; background: #111 url('https://images.unsplash.com/photo-1550029402-226115b7c579?w=800') center/cover; display:flex; flex-direction:column; justify-content:flex-end; padding:20px; box-sizing:border-box;">
+            <div style="margin-bottom:60px;">
+                <b>fitnessshayla</b> <button style="background:transparent; border:1px solid white; color:white; border-radius:5px; padding:2px 8px;">Seguir</button>
+                <p>¡Bienvenidos a mi Aura! 🚀</p>
             </div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
-        <div class="p-main">
+        <div class="profile-container">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b>moi_._lopez ∨</b>
+                <b style="font-size:1.2rem;">moi_._lopez ∨</b>
                 <span>☰</span>
             </div>
 
-            <div class="p-top">
-                <div class="p-ring">
-                    <img class="u-img" src="https://i.pravatar.cc/150?u=moi">
-                    <div style="position:absolute; bottom:0; right:0; background:white; color:black; border-radius:50%; width:20px; height:20px; text-align:center; font-size:15px; font-weight:bold; border:2px solid black;">+</div>
+            <div class="p-header">
+                <div class="p-avatar">
+                    <img src="https://i.pravatar.cc/150?u=moi" class="user-photo-sync">
                 </div>
-                <div class="stats">
-                    <div class="stat-item"><span class="stat-val">104</span><span class="stat-lab">seguidores</span></div>
-                    <div class="stat-item"><span class="stat-val">247</span><span class="stat-lab">seguidos</span></div>
+                <div class="p-stats">
+                    <div><b>104</b><span>seguidores</span></div>
+                    <div><b>247</b><span>seguidos</span></div>
                 </div>
             </div>
 
-            <div style="margin-top:15px;">
+            <div>
                 <b style="font-size:1.1rem;">moi_._Lopez</b><br>
                 <span style="color:var(--text-grey);">📍 Estepona</span><br>
                 <div style="margin-top:5px;"><b>0</b> <span style="color:var(--text-grey);">publicaciones</span></div>
             </div>
 
-            <div class="btn-row">
-                <button class="btn-p">Editar perfil</button>
-                <button class="btn-p">Compartir</button>
+            <div class="p-buttons">
+                <button class="btn-action">Editar perfil</button>
+                <button class="btn-action">Compartir</button>
             </div>
 
-            <div class="welcome-box">
-                <div class="welcome-img">💻</div>
-                <div class="welcome-bar">
+            <div class="welcome-card">
+                <div class="icon">💻</div>
+                <div class="welcome-footer">
                     <span>Crea tu primera publicación</span>
-                    <span style="cursor:pointer;" onclick="tab('view-home')">Crear</span>
+                    <span style="cursor:pointer;">Crear</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="camera-layer">
-        <video id="video-feed" autoplay playsinline></video>
-        <div style="position:absolute; top:20px; right:20px; font-size:2rem;" onclick="stopCamera()">✕</div>
-    </div>
-
-    <div id="upload-menu" onclick="this.style.display='none'">
-        <div style="background:var(--panel); width:80%; padding:25px; border-radius:20px; text-align:center;" onclick="event.stopPropagation()">
-            <div style="background:var(--blue); color:white; padding:15px; border-radius:12px; margin-bottom:10px; font-weight:bold;" onclick="startCamera()">📷 Grabar con Cámara</div>
-            <label style="background:#333; color:white; padding:15px; border-radius:12px; display:block;" for="gal">🖼️ Elegir de Galería</label>
-            <input type="file" id="gal" style="display:none">
-        </div>
+    <div id="cam-overlay">
+        <video id="webcam" autoplay playsinline></video>
+        <div style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer;" onclick="stopCam()">✕</div>
     </div>
 
     <nav>
         <div class="nav-icon active" onclick="tab('view-home', this)">🏠</div>
-        <div class="nav-icon" onclick="alert('Buscador')">🔍</div>
-        <div class="nav-icon" style="font-size:2.5rem; opacity:1;" onclick="document.getElementById('upload-menu').style.display='flex'">+</div>
+        <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
+        <div class="nav-icon nav-plus" onclick="startCam()">+</div>
         <div class="nav-icon" onclick="tab('view-reels', this)">🎬</div>
         <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
     </nav>
@@ -133,26 +152,23 @@
     <script>
         function tab(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            if(el) {
-                document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-                el.classList.add('active');
-            }
+            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            el.classList.add('active');
         }
 
-        async function startCamera() {
-            document.getElementById('upload-menu').style.display='none';
+        async function startCam() {
             try {
-                const s = await navigator.mediaDevices.getUserMedia({ video: true });
-                document.getElementById('video-feed').srcObject = s;
-                document.getElementById('camera-layer').style.display = 'block';
-            } catch (e) { alert("Sin acceso a cámara"); }
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('webcam').srcObject = stream;
+                document.getElementById('cam-overlay').style.display = 'block';
+            } catch (err) { alert("Error al abrir la cámara"); }
         }
 
-        function stopCamera() {
-            const s = document.getElementById('video-feed').srcObject;
-            if(s) s.getTracks().forEach(t => t.stop());
-            document.getElementById('camera-layer').style.display = 'none';
+        function stopCam() {
+            const stream = document.getElementById('webcam').srcObject;
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('cam-overlay').style.display = 'none';
         }
     </script>
 </body>
