@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura Elite | Secure Access</title>
+    <title>Aura | Digital Network</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
 
@@ -26,7 +26,7 @@
         .auth-box { width: 100%; max-width: 340px; animation: fadeIn 0.8s ease; }
         .auth-header { text-align: center; margin-bottom: 40px; }
         .auth-header h1 { font-family: 'Orbitron'; font-size: 2.5rem; letter-spacing: 12px; margin: 0; }
-        .auth-header p { font-size: 0.7rem; color: var(--accent); letter-spacing: 3px; margin-top: 10px; opacity: 0.8; }
+        .auth-header p { font-size: 0.7rem; color: var(--accent); letter-spacing: 3px; margin-top: 10px; opacity: 0.8; text-transform: uppercase; }
 
         .form-group { position: relative; margin-bottom: 20px; }
         .auth-input {
@@ -57,6 +57,7 @@
         .story-square { 
             width: 130px; height: 130px; background: #0a0a0a; border-radius: 28px; 
             display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a;
+            cursor: pointer;
         }
         .story-square::before {
             content: ''; position: absolute; inset: 0; padding: 3px; border-radius: 28px;
@@ -79,9 +80,9 @@
 
         /* --- NAVEGACIÓN --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 38px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #1a1a1a; z-index: 2000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer;}
         .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add { width: 60px; height: 60px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-8px); }
+        .n-add { width: 60px; height: 60px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-8px); cursor: pointer;}
 
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; }
         .view.active { display: block; }
@@ -95,7 +96,7 @@
         <div class="auth-box" id="login-section">
             <div class="auth-header">
                 <h1>AURA</h1>
-                <p>ACCESS ELITE</p>
+                <p>Digital Network</p>
             </div>
             <div class="form-group"><input type="text" id="l-user" class="auth-input" placeholder="Nombre de usuario"></div>
             <div class="form-group"><input type="password" id="l-pass" class="auth-input" placeholder="Contraseña"></div>
@@ -106,11 +107,11 @@
         <div class="auth-box" id="reg-section" style="display:none;">
             <div class="auth-header">
                 <h1>JOIN</h1>
-                <p>CREATE IDENTITY</p>
+                <p>Create Identity</p>
             </div>
             <div class="form-group"><input type="text" id="r-user" class="auth-input" placeholder="Elige tu nombre"></div>
             <div class="form-group"><input type="password" id="r-pass" class="auth-input" placeholder="Crea una contraseña"></div>
-            <button class="btn-primary" onclick="attemptAuth('reg')">REGISTRARME</button>
+            <button class="btn-primary" onclick="attemptAuth('reg')">REGISTRARME Y ENTRAR</button>
             <div class="auth-footer">¿Ya tienes cuenta? <b onclick="switchAuth('login')">Entrar</b></div>
         </div>
     </div>
@@ -119,7 +120,9 @@
         <div id="view-home" class="view active">
             <div class="header-elite"><div class="aura-logo">AURA</div></div>
             <div class="home-content">
-                <div class="story-square"><span id="story-avatar" style="font-size:3rem;">👤</span></div>
+                <div class="story-square" onclick="alert('Tu historia está vacía. ¡Sube algo!')">
+                    <span id="story-avatar" style="font-size:3rem;">👤</span>
+                </div>
                 <div class="story-label">MI HISTORIA</div>
             </div>
         </div>
@@ -127,8 +130,8 @@
         <div id="view-search" class="view">
             <div style="padding:40px 25px;">
                 <h2 style="font-family:'Orbitron'; letter-spacing:2px; font-size:1rem;">EXPLORAR</h2>
-                <div style="background:#0a0a0a; padding:15px; border-radius:15px; border:1px solid #1a1a1a; margin-top:20px; color:#444;">
-                    🔍 Buscar personas...
+                <div style="background:#0a0a0a; padding:15px; border-radius:18px; border:1px solid #1a1a1a; margin-top:20px; color:#666; display: flex; align-items: center; gap: 10px;">
+                    🔍 <input type="text" placeholder="Buscar personas..." style="background:transparent; border:none; color:white; outline:none; width:100%;">
                 </div>
             </div>
         </div>
@@ -144,7 +147,7 @@
                     </div>
                 </div>
                 <h2 id="p-username" style="font-family:'Orbitron'; margin:0; letter-spacing:1px;">User</h2>
-                <p style="color:#555; margin:10px 0 25px; font-size:0.9rem;">Miembro de la Red Elite Aura.</p>
+                <p style="color:#555; margin:10px 0 25px; font-size:0.9rem;">Miembro de la Red Digital Aura.</p>
                 <button class="btn-primary" style="background:transparent; color:#fff; border:1px solid #333;" onclick="logout()">CERRAR SESIÓN</button>
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:2px; margin-top:30px;">
                     <div style="aspect-ratio:1/1; background:#050505; border:1px solid #0a0a0a;"></div>
@@ -157,7 +160,7 @@
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
             <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add">+</div>
+            <div class="n-add" onclick="alert('Cámara Aura activada')">+</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
@@ -178,11 +181,15 @@
             if(type === 'reg') {
                 const u = document.getElementById('r-user').value.trim();
                 const p = document.getElementById('r-pass').value.trim();
-                if(u.length < 3) return alert("Usuario demasiado corto");
+                if(u.length < 3) return alert("El nombre debe tener al menos 3 caracteres");
+                if(p.length < 4) return alert("La contraseña debe tener al menos 4 caracteres");
+                
                 localStorage.setItem('aura_db_u', u);
                 localStorage.setItem('aura_db_p', p);
-                alert("Identidad Creada. Inicia sesión.");
-                switchAuth('login');
+                
+                // Entrar directamente
+                localStorage.setItem('aura_session', u);
+                loadApp(u);
             } else {
                 const u = document.getElementById('l-user').value.trim();
                 const p = document.getElementById('l-pass').value.trim();
@@ -190,7 +197,7 @@
                     localStorage.setItem('aura_session', u);
                     loadApp(u);
                 } else {
-                    alert("Credenciales incorrectas");
+                    alert("Usuario o contraseña incorrectos");
                 }
             }
         }
@@ -203,7 +210,6 @@
                 app.style.display = 'block';
                 setTimeout(() => app.style.opacity = '1', 50);
                 
-                // Personalizar Perfil
                 document.getElementById('p-username').innerText = user;
                 document.getElementById('p-avatar-letter').innerText = user.charAt(0).toUpperCase();
             }, 500);
