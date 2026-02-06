@@ -3,164 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura Pro | Perfil & Cámara</title>
+    <title>Aura Pro | Aplicación Completa</title>
     <style>
         :root { 
             --bg: #000; --card: #0d0d0d; --border: #1a1a1a; 
             --rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             --accent: #00ffd5;
         }
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; min-height: 100vh; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* --- SECCIÓN PERFIL --- */
-        #profile-view { padding: 40px 20px; text-align: center; }
-        .avatar-ring { width: 90px; height: 90px; background: var(--rainbow); background-size: 400%; border-radius: 25px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-        .stats-bar { color: gray; font-size: 0.9rem; margin-bottom: 30px; }
+        /* SISTEMA DE VISTAS */
+        .view { display: none; height: 100vh; width: 100%; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
+        .view.active { display: block; }
 
-        /* TABS PARA ZONAS */
-        .zones-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .tab { flex: 1; padding: 15px; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; cursor: pointer; opacity: 0.4; transition: 0.3s; }
+        /* PERFIL (TU PETICIÓN: 0 SEGUIDORES) */
+        .profile-header { padding: 40px 20px; text-align: center; }
+        .avatar { width: 90px; height: 90px; background: var(--rainbow); background-size: 400%; border-radius: 25px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .stats { color: gray; font-size: 0.9rem; margin-bottom: 30px; letter-spacing: 1px; }
+
+        /* TABS DE ZONAS (VIDEO Y FOTOS) */
+        .zones-tabs { display: flex; border-bottom: 1px solid var(--border); }
+        .tab { flex: 1; padding: 15px; font-size: 0.7rem; font-weight: 900; cursor: pointer; opacity: 0.4; text-align: center; transition: 0.3s; }
         .tab.active { opacity: 1; border-bottom: 2px solid var(--accent); color: var(--accent); }
 
-        .content-display { display: grid; gap: 10px; padding: 10px; }
-        .empty-state { grid-column: 1/-1; padding: 50px 20px; color: #444; font-size: 0.8rem; }
-
-        /* --- CÁMARA ESPEJO (Z-INDEX 5000) --- */
-        #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
+        /* CÁMARA ESPEJO (MODO AURA) */
+        #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: filter 0.4s ease; }
         
-        /* PANEL DE FILTROS */
-        #filter-panel { 
-            position: absolute; bottom: 0; width: 100%; background: rgba(5, 5, 5, 0.98); 
-            border-radius: 30px 30px 0 0; padding: 25px 0; z-index: 6000;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
-            pointer-events: auto; border-top: 1px solid #222;
-        }
-        #filter-panel.open { transform: translateY(0); }
-        .f-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px 15px; border-bottom: 1px solid #111; }
-        .f-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 20px 25px; scrollbar-width: none; }
-        .f-item { min-width: 70px; text-align: center; cursor: pointer; }
-        .f-circle { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #333; margin: 0 auto 8px; }
-        .f-item.active .f-circle { border-color: var(--accent); transform: scale(1.1); }
-
-        /* UI CÁMARA */
+        /* UI DE CÁMARA SUPERPUESTA */
         .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 25px; pointer-events: none; }
-        .top-btns { display: flex; justify-content: space-between; pointer-events: auto; }
-        .btn-close { width: 40px; height: 40px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .top-row { display: flex; justify-content: space-between; pointer-events: auto; }
+        .btn-round { width: 40px; height: 40px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         
-        .bottom-controls { pointer-events: auto; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding-bottom: 40px; }
-        .mode-sel { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
-        .m-dot { font-size: 0.7rem; font-weight: 900; opacity: 0.4; }
+        .bottom-ui { pointer-events: auto; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding-bottom: 30px; }
+        .mode-sel { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; font-size: 0.7rem; font-weight: 900; }
+        .m-dot { opacity: 0.4; transition: 0.3s; cursor: pointer; }
         .m-dot.active { opacity: 1; color: var(--accent); }
 
         .shutter-row { display: flex; align-items: center; justify-content: space-around; }
-        .gal-btn { width: 50px; height: 50px; border: 2px solid white; border-radius: 12px; overflow: hidden; background: #111; }
-        .main-btn { width: 80px; height: 80px; border: 4px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        #shutter-fill { width: 62px; height: 62px; background: white; border-radius: 50%; transition: 0.3s; }
+        .shutter-main { width: 75px; height: 75px; border: 4px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        #shutter-fill { width: 60px; height: 60px; background: white; border-radius: 50%; }
 
-        /* NAVBAR INFERIOR */
-        nav { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px; background: rgba(10,10,10,0.9); backdrop-filter: blur(20px); border-radius: 35px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .n-btn { font-size: 1.4rem; opacity: 0.4; cursor: pointer; }
+        /* PANEL DE FILTROS */
+        #filter-panel { 
+            position: absolute; bottom: 0; width: 100%; background: rgba(5, 5, 5, 0.98); 
+            border-radius: 30px 30px 0 0; padding: 20px 0; z-index: 6000;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+            border-top: 1px solid #222; pointer-events: auto;
+        }
+        #filter-panel.open { transform: translateY(0); }
+        .f-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 15px 25px; scrollbar-width: none; }
+        .f-item { min-width: 60px; text-align: center; font-size: 0.6rem; cursor: pointer; }
+        .f-circle { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #333; margin: 0 auto 5px; }
+        .f-item.active .f-circle { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+        /* NAVBAR PRINCIPAL */
+        nav { 
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px; 
+            background: rgba(10,10,10,0.9); backdrop-filter: blur(20px); 
+            border-radius: 35px; border: 1px solid var(--border); 
+            display: flex; justify-content: space-around; align-items: center; z-index: 4000; 
+        }
+        .n-btn { font-size: 1.4rem; opacity: 0.3; cursor: pointer; }
+        .n-btn.active { opacity: 1; color: var(--accent); }
+        .add-main { width: 55px; height: 55px; background: white; border-radius: 50%; color: black; font-size: 2rem; display: flex; align-items: center; justify-content: center; transform: translateY(-10px); }
     </style>
 </head>
 <body>
 
-    <section id="profile-view">
-        <div class="avatar-ring">👤</div>
-        <h2>Mi Perfil</h2>
-        <div class="stats-bar">0 Seguidores | 0 Siguiendo</div>
-
-        <div class="zones-tabs">
-            <div id="tab-v" class="tab active" onclick="switchZone('video')">ZONA DE VIDEO</div>
-            <div id="tab-p" class="tab" onclick="switchZone('photo')">ZONA DE FOTOS</div>
+    <div id="view-home" class="view">
+        <div style="padding:100px 20px; text-align:center; color:#333;">
+            <h3>Feed Principal</h3>
+            <p>No hay publicaciones globales.</p>
         </div>
+    </div>
 
-        <div id="content-area" class="content-display">
-            <div class="empty-state">No hay contenido en la Zona de Video todavía.</div>
+    <div id="view-search" class="view">
+        <div style="padding:60px 20px;">
+            <input type="text" placeholder="Buscar en Aura..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#111; color:white; box-sizing:border-box;">
         </div>
-    </section>
+    </div>
+
+    <div id="view-reels" class="view">
+        <div style="padding:100px 20px; text-align:center; color:#333;">
+            <h3>Zona de Video</h3>
+            <p>Contenido vertical aquí.</p>
+        </div>
+    </div>
+
+    <div id="view-profile" class="view active">
+        <div class="profile-header">
+            <div class="avatar">👤</div>
+            <h2>Mi Perfil</h2>
+            <div class="stats">0 Seguidores | 0 Siguiendo</div>
+            
+            <div class="zones-tabs">
+                <div id="tab-v" class="tab active" onclick="setZone('video')">ZONA VIDEO</div>
+                <div id="tab-p" class="tab" onclick="setZone('photo')">ZONA FOTOS</div>
+            </div>
+            <div id="zone-content" style="padding:50px; color:#222; font-size:0.8rem;">
+                Aún no has subido videos.
+            </div>
+        </div>
+    </div>
 
     <div id="aura-cam">
         <video id="video-preview" autoplay playsinline></video>
         
         <div class="cam-ui">
-            <div class="top-btns">
-                <div class="btn-close" onclick="closeCam()">✕</div>
-                <div id="status-tag" style="display:none; color:red; font-weight:bold; letter-spacing: 1px;">● REC</div>
-                <div style="width:40px"></div>
+            <div class="top-row">
+                <div class="btn-round" onclick="closeCam()">✕</div>
+                <div id="rec-tag" style="display:none; color:red; font-weight:bold;">● REC</div>
+                <div class="btn-round" onclick="alert('Flash cambiado')">⚡</div>
             </div>
 
-            <div class="bottom-controls">
+            <div class="bottom-ui">
                 <div class="mode-sel">
-                    <span class="m-dot" id="mod-live" onclick="setMode('live')">LIVE</span>
-                    <span class="m-dot" id="mod-video" onclick="setMode('video')">VIDEO</span>
-                    <span class="m-dot active" id="mod-photo" onclick="setMode('photo')">FOTO</span>
+                    <span class="m-dot" id="m-live" onclick="setCamMode('live')">LIVE</span>
+                    <span class="m-dot" id="m-video" onclick="setCamMode('video')">VIDEO</span>
+                    <span class="m-dot active" id="m-photo" onclick="setCamMode('photo')">FOTO</span>
                 </div>
-
                 <div class="shutter-row">
-                    <div class="gal-btn" onclick="document.getElementById('file-in').click()">
-                        <img id="gal-img" src="https://picsum.photos/100" style="width:100%; height:100%; object-fit:cover;">
+                    <div style="width:40px; height:40px; background:#111; border-radius:8px; border:2px solid white; overflow:hidden;">
+                        <img src="https://picsum.photos/50" style="width:100%;">
                     </div>
-                    <input type="file" id="file-in" hidden accept="image/*,video/*">
-
-                    <div class="main-btn" onclick="takeAction()">
+                    <div class="shutter-main" onclick="takeAction()">
                         <div id="shutter-fill"></div>
                     </div>
-
                     <div style="font-size:1.8rem; cursor:pointer;" onclick="toggleFilters()">✨</div>
                 </div>
             </div>
         </div>
 
         <div id="filter-panel">
-            <div class="f-header">
-                <b style="font-size: 0.8rem; letter-spacing: 1px;">FILTROS DE AURA</b>
-                <div onclick="toggleFilters()" style="cursor:pointer; color:var(--accent); font-weight:bold; font-size:0.8rem;">HECHO</div>
+            <div style="display:flex; justify-content:space-between; padding:0 25px 10px;">
+                <span style="font-size:0.7rem; font-weight:bold;">FILTROS PRO</span>
+                <span onclick="toggleFilters()" style="color:var(--accent); font-size:0.7rem; font-weight:bold;">LISTO</span>
             </div>
             <div class="f-scroll">
-                <div class="f-item active" onclick="applyF('none', this)"><div class="f-circle" style="background:#333;"></div><span>Normal</span></div>
-                <div class="f-item" onclick="applyF('grayscale(100%)', this)"><div class="f-circle" style="background:#555;"></div><span>Moon</span></div>
-                <div class="f-item" onclick="applyF('sepia(0.5) contrast(1.2)', this)"><div class="f-circle" style="background:#e3c4a8;"></div><span>Retro</span></div>
-                <div class="f-item" onclick="applyF('hue-rotate(270deg) brightness(1.2)', this)"><div class="f-circle" style="background:#9b59b6;"></div><span>Cyber</span></div>
-                <div class="f-item" onclick="applyF('invert(1) hue-rotate(180deg)', this)"><div class="f-circle" style="background:#000;"></div><span>X-Ray</span></div>
-                <div class="f-item" onclick="applyF('saturate(5)', this)"><div class="f-circle" style="background:#f1c40f;"></div><span>Vivid</span></div>
+                <div class="f-item active" onclick="applyFilter('none', this)"><div class="f-circle" style="background:#333;"></div>Normal</div>
+                <div class="f-item" onclick="applyFilter('grayscale(100%)', this)"><div class="f-circle" style="background:#555;"></div>Moon</div>
+                <div class="f-item" onclick="applyFilter('sepia(0.5) contrast(1.2)', this)"><div class="f-circle" style="background:#8b5e3c;"></div>Retro</div>
+                <div class="f-item" onclick="applyFilter('hue-rotate(280deg) saturate(1.5)', this)"><div class="f-circle" style="background:var(--accent);"></div>Aura</div>
+                <div class="f-item" onclick="applyFilter('invert(1)', this)"><div class="f-circle" style="background:#fff;"></div>X-Ray</div>
             </div>
         </div>
     </div>
 
     <nav>
-        <div class="n-btn">🖼️</div>
-        <div class="n-btn">🔍</div>
-        <div style="width:60px; height:60px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; transform:translateY(-15px); color: black; font-weight: bold; cursor: pointer;" onclick="openCam()">+</div>
-        <div class="n-btn">🎬</div>
-        <div class="n-btn" style="opacity:1; color:var(--accent);">👤</div>
+        <div class="n-btn" onclick="switchMainView('home', this)">🖼️</div>
+        <div class="n-btn" onclick="switchMainView('search', this)">🔍</div>
+        <div class="add-main" onclick="openCam()">+</div>
+        <div class="n-btn" onclick="switchMainView('reels', this)">🎬</div>
+        <div class="n-btn active" onclick="switchMainView('profile', this)">👤</div>
     </nav>
 
     <script>
         let stream = null;
-        let mode = 'photo';
+        let camMode = 'photo';
 
-        // Gestión de Zonas (Video/Fotos)
-        function switchZone(z) {
-            const area = document.getElementById('content-area');
+        // 1. NAVEGACIÓN ENTRE VISTAS PRINCIPALES
+        function switchMainView(viewId, btn) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.n-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // 2. CAMBIO DE ZONAS EN PERFIL
+        function setZone(z) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            
+            const content = document.getElementById('zone-content');
             if(z === 'video') {
                 document.getElementById('tab-v').classList.add('active');
-                area.innerHTML = '<div class="empty-state">No hay contenido en la Zona de Video todavía.</div>';
+                content.innerText = 'No hay videos en tu zona todavía.';
             } else {
                 document.getElementById('tab-p').classList.add('active');
-                area.innerHTML = '<div class="empty-state">No hay contenido en la Zona de Fotos todavía.</div>';
+                content.innerText = 'Tu galería de fotos está vacía.';
             }
         }
 
-        // Lógica de Cámara
+        // 3. FUNCIONES DE CÁMARA
         async function openCam() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
                 document.getElementById('video-preview').srcObject = stream;
-                document.getElementById('aura-cam').style.display = 'block';
-            } catch(e) { alert("Acceso a cámara denegado o no disponible"); }
+                document.getElementById('aura-cam').style.display = 'flex';
+            } catch(e) { alert("Cámara no disponible"); }
         }
 
         function closeCam() {
@@ -168,35 +197,27 @@
             document.getElementById('aura-cam').style.display = 'none';
         }
 
+        function setCamMode(m) {
+            camMode = m;
+            document.querySelectorAll('.m-dot').forEach(d => d.classList.remove('active'));
+            document.getElementById('m-'+m).classList.add('active');
+            document.getElementById('shutter-fill').style.background = (m==='photo') ? 'white' : 'red';
+            document.getElementById('rec-tag').style.display = (m!=='photo') ? 'block' : 'none';
+        }
+
         function toggleFilters() {
             document.getElementById('filter-panel').classList.toggle('open');
         }
 
-        function applyF(filter, el) {
-            document.getElementById('video-preview').style.filter = filter;
+        function applyFilter(f, el) {
+            document.getElementById('video-preview').style.filter = f;
             document.querySelectorAll('.f-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
         }
 
-        function setMode(m) {
-            mode = m;
-            document.querySelectorAll('.m-dot').forEach(d => d.classList.remove('active'));
-            document.getElementById('mod-'+m).classList.add('active');
-            document.getElementById('shutter-fill').style.background = (m==='photo')?'white':'red';
-            document.getElementById('status-tag').style.display = (m==='live' || m==='video') ? 'block' : 'none';
-        }
-
         function takeAction() {
-            const msg = mode === 'photo' ? "📸 Foto capturada con filtro Aura" : "🎥 Grabando en Zona de Video...";
-            alert(msg);
+            alert(camMode === 'photo' ? "Foto guardada en Galería" : "Grabando...");
         }
-
-        // Galería rápida
-        document.getElementById('file-in').onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => document.getElementById('gal-img').src = ev.target.result;
-            reader.readAsDataURL(e.target.files[0]);
-        };
     </script>
 </body>
 </html>
