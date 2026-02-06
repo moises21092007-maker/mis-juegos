@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Sistema Integrado</title>
+    <title>Aura | App Oficial</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -14,32 +14,31 @@
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- HOME: AURA & STORIES --- */
+        /* --- HOME (AURA BRAND) --- */
         .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         .stories-container { display: flex; padding: 10px 20px; border-bottom: 0.5px solid var(--border); }
-        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.75rem; cursor: pointer; }
         .story-ring { width: 70px; height: 70px; border-radius: 50%; padding: 3px; position: relative; background: var(--aura-grad); }
         .story-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
-        .add-story-btn { position: absolute; bottom: 2px; right: 2px; background: var(--blue); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid black; font-size: 14px; }
 
-        /* --- BUSCAR (2756.jpg Arreglado) --- */
+        /* --- BUSCAR (X FUNCIONAL) --- */
         .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 15px; border-bottom: 1px solid var(--border); }
         .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px 12px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
-        .recent-item { display: flex; align-items: center; padding: 15px; gap: 12px; transition: opacity 0.3s ease; }
+        .recent-item { display: flex; align-items: center; padding: 15px; gap: 12px; transition: opacity 0.3s; }
 
-        /* --- PERFIL (2751.jpg) --- */
+        /* --- PERFIL --- */
         #view-profile { padding: 15px; }
         .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; margin-top: 20px; }
         .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
         .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* --- MODALES --- */
-        #edit-modal, #photo-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 15px; box-sizing: border-box; }
-        .edit-input-box { background: #1c1c1e; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .edit-input-box label { display: block; font-size: 0.75rem; color: var(--text-grey); }
-        .edit-input-box input { width: 100%; background: transparent; border: none; color: white; font-size: 1rem; outline: none; }
+        /* --- CÁMARA Y SUBIR (LO NUEVO) --- */
+        #camera-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; }
+        #video-feed { width: 100%; height: 100%; object-fit: cover; }
+        #upload-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
+        .upload-box { background: var(--panel); width: 85%; border-radius: 25px; padding: 25px; text-align: center; }
+        .opt-btn { background: var(--blue); color: white; padding: 18px; border-radius: 15px; margin-bottom: 12px; font-weight: bold; cursor: pointer; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
@@ -50,127 +49,87 @@
 <body>
 
     <div id="view-home" class="view active">
-        <div class="home-header">
-            <h1 class="brand-name">Aura</h1>
-            <div style="display:flex; gap:20px; font-size:1.3rem;"><span>❤️</span><span>💬</span></div>
-        </div>
+        <div class="home-header"><h1 class="brand-name">Aura</h1></div>
         <div class="stories-container">
-            <div class="story-item" onclick="openPhotoMenu()">
-                <div class="story-ring">
-                    <img class="user-photo-ref" src="https://i.pravatar.cc/150?u=moi">
-                    <div class="add-story-btn">+</div>
-                </div>
-                <span>Tu historia</span>
-            </div>
+            <div class="story-ring"><img class="u-photo" src="https://i.pravatar.cc/150?u=moi"></div>
         </div>
-        <div style="text-align:center; margin-top:100px; color:var(--text-grey);">
-            <p>Bienvenido a Aura</p>
-        </div>
+        <p style="text-align:center; margin-top:50px; color:var(--text-grey);">Bienvenido a tu inicio</p>
     </div>
 
     <div id="view-search" class="view">
-        <div class="search-header">
-            <span>‹</span> <div class="search-bar"><input type="text" placeholder="Buscar"></div>
-        </div>
-        <div style="padding:15px; display:flex; justify-content:space-between;">
-            <b>Recientes</b> 
-            <span style="color:var(--blue); cursor:pointer;" onclick="document.querySelectorAll('.recent-item').forEach(el => el.remove())">Borrar todo</span>
-        </div>
-        <div class="recent-item" id="item-estepona">
-            <div style="width:45px; height:45px; border-radius:50%; background:url('https://i.pravatar.cc/100?u=est') center/cover;"></div>
-            <div style="flex:1;">
-                <span>Ayuntamiento de Estepona</span><br>
-                <small style="color:var(--text-grey)">• más de 1 miembros nuevos</small>
-            </div>
-            <div style="color:var(--text-grey); cursor:pointer; padding:10px;" onclick="eliminarReciente(this)">✕</div>
+        <div class="search-header"><span>‹</span><div class="search-bar"><input type="text" placeholder="Buscar"></div></div>
+        <div style="padding:15px;"><b>Recientes</b></div>
+        <div class="recent-item">
+            <div style="width:45px; height:45px; border-radius:50%; background:#333;"></div>
+            <div style="flex:1;">Ayuntamiento de Estepona</div>
+            <div style="cursor:pointer;" onclick="eliminarReciente(this)">✕</div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
-        <div style="display:flex; justify-content:space-between;"><b>moi_._lopez ∨</b> <span>☰</span></div>
-        <div style="display:flex; align-items:center; gap:25px; margin-top:20px;">
-            <div class="p-ring">
-                <img class="user-photo-ref" src="https://i.pravatar.cc/150?u=moi">
-            </div>
-            <div style="display:flex; gap:20px; text-align:center;">
-                <div><b>104</b><br><small>seguidores</small></div>
-                <div><b>247</b><br><small>seguidos</small></div>
-            </div>
-        </div>
-        <div style="margin-top:15px;">
-            <b id="disp-name">moi_._Lopez</b><br>
-            <span id="disp-bio" style="color:var(--text-grey)">📍 Estepona</span>
-        </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn-p" onclick="openEdit()">Editar perfil</button>
-            <button class="btn-p">Compartir</button>
-        </div>
+        <div style="display:flex; justify-content:space-between;"><b>moi_._lopez ∨</b></div>
+        <div class="p-ring"><img class="u-photo" src="https://i.pravatar.cc/150?u=moi"></div>
+        <div style="margin-top:15px;"><b id="d-name">moi_._Lopez</b><br><span id="d-bio" style="color:var(--text-grey);">📍 Estepona</span></div>
+        <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-p" onclick="openEdit()">Editar perfil</button></div>
     </div>
 
-    <div id="edit-modal">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <span onclick="closeEdit()">✕</span> <b>Editar perfil</b> <span style="color:var(--blue); font-weight:bold; cursor:pointer;" onclick="saveEdit()">✔️</span>
-        </div>
-        <center><span onclick="openPhotoMenu()" style="color:var(--blue); font-weight:bold; cursor:pointer;">Editar foto o avatar</span></center>
-        <div style="margin-top:20px;">
-            <div class="edit-input-box"><label>Nombre</label><input type="text" id="in-name" value="moi_._Lopez"></div>
-            <div class="edit-input-box"><label>Presentación</label><input type="text" id="in-bio" value="📍 Estepona"></div>
-        </div>
+    <div id="camera-layer">
+        <video id="video-feed" autoplay playsinline></video>
+        <div style="position:absolute; top:20px; right:20px; font-size:2rem;" onclick="stopCamera()">✕</div>
     </div>
 
-    <div id="photo-menu" onclick="closePhotoMenu()" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:3000;">
-        <div class="menu-box" onclick="event.stopPropagation()" style="background:#1c1c1e; width:85%; padding:20px; border-radius:20px; text-align:center;">
-            <div style="font-weight:bold; margin-bottom:20px;">Cambiar foto de perfil</div>
-            <label style="background:var(--blue); display:block; padding:15px; border-radius:12px; margin-bottom:10px; cursor:pointer; font-weight:bold;">
-                Seleccionar de la galería <input type="file" style="display:none" accept="image/*" onchange="updateAllPhotos(this)">
-            </label>
-            <div onclick="closePhotoMenu()" style="padding:10px; color:var(--text-grey); cursor:pointer;">Cancelar</div>
+    <div id="upload-menu" onclick="toggleUpload(false)">
+        <div class="upload-box" onclick="event.stopPropagation()">
+            <div class="opt-btn" onclick="startCamera()">📷 Grabar con Cámara</div>
+            <label class="opt-btn" style="background:#333;" for="gal-file">🖼️ Elegir de Galería</label>
+            <input type="file" id="gal-file" style="display:none" accept="image/*,video/*" onchange="handleFile(this)">
+            <div onclick="toggleUpload(false)" style="margin-top:10px; color:var(--text-grey);">Cancelar</div>
         </div>
     </div>
 
     <nav>
         <div class="nav-icon active" onclick="tab('view-home', this)">🏠</div>
         <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
-        <div class="nav-icon" style="font-size:2.2rem; opacity:1;" onclick="openPhotoMenu()">+</div>
-        <div class="nav-icon">🎬</div>
+        <div class="nav-icon" style="font-size:2.5rem; opacity:1;" onclick="toggleUpload(true)">+</div>
         <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
     </nav>
 
     <script>
-        // Función para cambiar de pestañas
+        // Navegación básica
         function tab(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
 
-        // Función para eliminar elementos de búsqueda (2756.jpg)
-        function eliminarReciente(btnX) {
-            const item = btnX.parentElement;
-            item.style.opacity = '0';
-            setTimeout(() => item.remove(), 300);
+        // Eliminar recientes
+        function eliminarReciente(btn) {
+            btn.parentElement.style.opacity = '0';
+            setTimeout(() => btn.parentElement.remove(), 300);
         }
 
-        // Funciones de Edición de Perfil (2752.jpg)
-        function openEdit() { document.getElementById('edit-modal').style.display='block'; }
-        function closeEdit() { document.getElementById('edit-modal').style.display='none'; }
-        function saveEdit() {
-            document.getElementById('disp-name').innerText = document.getElementById('in-name').value;
-            document.getElementById('disp-bio').innerText = document.getElementById('in-bio').value;
-            closeEdit();
+        // Lógica de Subida y Cámara
+        function toggleUpload(show) { document.getElementById('upload-menu').style.display = show ? 'flex' : 'none'; }
+
+        async function startCamera() {
+            toggleUpload(false);
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('video-feed').srcObject = stream;
+                document.getElementById('camera-layer').style.display = 'block';
+            } catch (e) { alert("Error al abrir cámara"); }
         }
 
-        // Funciones de Galería
-        function openPhotoMenu() { document.getElementById('photo-menu').style.display='flex'; }
-        function closePhotoMenu() { document.getElementById('photo-menu').style.display='none'; }
-        function updateAllPhotos(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    document.querySelectorAll('.user-photo-ref').forEach(img => img.src = e.target.result);
-                    closePhotoMenu();
-                };
-                reader.readAsDataURL(input.files[0]);
+        function stopCamera() {
+            const stream = document.getElementById('video-feed').srcObject;
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('camera-layer').style.display = 'none';
+        }
+
+        function handleFile(input) {
+            if(input.files[0]) {
+                alert("Archivo seleccionado: " + input.files[0].name);
+                toggleUpload(false);
             }
         }
     </script>
