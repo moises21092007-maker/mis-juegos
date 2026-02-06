@@ -3,53 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Juego Completo Final</title>
+    <title>Aura | Juego Completo</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
-            --blue: #0095f6; --text-grey: #8e8e93; 
-            --aura-grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); 
+            --blue: #0095f6; --aura-grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); 
         }
         body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- CABECERA Y HOME --- */
-        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); background: black; position: sticky; top: 0; z-index: 100; }
-        .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        .stories-bar { display: flex; padding: 15px; gap: 15px; border-bottom: 0.5px solid var(--border); overflow-x: auto; }
-        .my-story { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; flex-shrink: 0; }
-        .my-story img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
-        .plus-btn { position: absolute; bottom: 2px; right: 2px; background: var(--blue); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid black; font-size: 14px; font-weight: bold; }
+        /* --- 1. INICIO (FOTOS) --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); background: black; }
+        .brand { font-size: 1.8rem; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .stories { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); }
+        .story-me { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
+        .story-me img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
 
-        /* --- BUSCADOR --- */
-        .search-box { background: #262626; border-radius: 10px; margin: 15px; padding: 12px; display: flex; align-items: center; gap: 10px; }
-        .search-box input { background: transparent; border: none; color: white; flex: 1; outline: none; }
-        .result-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; }
-        .result-item img { width: 45px; height: 45px; border-radius: 50%; }
+        /* --- 2. BUSCADOR --- */
+        .search-bar { background: #262626; border-radius: 10px; margin: 15px; padding: 12px; display: flex; gap: 10px; }
+        .search-bar input { background: transparent; border: none; color: white; flex: 1; outline: none; }
+        .res-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
+        .res-item img { width: 45px; height: 45px; border-radius: 50%; }
 
-        /* --- REELS (VÍDEOS) --- */
+        /* --- 3. REELS (VÍDEOS) --- */
         #view-reels { snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
-        .reel-video { height: 100vh; width: 100%; snap-align: start; display: flex; align-items: center; justify-content: center; background: #050505; position: relative; }
+        .reel { height: 100vh; width: 100%; snap-align: start; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #111; }
 
-        /* --- CÁMARA CON CARRUSEL DE FILTROS --- */
+        /* --- CÁMARA PRO CON PANEL --- */
         #cam-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 7000; }
-        #video-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        #dog-overlay { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); font-size: 130px; z-index: 7001; pointer-events: none; }
+        #dog-mask { display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); font-size: 150px; z-index: 7005; pointer-events: none; }
+        
+        .cam-btns { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: space-around; align-items: center; z-index: 7500; }
+        .shutter { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; }
 
-        .filter-picker { position: absolute; bottom: 120px; width: 100%; display: flex; gap: 15px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none; z-index: 7010; }
-        .filter-bubble { min-width: 65px; height: 65px; border-radius: 50%; border: 2px solid white; background: rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .filter-bubble.active { border: 3px solid var(--blue); transform: scale(1.1); background: rgba(0, 149, 246, 0.2); }
-
-        .shutter-container { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 50px; z-index: 7020; }
-        .shutter-btn { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; background: rgba(255,255,255,0.2); }
+        #filter-panel { 
+            position: absolute; bottom: -300px; width: 100%; height: 220px; 
+            background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); 
+            transition: bottom 0.4s ease; z-index: 8000; padding: 20px; 
+        }
+        #filter-panel.open { bottom: 0; }
+        .f-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 15px 5px; }
+        .f-box { min-width: 70px; text-align: center; font-size: 0.8rem; }
+        .f-circle { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; background: #222; }
+        .f-box.active .f-circle { border-color: var(--blue); background: var(--blue); }
 
         /* FILTROS CSS */
-        .f-neon { filter: hue-rotate(90deg) saturate(2); }
-        .f-retro { filter: contrast(1.4) sepia(0.3); }
+        .f-neon { filter: hue-rotate(150deg) saturate(2); }
+        .f-retro { filter: sepia(0.5) contrast(1.2); }
         .f-bw { filter: grayscale(1); }
-        .f-clarendon { filter: contrast(1.2) saturate(1.4) brightness(1.1); }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
@@ -60,51 +63,55 @@
 <body>
 
     <div id="view-home" class="view active">
-        <div class="home-header"><h1 class="brand-name">Aura</h1><div>📥</div></div>
-        <div class="stories-bar">
-            <div class="my-story" onclick="startCam()">
+        <div class="header"><div class="brand">Aura</div></div>
+        <div class="stories">
+            <div class="story-me" onclick="startCam()">
                 <img src="https://i.pravatar.cc/150?u=user1">
-                <div class="plus-btn">+</div>
             </div>
         </div>
-        <div style="text-align:center; color:var(--text-grey); margin-top:40%; padding:20px;">
-            <p><b>¡Hola user-1!</b><br>Tus fotos aparecerán aquí.</p>
-        </div>
+        <div style="text-align:center; padding:50px; color:var(--text-grey);">Inicio vacío (Zona de fotos)</div>
     </div>
 
     <div id="view-search" class="view">
-        <div class="search-box">🔍 <input type="text" id="findUser" placeholder="Buscar amigos reales..." oninput="doSearch()"></div>
-        <div id="results"></div>
+        <div class="search-bar">🔍 <input type="text" id="si" placeholder="Buscar perfil..." oninput="search()"></div>
+        <div id="rs"></div>
     </div>
 
     <div id="view-reels" class="view">
-        <div class="reel-video"><p style="color:var(--text-grey);">No hay vídeos aún.</p></div>
+        <div class="reel"><p style="color:#333;">Vídeo 1</p></div>
+        <div class="reel"><p style="color:#333;">Vídeo 2</p></div>
     </div>
 
     <div id="view-profile" class="view">
-        <div style="padding:40px 20px; text-align:center;">
-            <div class="my-story" style="margin: 0 auto 15px; width:90px; height:90px;"><img src="https://i.pravatar.cc/150?u=user1"></div>
-            <b style="font-size:1.2rem;">@user-1</b>
-            <div style="display:flex; justify-content:center; gap:30px; margin-top:20px;">
-                <div><b>0</b><br><small>Siguiendo</small></div>
-                <div><b>0</b><br><small>Seguidores</small></div>
-                <div><b>0</b><br><small>Posts</small></div>
-            </div>
+        <div style="text-align:center; padding:40px;">
+            <img src="https://i.pravatar.cc/150?u=user1" style="width:90px; border-radius:50%;">
+            <h3>@user-1</h3>
         </div>
     </div>
 
     <div id="cam-layer">
-        <div id="video-container">
-            <video id="video-feed" autoplay playsinline></video>
-            <div id="dog-overlay">🐶</div>
-            <div class="filter-picker" id="picker">
-                </div>
+        <video id="video-feed" autoplay playsinline></video>
+        <div id="dog-mask">🐶</div>
+        <div style="position:absolute; top:25px; left:25px; font-size:2rem;" onclick="stopCam()">✕</div>
+        
+        <div class="cam-btns">
+            <button onclick="toggleF()" style="background:none; border:none; color:white; font-size:2.2rem;">✨</button>
+            <div class="shutter" onclick="alert('¡Foto!')"></div>
+            <button onclick="stopCam()" style="background:none; border:none; color:white; font-size:2.2rem;">🔄</button>
         </div>
-        <div style="position:absolute; top:25px; left:25px; font-size:2rem; cursor:pointer;" onclick="stopCam()">✕</div>
-        <div class="shutter-container">
-            <div style="font-size:1.5rem;">🖼️</div>
-            <div class="shutter-btn" onclick="alert('¡Foto guardada!')"></div>
-            <div style="font-size:1.5rem;" onclick="stopCam()">🔄</div>
+
+        <div id="filter-panel">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <b>FILTROS</b>
+                <span onclick="toggleF()">Cerrar ✕</span>
+            </div>
+            <div class="f-scroll">
+                <div class="f-box active" onclick="apply(0, this)"><div class="f-circle">🚫</div>Normal</div>
+                <div class="f-box" onclick="apply(1, this)"><div class="f-circle">🐶</div>Perrito</div>
+                <div class="f-box" onclick="apply(2, this)"><div class="f-circle" style="background:cyan;"></div>Neon</div>
+                <div class="f-box" onclick="apply(3, this)"><div class="f-circle" style="background:sepia;"></div>Retro</div>
+                <div class="f-box" onclick="apply(4, this)"><div class="f-circle" style="background:#555;"></div>B&N</div>
+            </div>
         </div>
     </div>
 
@@ -117,41 +124,27 @@
     </nav>
 
     <script>
-        const users = [{username: "user-1", name: "Tu Perfil", img: "https://i.pravatar.cc/150?u=user1"}];
-        const filterData = [
-            {n:'Normal', c:'', d:false}, {n:'Perro', c:'', d:true}, 
-            {n:'Neon', c:'f-neon', d:false}, {n:'Retro', c:'f-retro', d:false}, 
-            {n:'B&N', c:'f-bw', d:false}, {n:'Claren', c:'f-clarendon', d:false}
-        ];
+        const udb = [{u:"user-1", i:"https://i.pravatar.cc/150?u=user1"}];
+        const fdb = [{c:'',d:false},{c:'',d:true},{c:'f-neon',d:false},{c:'f-retro',d:false},{c:'f-bw',d:false}];
 
-        // Crear burbujas de filtros
-        const picker = document.getElementById('picker');
-        filterData.forEach((f, i) => {
-            const b = document.createElement('div');
-            b.className = `filter-bubble ${i===0?'active':''}`;
-            b.innerHTML = `<span>${f.d?'🐶':'✨'}</span><br>${f.n}`;
-            b.onclick = () => applyFilter(i, b);
-            picker.appendChild(b);
-        });
-
-        function applyFilter(idx, el) {
+        function toggleF() { document.getElementById('filter-panel').classList.toggle('open'); }
+        
+        function apply(i, el) {
             const v = document.getElementById('video-feed');
-            const d = document.getElementById('dog-overlay');
-            document.querySelectorAll('.filter-bubble').forEach(b => b.classList.remove('active'));
+            const m = document.getElementById('dog-mask');
+            document.querySelectorAll('.f-box').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
-            v.className = filterData[idx].c;
-            d.style.display = filterData[idx].d ? 'block' : 'none';
+            v.className = fdb[i].c;
+            m.style.display = fdb[i].d ? 'block' : 'none';
         }
 
-        function doSearch() {
-            const q = document.getElementById('findUser').value.toLowerCase();
-            const r = document.getElementById('results');
+        function search() {
+            const q = document.getElementById('si').value.toLowerCase();
+            const r = document.getElementById('rs');
             r.innerHTML = '';
-            if(q.length > 0) {
-                users.filter(u => u.username.includes(q)).forEach(u => {
-                    r.innerHTML += `<div class="result-item"><img src="${u.img}"><b>${u.username}</b></div>`;
-                });
-            }
+            if(q) udb.filter(x => x.u.includes(q)).forEach(u => {
+                r.innerHTML += `<div class="res-item"><img src="${u.i}"><b>${u.u}</b></div>`;
+            });
         }
 
         function tab(id, el) {
@@ -163,16 +156,17 @@
 
         async function startCam() {
             try {
-                const s = await navigator.mediaDevices.getUserMedia({ video: true });
+                const s = await navigator.mediaDevices.getUserMedia({video: true});
                 document.getElementById('video-feed').srcObject = s;
                 document.getElementById('cam-layer').style.display = 'block';
-            } catch (e) { alert("Cámara no disponible"); }
+            } catch(e) { alert("Cámara bloqueada"); }
         }
 
         function stopCam() {
             const s = document.getElementById('video-feed').srcObject;
             if(s) s.getTracks().forEach(t => t.stop());
             document.getElementById('cam-layer').style.display = 'none';
+            document.getElementById('filter-panel').classList.remove('open');
         }
     </script>
 </body>
