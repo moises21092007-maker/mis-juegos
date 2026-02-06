@@ -12,68 +12,44 @@
         }
         body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
         
-        /* VISTAS */
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* HEADER ESTILO FOTO (LOGO EN LA ESQUINA) */
+        /* HEADER LOGO ESQUINA */
         .glass-header {
             position: sticky; top: 0; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 20px; background: rgba(13, 13, 13, 0.95);
             border-bottom: 0.5px solid var(--border);
         }
-        
         .logo-container { position: relative; display: flex; align-items: center; justify-content: center; }
-        .logo-text {
-            font-size: 1.4rem; font-weight: 900; letter-spacing: 1px;
-            background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            z-index: 2;
-        }
-        .logo-glow {
-            position: absolute; width: 130%; height: 130%;
-            border: 1.5px solid #e52e71; border-radius: 50%;
-            opacity: 0.4; filter: blur(3px); box-shadow: 0 0 8px #ff8a00;
-        }
+        .logo-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; z-index: 2; }
+        .logo-glow { position: absolute; width: 130%; height: 130%; border: 1.5px solid #e52e71; border-radius: 50%; opacity: 0.4; filter: blur(3px); box-shadow: 0 0 8px #ff8a00; }
 
-        /* BARRA DE HISTORIAS */
+        /* BARRA HISTORIAS */
         .stories-section { padding: 15px 0; border-bottom: 0.5px solid var(--border); }
         .stories-title { padding: 0 20px 10px; font-size: 0.9rem; font-weight: bold; }
         .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
-        .stories-container::-webkit-scrollbar { display: none; }
-
+        
         .sq-story { position: relative; min-width: 65px; height: 65px; cursor: pointer; }
         .sq-img { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; border: 2px solid var(--border); }
         .sq-img img { width: 100%; height: 100%; object-fit: cover; }
         
         .my-story .sq-img { border: 2px solid #e52e71; }
-        .add-badge { 
-            position: absolute; bottom: -4px; right: -4px; background: var(--blue); 
-            border: 2px solid #000; width: 18px; height: 18px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;
-        }
+        .add-badge { position: absolute; bottom: -4px; right: -4px; background: var(--blue); border: 2px solid #000; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; z-index: 5; }
 
-        /* BUSCADOR */
-        .search-container { padding: 15px; }
-        .search-input { width: 100%; background: #1a1a1a; border: none; padding: 12px; border-radius: 10px; color: white; outline: none; }
-
-        /* PERFIL */
-        .prof-header { padding: 20px; }
-        .action-btn { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
-
-        /* NAV INFERIOR */
+        /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-icon { font-size: 1.4rem; opacity: 0.4; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
 
-        /* EDITOR MODAL */
-        #edit-modal { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; transition: 0.4s; }
-        .field { padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
-        .field select { width: 100%; background: #262626; color: white; padding: 10px; border-radius: 8px; }
-        .field select option { background: white; color: black; }
+        /* VISUALIZADOR HISTORIAS */
+        #story-viewer { display: none; position: fixed; inset: 0; background: black; z-index: 20000; flex-direction: column; }
+        .progress-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.3); position: relative; overflow: hidden; }
+        #story-progress-fill { width: 0%; height: 100%; background: white; }
 
-        /* CÁMARA */
-        #cam-overlay { display: none; position: fixed; inset: 0; background: black; z-index: 9000; }
+        /* EDITOR Y CÁMARA */
+        #edit-modal, #cam-overlay { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; transition: 0.4s; }
         #cam-v { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
@@ -81,48 +57,48 @@
 
     <div id="v-home" class="view active">
         <header class="glass-header">
-            <div class="logo-container">
-                <div class="logo-text">AURA</div>
-                <div class="logo-glow"></div>
-            </div>
+            <div class="logo-container"><div class="logo-text">AURA</div><div class="logo-glow"></div></div>
             <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.3rem;">📩</div>
         </header>
 
         <div class="stories-section">
             <div class="stories-title">Historias</div>
             <div class="stories-container">
-                <div class="sq-story my-story" onclick="openCam()">
-                    <div class="sq-img"><img id="my-avatar" src="https://i.pravatar.cc/150?u=aura"></div>
-                    <div class="add-badge">+</div>
+                <div class="sq-story my-story">
+                    <div class="sq-img" onclick="openStoryViewer(true)"><img src="https://i.pravatar.cc/150?u=me"></div>
+                    <div class="add-badge" onclick="openCam()">+</div>
                 </div>
-                <div class="sq-story"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=1"></div></div>
-                <div class="sq-story"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=2"></div></div>
-                <div class="sq-story"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=3"></div></div>
+                <div class="sq-story" onclick="openStoryViewer(false)"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=a1"></div></div>
+                <div class="sq-story" onclick="openStoryViewer(false)"><div class="sq-img"><img src="https://i.pravatar.cc/150?u=a2"></div></div>
             </div>
         </div>
-        
-        <div style="text-align:center; margin-top:100px; opacity:0.1; font-size:4rem; font-weight:900;">AURA</div>
     </div>
 
-    <div id="v-search" class="view">
-        <div class="search-container"><input type="text" class="search-input" placeholder="Buscar usuarios..."></div>
-        <div style="text-align:center; color:var(--text-grey); margin-top:50px;">Explora el mundo Aura</div>
+    <div id="story-viewer">
+        <div style="display:flex; gap:4px; padding:10px; position:absolute; top:0; width:100%; box-sizing:border-box;">
+            <div class="progress-bar"><div id="story-progress-fill"></div></div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:25px 15px; z-index:2;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:32px; height:32px; border-radius:50%; background:var(--aura-grad);"></div>
+                <b id="st-user">Usuario</b>
+            </div>
+            <span onclick="closeStoryViewer()" style="font-size:1.8rem;">✕</span>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">
+            <div id="st-empty">No hay contenido todavía.</div>
+        </div>
     </div>
 
-    <div id="v-reels" class="view">
-        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">🎬 Feed de Vídeos</div>
-    </div>
-
-    <div id="v-dms" class="view">
-        <header class="glass-header"><b onclick="showView('v-home')">← Volver</b><b>Mensajes</b><span></span></header>
-        <div style="padding:40px; text-align:center; color:var(--text-grey);">No tienes mensajes nuevos.</div>
-    </div>
-
+    <div id="v-search" class="view"><div style="padding:20px;"><input type="text" placeholder="Buscar en Aura..." style="width:100%; background:#1a1a1a; border:none; padding:12px; border-radius:10px; color:white;"></div></div>
+    <div id="v-reels" class="view"><div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">🎬 Feed de Vídeos</div></div>
+    <div id="v-dms" class="view"><header class="glass-header"><b onclick="showView('v-home')">← Volver</b><b>Mensajes</b><span></span></header></div>
+    
     <div id="v-profile" class="view">
         <header class="glass-header"><b id="h-user">user-1</b></header>
-        <div class="prof-header">
+        <div style="padding:20px;">
             <div style="display:flex; align-items:center; gap:20px; margin-bottom:15px;">
-                <div class="sq-img" style="width:80px; height:80px;"><img src="https://i.pravatar.cc/150?u=aura"></div>
+                <div class="sq-img" style="width:80px; height:80px;"><img src="https://i.pravatar.cc/150?u=me"></div>
                 <div style="display:flex; flex:1; justify-content:space-around; text-align:center;">
                     <div><b>0</b><br><small>Posts</small></div>
                     <div><b>0</b><br><small>Seguidores</small></div>
@@ -132,73 +108,91 @@
             <b id="p-name">Tu Nombre</b><br>
             <span id="p-user" style="color:var(--text-grey);">@user-1</span>
             <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="action-btn" onclick="openEdit()">Editar perfil</button>
-                <button class="action-btn" onclick="alert('Enlace copiado')">Compartir</button>
+                <button onclick="openEdit()" style="flex:1; background:#262626; color:white; border:none; padding:10px; border-radius:8px; font-weight:600;">Editar perfil</button>
             </div>
         </div>
     </div>
 
-    <div id="edit-modal">
-        <header class="glass-header"><span onclick="closeEdit()">Cancelar</span><b>Editar</b><span onclick="saveEdit()" style="color:var(--blue); font-weight:bold;">Listo</span></header>
-        <div class="field"><label>Nombre</label><input type="text" id="in-name" style="width:100%; background:none; border:none; color:white; padding:10px 0;"></div>
-        <div class="field"><label>Usuario</label><input type="text" id="in-user" style="width:100%; background:none; border:none; color:white; padding:10px 0;"></div>
-        <div class="field"><label>Género</label><select id="in-gender"><option>Masculino</option><option>Femenino</option><option>Otro</option></select></div>
-    </div>
+    <nav>
+        <div class="nav-icon active" id="n-home" onclick="showView('v-home')">🏠</div>
+        <div class="nav-icon" id="n-search" onclick="showView('v-search')">🔍</div>
+        <div class="nav-icon" onclick="openCam()">➕</div>
+        <div class="nav-icon" id="n-reels" onclick="showView('v-reels')">🎬</div>
+        <div class="nav-icon" id="n-profile" onclick="showView('v-profile')">👤</div>
+    </nav>
 
     <div id="cam-overlay">
         <video id="cam-v" autoplay playsinline></video>
         <div onclick="closeCam()" style="position:absolute; top:30px; left:25px; font-size:2rem;">✕</div>
-        <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:center;"><div onclick="alert('Publicado'); closeCam()" style="width:70px; height:70px; border:5px solid white; border-radius:50%;"></div></div>
+        <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:center;"><div onclick="alert('Historia guardada'); closeCam()" style="width:70px; height:70px; border:5px solid white; border-radius:50%;"></div></div>
     </div>
 
-    <nav>
-        <div class="nav-icon active" onclick="showView('v-home', this)">🏠</div>
-        <div class="nav-icon" onclick="showView('v-search', this)">🔍</div>
-        <div class="nav-icon" onclick="openCam()">➕</div>
-        <div class="nav-icon" onclick="showView('v-reels', this)">🎬</div>
-        <div class="nav-icon" onclick="showView('v-profile', this)">👤</div>
-    </nav>
+    <div id="edit-modal">
+        <header class="glass-header"><span onclick="closeEdit()">Cancelar</span><b>Editar</b><span onclick="saveEdit()" style="color:var(--blue); font-weight:bold;">Listo</span></header>
+        <div style="padding:20px;">
+            <input type="text" id="in-name" placeholder="Nombre" style="width:100%; background:none; border-bottom:1px solid #262626; color:white; padding:15px 0; margin-bottom:10px;">
+            <input type="text" id="in-user" placeholder="Usuario" style="width:100%; background:none; border-bottom:1px solid #262626; color:white; padding:15px 0;">
+        </div>
+    </div>
 
     <script>
-        // Sistema de memoria (LocalStorage)
-        window.onload = function() {
+        let storyTimer;
+
+        // Cargar datos
+        window.onload = () => {
             const n = localStorage.getItem('aura_n');
             const u = localStorage.getItem('aura_u');
             if(n) { document.getElementById('p-name').innerText = n; document.getElementById('in-name').value = n; }
             if(u) { document.getElementById('p-user').innerText = '@'+u; document.getElementById('h-user').innerText = u; document.getElementById('in-user').value = u; }
         };
 
-        function showView(id, el) {
+        function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(el) {
-                document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-                el.classList.add('active');
-            }
+            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
         }
 
+        // Historias
+        function openStoryViewer(isMine) {
+            const viewer = document.getElementById('story-viewer');
+            const fill = document.getElementById('story-progress-fill');
+            document.getElementById('st-user').innerText = isMine ? "Tu Historia" : "Amigo";
+            viewer.style.display = 'flex';
+            fill.style.transition = "none";
+            fill.style.width = "0%";
+            setTimeout(() => {
+                fill.style.transition = "5s linear";
+                fill.style.width = "100%";
+            }, 100);
+            storyTimer = setTimeout(closeStoryViewer, 5100);
+        }
+        function closeStoryViewer() {
+            document.getElementById('story-viewer').style.display = 'none';
+            clearTimeout(storyTimer);
+        }
+
+        // Cámara
         async function openCam() {
             try {
                 const s = await navigator.mediaDevices.getUserMedia({video:true});
                 document.getElementById('cam-v').srcObject = s;
-                document.getElementById('cam-overlay').style.display = 'block';
-            } catch(e) { alert("Permite el acceso a la cámara"); }
+                document.getElementById('cam-overlay').style.top = '0';
+            } catch(e) { alert("Acceso denegado"); }
         }
-
         function closeCam() {
             const v = document.getElementById('cam-v');
             if(v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
-            document.getElementById('cam-overlay').style.display = 'none';
+            document.getElementById('cam-overlay').style.top = '100%';
         }
 
+        // Editor
         function openEdit() { document.getElementById('edit-modal').style.top = '0'; }
         function closeEdit() { document.getElementById('edit-modal').style.top = '100%'; }
-        
         function saveEdit() {
             const n = document.getElementById('in-name').value;
             const u = document.getElementById('in-user').value;
             document.getElementById('p-name').innerText = n;
-            document.getElementById('p-user').innerText = '@' + u;
+            document.getElementById('p-user').innerText = '@'+u;
             document.getElementById('h-user').innerText = u;
             localStorage.setItem('aura_n', n);
             localStorage.setItem('aura_u', u);
