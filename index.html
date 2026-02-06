@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Juego Completo Final</title>
+    <title>Aura | Pro Edition Final</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -14,42 +14,46 @@
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- HOME (LIMPIO Y SIN BOTS) --- */
-        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
+        /* --- HOME (ZONA DE FOTOS) --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); position: sticky; top: 0; background: black; z-index: 100; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        .stories-bar { display: flex; padding: 15px; gap: 15px; border-bottom: 0.5px solid var(--border); }
-        .story-item { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; }
-        .story-item img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
-        .plus-icon { position: absolute; bottom: 2px; right: 2px; background: var(--blue); color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 2px solid black; font-size: 12px; font-weight: bold; }
+        
+        .post-photo { width: 100%; border-bottom: 0.5px solid var(--border); margin-bottom: 10px; }
+        .post-header { display: flex; align-items: center; gap: 10px; padding: 10px; }
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; }
+        .photo-content { width: 100%; aspect-ratio: 1/1; background: #111; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold; }
+        .post-actions { padding: 12px; font-size: 1.5rem; display: flex; gap: 18px; }
 
-        /* --- BUSCADOR (SIN SUGERENCIAS AUTOMÁTICAS) --- */
-        .search-box { background: #262626; border-radius: 10px; margin: 15px; padding: 12px; display: flex; align-items: center; gap: 10px; color: var(--text-grey); }
-        .search-box input { background: transparent; border: none; color: white; flex: 1; outline: none; }
+        /* --- REELS (ZONA DE VÍDEOS VERTICALES) --- */
+        #view-reels { overflow-y: scroll; snap-type: y mandatory; padding-bottom: 0; scrollbar-width: none; }
+        #view-reels::-webkit-scrollbar { display: none; }
+        .video-snap { height: 100vh; width: 100%; snap-align: start; position: relative; background: #000; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #111; }
+        .video-info { position: absolute; bottom: 100px; left: 15px; z-index: 10; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        .video-sidebar { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
 
-        /* --- PERFIL (ESTILO TIKTOK USER-1) --- */
+        /* --- PERFIL (USER-1 REAL) --- */
         .profile-container { padding: 20px; text-align: center; }
-        .p-avatar { width: 90px; height: 90px; border-radius: 50%; padding: 3px; background: var(--aura-grad); margin: 0 auto 10px; }
+        .p-avatar { width: 90px; height: 90px; border-radius: 50%; padding: 3px; background: var(--aura-grad); margin: 0 auto 12px; }
         .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
         .p-stats-row { display: flex; justify-content: center; gap: 25px; margin: 20px 0; }
         .stat-btn { background: none; border: none; color: white; cursor: pointer; }
         .stat-btn b { display: block; font-size: 1.2rem; }
         .stat-btn span { font-size: 0.8rem; color: var(--text-grey); }
 
-        /* --- CÁMARA CON FILTROS INSTAGRAM --- */
+        /* --- CÁMARA PRO CON FILTROS --- */
         #cam-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 7000; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; transition: filter 0.4s; }
-        .filter-label { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); }
+        .filter-label { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 8px 18px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase; }
         .cam-ui { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: space-around; align-items: center; }
-        .magic-btn { font-size: 1.8rem; background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 55px; height: 55px; color: white; cursor: pointer; }
-        .shutter { width: 75px; height: 75px; border: 5px solid white; border-radius: 50%; }
+        .shutter { width: 70px; height: 70px; border: 5px solid white; border-radius: 50%; background: rgba(255,255,255,0.1); }
 
-        /* FILTROS CSS */
+        /* FILTROS CSS ESTILO IG */
         .f-clarendon { filter: contrast(1.2) saturate(1.4) brightness(1.1); }
         .f-moon { filter: grayscale(1) contrast(1.1); }
         .f-nashville { filter: sepia(0.3) contrast(1.2) brightness(1.1) hue-rotate(-15deg); }
-        .f-reyes { filter: sepia(0.4) contrast(0.9) brightness(1.1) saturate(0.8); }
+        .f-reyes { filter: sepia(0.4) contrast(0.9) saturate(0.8); }
 
-        /* NAV */
+        /* NAVEGACIÓN */
         nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-icon { font-size: 1.6rem; opacity: 0.4; color: white; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
@@ -60,25 +64,37 @@
 <body>
 
     <div id="view-home" class="view active">
-        <div class="home-header"><h1 class="brand-name">Aura</h1><div style="font-size:1.5rem;">📥</div></div>
-        <div class="stories-bar">
-            <div class="story-item"><img src="https://i.pravatar.cc/150?u=user1"><div class="plus-icon">+</div></div>
+        <div class="home-header"><h1 class="brand-name">Aura</h1><div>📥</div></div>
+        <div class="stories-bar" style="display:flex; padding:15px; border-bottom:0.5px solid var(--border);">
+            <div class="p-avatar" style="width:60px; height:60px; margin:0;"><img src="https://i.pravatar.cc/150?u=user1"></div>
         </div>
-        <div style="text-align:center; margin-top:40%; color:var(--text-grey); padding:30px;">
-            <p><b>¡Bienvenido a Aura!</b><br>No hay publicaciones porque no sigues a nadie todavía.</p>
+        <div id="photo-feed">
+            <div class="post-photo">
+                <div class="post-header">
+                    <img src="https://i.pravatar.cc/150?u=aura">
+                    <b>comunidad_aura</b>
+                </div>
+                <div class="photo-content">ZONA DE FOTOS</div>
+                <div class="post-actions">❤️ 💬 ✈️</div>
+            </div>
+            <p style="text-align:center; color:var(--text-grey); padding:20px;">No hay más fotos por ahora.</p>
         </div>
     </div>
 
     <div id="view-search" class="view">
-        <div class="search-box">🔍 <input type="text" placeholder="Buscar amigos reales..."></div>
-        <div id="search-list" style="text-align:center; color:var(--text-grey); margin-top:50px;">
-            Escribe para empezar a buscar.
-        </div>
+        <div style="background:#262626; border-radius:10px; margin:15px; padding:12px; color:var(--text-grey);">🔍 Buscar...</div>
+        <div style="text-align:center; color:var(--text-grey); margin-top:50px;">Limpio de bots. Empieza a buscar personas.</div>
     </div>
 
     <div id="view-reels" class="view">
-        <div style="height:100%; background:#111; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">
-            Explora contenido global.
+        <div class="video-snap">
+            <div class="video-info"><b>@aura_oficial</b><p>Bienvenido a la zona de vídeos vertical 🎬</p></div>
+            <div class="video-sidebar"><div>❤️</div><div>💬</div><div>✈️</div></div>
+            <div style="color:#222;">[ VÍDEO 1 ]</div>
+        </div>
+        <div class="video-snap" style="background:#050505;">
+            <div class="video-info"><b>@user_test</b><p>Desliza hacia arriba para ver más 👆</p></div>
+            <div style="color:#222;">[ VÍDEO 2 ]</div>
         </div>
     </div>
 
@@ -101,9 +117,9 @@
         <div class="filter-label" id="filter-name">Normal</div>
         <div style="position:absolute; top:25px; right:25px; font-size:2rem; cursor:pointer;" onclick="stopCam()">✕</div>
         <div class="cam-ui">
-            <button class="magic-btn" onclick="changeFilter()">✨</button>
+            <button onclick="changeFilter()" style="background:none; border:none; color:white; font-size:1.8rem;">✨</button>
             <div class="shutter"></div>
-            <button class="magic-btn" onclick="stopCam()">📸</button>
+            <button onclick="stopCam()" style="background:none; border:none; color:white; font-size:1.8rem;">📸</button>
         </div>
     </div>
 
@@ -133,14 +149,14 @@
 
         function openList(title) {
             document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-body').innerText = `No tienes ${title.toLowerCase()} ahora mismo.`;
+            document.getElementById('modal-body').innerText = `No tienes ${title.toLowerCase()} todavía.`;
             document.getElementById('list-modal').style.display = 'block';
         }
 
-        // --- FILTROS DE INSTAGRAM ---
         let fIdx = 0;
         const filters = [
-            {n:'Normal', c:''}, {n:'Clarendon', c:'f-clarendon'}, {n:'Moon', c:'f-moon'}, {n:'Nashville', c:'f-nashville'}, {n:'Reyes', c:'f-reyes'}
+            {n:'Normal', c:''}, {n:'Clarendon', c:'f-clarendon'}, 
+            {n:'Moon', c:'f-moon'}, {n:'Nashville', c:'f-nashville'}, {n:'Reyes', c:'f-reyes'}
         ];
 
         function changeFilter() {
@@ -157,7 +173,7 @@
                 const s = await navigator.mediaDevices.getUserMedia({ video: true });
                 document.getElementById('video-feed').srcObject = s;
                 document.getElementById('cam-layer').style.display = 'block';
-            } catch (e) { alert("Acceso a cámara denegado."); }
+            } catch (e) { alert("Cámara no disponible"); }
         }
 
         function stopCam() {
