@@ -17,7 +17,7 @@
 
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- SISTEMA DE ENTRADA REAL --- */
+        /* --- PANTALLA DE ENTRADA --- */
         #auth-overlay {
             position: fixed; inset: 0; background: var(--bg); z-index: 10000;
             display: flex; align-items: center; justify-content: center; padding: 25px;
@@ -57,13 +57,14 @@
         .story-square { 
             width: 135px; height: 135px; background: #0a0a0a; border-radius: 30px; 
             display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #1a1a1a;
+            cursor: pointer;
         }
         .story-square::before {
             content: ''; position: absolute; inset: 0; padding: 3px; border-radius: 30px;
             background: var(--rainbow); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude;
         }
-        .story-label { margin-top: 15px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; color: #fff; text-align: left; }
+        .story-label { margin-top: 15px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; color: #fff; }
 
         /* --- PERFIL --- */
         .p-card { padding: 30px 25px; }
@@ -77,7 +78,7 @@
         .stat-val { font-size: 1.2rem; font-weight: 800; display: block; }
         .stat-label { font-size: 0.6rem; color: #555; font-weight: 900; text-transform: uppercase; }
 
-        /* --- NAV --- */
+        /* --- NAVEGACIÓN --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 38px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #1a1a1a; z-index: 2000; }
         .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
         .n-btn.active { opacity: 1; color: var(--accent); }
@@ -95,23 +96,23 @@
         <div class="auth-box" id="login-section">
             <div class="auth-header">
                 <h1>AURA</h1>
-                <p>Welcome back</p>
+                <p>Bienvenido de nuevo</p>
             </div>
-            <div class="form-group"><input type="text" id="l-user" class="auth-input" placeholder="Username"></div>
-            <div class="form-group"><input type="password" id="l-pass" class="auth-input" placeholder="Password"></div>
-            <button class="btn-primary" onclick="attemptAuth('login')">Log In</button>
-            <div class="auth-footer">Don't have an account? <b onclick="switchAuth('reg')">Sign Up</b></div>
+            <div class="form-group"><input type="text" id="l-user" class="auth-input" placeholder="Nombre de usuario"></div>
+            <div class="form-group"><input type="password" id="l-pass" class="auth-input" placeholder="Contraseña"></div>
+            <button class="btn-primary" onclick="attemptAuth('login')">Entrar</button>
+            <div class="auth-footer">¿No tienes cuenta? <b onclick="switchAuth('reg')">Regístrate</b></div>
         </div>
 
         <div class="auth-box" id="reg-section" style="display:none;">
             <div class="auth-header">
                 <h1>AURA</h1>
-                <p>Join the community</p>
+                <p>Únete a la comunidad</p>
             </div>
-            <div class="form-group"><input type="text" id="r-user" class="auth-input" placeholder="Choose a username"></div>
-            <div class="form-group"><input type="password" id="r-pass" class="auth-input" placeholder="Create a password"></div>
-            <button class="btn-primary" onclick="attemptAuth('reg')">Sign Up</button>
-            <div class="auth-footer">Already have an account? <b onclick="switchAuth('login')">Log In</b></div>
+            <div class="form-group"><input type="text" id="r-user" class="auth-input" placeholder="Elige un usuario"></div>
+            <div class="form-group"><input type="password" id="r-pass" class="auth-input" placeholder="Crea una contraseña"></div>
+            <button class="btn-primary" onclick="attemptAuth('reg')">Registrarme</button>
+            <div class="auth-footer">¿Ya tienes cuenta? <b onclick="switchAuth('login')">Inicia sesión</b></div>
         </div>
     </div>
 
@@ -120,19 +121,19 @@
             <div class="header-elite"><div class="aura-logo">AURA</div></div>
             <div class="home-content">
                 <div style="display: inline-block;">
-                    <div class="story-square">
+                    <div class="story-square" onclick="alert('Abriendo cámara para historia...')">
                         <span id="story-avatar" style="font-size:3.5rem;">👤</span>
                     </div>
-                    <div class="story-label">My Story</div>
+                    <div class="story-label">Mi Historia</div>
                 </div>
             </div>
         </div>
 
         <div id="view-search" class="view">
             <div style="padding:40px 25px;">
-                <h2 style="font-family:'Orbitron'; font-size:1.1rem; letter-spacing:2px;">Explore</h2>
+                <h2 style="font-family:'Orbitron'; font-size:1.1rem; letter-spacing:2px;">Explorar</h2>
                 <div style="background:#111; padding:18px; border-radius:20px; margin-top:20px; border:1px solid #222;">
-                    <input type="text" placeholder="Search for people..." style="background:transparent; border:none; color:white; outline:none; width:100%; font-size:1rem;">
+                    <input type="text" placeholder="Buscar personas..." style="background:transparent; border:none; color:white; outline:none; width:100%; font-size:1rem;">
                 </div>
             </div>
         </div>
@@ -142,14 +143,14 @@
                 <div class="p-header">
                     <div class="p-avatar" id="p-avatar-letter">?</div>
                     <div class="p-stats">
-                        <div><span class="stat-val">0</span><span class="stat-label">Posts</span></div>
+                        <div><span class="stat-val">0</span><span class="stat-label">Publics</span></div>
                         <div><span class="stat-val">0</span><span class="stat-label">Fans</span></div>
-                        <div><span class="stat-val">0</span><span class="stat-label">Following</span></div>
+                        <div><span class="stat-val">0</span><span class="stat-label">Siguiendo</span></div>
                     </div>
                 </div>
-                <h2 id="p-username" style="font-family:'Orbitron'; margin:0; letter-spacing:1px;">User</h2>
-                <p style="color:#666; margin:10px 0 25px; font-size:0.95rem;">Premium Member.</p>
-                <button class="btn-primary" style="background:#111; color:#fff; border:1px solid #222;" onclick="logout()">Log Out</button>
+                <h2 id="p-username" style="font-family:'Orbitron'; margin:0; letter-spacing:1px;">Usuario</h2>
+                <p style="color:#666; margin:10px 0 25px; font-size:0.95rem;">Miembro de Aura.</p>
+                <button class="btn-primary" style="background:#111; color:#fff; border:1px solid #222;" onclick="logout()">Cerrar sesión</button>
                 
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:3px; margin-top:30px;">
                     <div style="aspect-ratio:1/1; background:#0a0a0a; border-radius:4px;"></div>
@@ -162,12 +163,13 @@
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
             <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add" onclick="alert('Camera coming soon')">+</div>
+            <div class="n-add" onclick="alert('Cámara Aura activada')">+</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
 
     <script>
+        // Carga automática si ya hay sesión
         window.onload = () => {
             const savedUser = localStorage.getItem('aura_session');
             if(savedUser) loadApp(savedUser);
@@ -182,7 +184,7 @@
             if(type === 'reg') {
                 const u = document.getElementById('r-user').value.trim();
                 const p = document.getElementById('r-pass').value.trim();
-                if(u.length < 3) return alert("Username too short");
+                if(u.length < 3) return alert("El nombre es muy corto");
                 localStorage.setItem('aura_db_u', u);
                 localStorage.setItem('aura_db_p', p);
                 localStorage.setItem('aura_session', u);
@@ -194,7 +196,7 @@
                     localStorage.setItem('aura_session', u);
                     loadApp(u);
                 } else {
-                    alert("Wrong username or password");
+                    alert("Usuario o contraseña incorrectos");
                 }
             }
         }
