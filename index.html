@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Full Functional</title>
+    <title>Aura | Final Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
-        :root { --bg: #000; --accent: #00ffd5; --rainbow: linear-gradient(45deg, #ff0055, #00ffd5, #cc00ff); --glass: rgba(10,10,10,0.98); }
+        :root { --bg: #000; --accent: #00ffd5; --glass: rgba(10,10,10,0.95); }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
         /* --- ACCESO --- */
@@ -15,192 +15,180 @@
         .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 12px; outline: none; box-sizing: border-box; }
         .btn-main { width: 100%; padding: 18px; border-radius: 40px; border: none; background: var(--accent); color: #000; font-weight: 800; cursor: pointer; }
 
-        /* --- APP --- */
+        /* --- APP STRUCTURE --- */
         #main-app { display: none; height: 100vh; }
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- ZONA 1: INICIO (FOTOS) --- */
+        /* --- FEED & POSTS --- */
         .aura-logo { font-family: 'Orbitron'; font-size: 2rem; letter-spacing: 8px; text-align: center; padding: 40px 0 10px; }
-        .stories-container { display: flex; gap: 15px; padding: 20px; overflow-x: auto; border-bottom: 1px solid #111; }
-        .story-circle { width: 65px; height: 65px; border-radius: 22px; background: #111; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
-        .story-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .feed-container { padding: 10px 0; }
-        .post-card { width: 100%; border-bottom: 1px solid #111; margin-bottom: 20px; }
+        .post-card { width: 100%; border-bottom: 1px solid #111; padding-bottom: 15px; }
         .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
-        .mini-avatar { width: 30px; height: 30px; border-radius: 8px; background: #222; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+        .mini-avatar { width: 32px; height: 32px; border-radius: 10px; background: #222; overflow: hidden; }
         .post-img { width: 100%; aspect-ratio: 1/1; background: #050505; object-fit: cover; }
+        .post-actions { padding: 12px 15px; display: flex; gap: 20px; font-size: 1.5rem; }
+        .like-btn.active { color: #ff0055; }
+        .likes-count { padding: 0 15px; font-size: 0.85rem; font-weight: 800; }
 
-        /* --- ZONA 2: BUSCAR --- */
-        .search-container { padding: 50px 20px; }
-        .search-bar { background: #111; padding: 15px; border-radius: 15px; display: flex; gap: 10px; border: 1px solid #222; }
-
-        /* --- ZONA 3: VÍDEO (REELS) --- */
-        .video-scroll { height: 100vh; scroll-snap-type: y mandatory; overflow-y: scroll; }
-        .video-item { height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
-        .video-ui { position: absolute; bottom: 130px; left: 20px; }
+        /* --- COMENTARIOS (SHEET) --- */
+        #comment-sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 60vh; background: var(--glass); backdrop-filter: blur(20px); border-top: 1px solid #222; border-radius: 30px 30px 0 0; z-index: 9500; transition: 0.4s; padding: 20px; }
+        #comment-sheet.active { bottom: 0; }
+        .comment-list { height: 70%; overflow-y: auto; margin-top: 15px; }
+        .comment-item { margin-bottom: 12px; font-size: 0.9rem; border-left: 2px solid var(--accent); padding-left: 10px; }
 
         /* --- NAV --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
         .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
         .n-btn.active { opacity: 1; color: var(--accent); }
         .n-add { width: 55px; height: 55px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); }
-
-        /* --- MODAL EDITAR --- */
-        #edit-modal { display: none; position: fixed; inset: 0; background: #000; z-index: 9000; padding: 30px; }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
         <div class="auth-box">
-            <h1 style="font-family:'Orbitron'; letter-spacing:10px;">AURA</h1>
+            <h1 class="aura-logo">AURA</h1>
             <input type="email" id="acc-email" class="auth-input" placeholder="Tu Email">
             <button class="btn-main" onclick="handleAuth()">ENTRAR</button>
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+                <button onclick="handleAuth('Google')" style="background:white; color:black; border:none; padding:12px; border-radius:30px; font-weight:700;">Google</button>
+                <button onclick="handleAuth('Facebook')" style="background:#1877F2; color:white; border:none; padding:12px; border-radius:30px; font-weight:700;">Facebook</button>
+            </div>
         </div>
     </div>
 
     <div id="main-app">
         <div id="view-home" class="view active">
             <div class="aura-logo">AURA</div>
-            <div class="stories-container">
-                <div class="story-circle"><img class="u-img" src="" style="display:none;"><span class="u-init">?</span></div>
-            </div>
-            <div id="feed" class="feed-container">
-                </div>
-        </div>
-
-        <div id="view-search" class="view">
-            <div class="search-container">
-                <h2 style="font-family:'Orbitron';">EXPLORAR</h2>
-                <div class="search-bar">🔍 <input type="text" placeholder="Buscar amigos..." style="background:transparent; border:none; color:white; width:100%; outline:none;"></div>
-                <div style="margin-top:20px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div style="height:150px; background:#111; border-radius:15px;"></div>
-                    <div style="height:150px; background:#111; border-radius:15px;"></div>
-                </div>
-            </div>
+            <div id="feed"></div>
         </div>
 
         <div id="view-video" class="view">
-            <div class="video-scroll">
-                <div class="video-item">
-                    <div class="video-ui"><b>@video_zone</b><p>Área de vídeos verticales</p></div>
-                    <span style="font-size:5rem; opacity:0.1;">🎬</span>
-                </div>
-                <div class="video-item">
-                    <div class="video-ui"><b>@creador_2</b><p>Segundo video del feed</p></div>
-                    <span style="font-size:5rem; opacity:0.1;">🎬</span>
-                </div>
+            <div style="height:100vh; display:flex; align-items:center; justify-content:center; opacity:0.1;">
+                <h1 style="font-family:'Orbitron';">VIDEO ZONE</h1>
             </div>
         </div>
 
         <div id="view-profile" class="view">
             <div style="padding:40px 20px;">
                 <div style="display:flex; align-items:center; gap:20px;">
-                    <div style="width:80px; height:80px; border-radius:25px; background:#111; overflow:hidden; border:2px solid #222;">
-                        <img class="u-img" src="" style="display:none;">
-                        <span class="u-init" style="font-size:2rem; font-family:'Orbitron'; display:flex; justify-content:center; align-items:center; height:100%;">?</span>
+                    <div style="width:80px; height:80px; border-radius:25px; background:#111; overflow:hidden; border:2px solid var(--accent);">
+                        <img id="p-img" src="" style="display:none; width:100%; height:100%; object-fit:cover;">
+                        <span id="p-init" style="font-size:2rem; font-family:'Orbitron'; display:flex; justify-content:center; align-items:center; height:100%;">?</span>
                     </div>
                     <div>
-                        <h2 class="u-name">Usuario</h2>
-                        <button onclick="document.getElementById('edit-modal').style.display='block'" style="background:#111; color:white; border:1px solid #333; padding:5px 15px; border-radius:10px;">Editar</button>
+                        <h2 id="p-name" style="font-family:'Orbitron'; margin:0;">Nombre</h2>
+                        <button onclick="logout()" style="opacity:0.3; background:none; border:none; color:white; font-size:0.7rem;">LOGOUT</button>
                     </div>
                 </div>
-                <p id="u-bio" style="color:#666; margin-top:20px;">Mi biografía en Aura.</p>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button onclick="alert('Enlace copiado!')" style="flex:1; background:#111; color:white; border:1px solid #222; padding:10px; border-radius:10px;">Compartir</button>
+                </div>
             </div>
         </div>
 
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
-            <div class="n-btn" onclick="go('search', this)">🔍</div>
+            <div class="n-btn" onclick="go('home', this)">🔍</div>
             <div class="n-add" onclick="document.getElementById('post-file').click()">+</div>
             <div class="n-btn" onclick="go('video', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
-        <input type="file" id="post-file" hidden accept="image/*" onchange="publishPhoto(this)">
+        <input type="file" id="post-file" hidden accept="image/*" onchange="publish(this)">
     </div>
 
-    <div id="edit-modal">
-        <h2 style="font-family:'Orbitron';">PERFIL</h2>
-        <input type="text" id="in-name" class="auth-input" placeholder="Nombre">
-        <textarea id="in-bio" class="auth-input" style="height:100px;" placeholder="Bio"></textarea>
-        <button class="btn-main" onclick="saveProfile()" style="background:#fff; color:#000;">GUARDAR</button>
+    <div id="comment-sheet">
+        <div style="display:flex; justify-content:space-between;">
+            <b>COMENTARIOS</b>
+            <span onclick="document.getElementById('comment-sheet').classList.remove('active')">✕</span>
+        </div>
+        <div id="comment-list" class="comment-list"></div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="in-comment" class="auth-input" style="margin:0; flex:1;" placeholder="Escribe...">
+            <button onclick="sendComment()" style="background:var(--accent); border:none; border-radius:10px; padding:0 15px;">↑</button>
+        </div>
     </div>
 
     <script>
-        let user = { email: "", name: "Usuario", bio: "Bio...", photo: "", posts: [] };
+        let user = { email: "", name: "Usuario", posts: [] };
+        let activeIdx = null;
 
-        function handleAuth() {
-            const em = document.getElementById('acc-email').value;
+        function handleAuth(p) {
+            const em = p ? p.toLowerCase()+"@aura.com" : document.getElementById('acc-email').value;
             if(!em.includes('@')) return;
             user.email = em;
-            const saved = localStorage.getItem('aura_'+em);
+            const saved = localStorage.getItem('aura_final_'+em);
             if(saved) user = JSON.parse(saved);
             else user.name = em.split('@')[0];
-            
             localStorage.setItem('aura_session', em);
-            document.getElementById('auth-overlay').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('auth-overlay').style.display='none';
+            document.getElementById('main-app').style.display='block';
             render();
         }
 
-        function go(view, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.n-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            if(btn) btn.classList.add('active');
-        }
-
-        function publishPhoto(input) {
+        function publish(input) {
             if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newPost = { img: e.target.result, date: new Date().getTime() };
-                    user.posts.unshift(newPost);
-                    save();
-                    render();
-                    go('home'); // Volver al inicio para ver la foto
+                const r = new FileReader();
+                r.onload = e => {
+                    user.posts.unshift({ img: e.target.result, likes: 0, liked: false, comments: [] });
+                    save(); render();
                 };
-                reader.readAsDataURL(input.files[0]);
+                r.readAsDataURL(input.files[0]);
             }
         }
 
-        function saveProfile() {
-            user.name = document.getElementById('in-name').value;
-            user.bio = document.getElementById('in-bio').value;
-            save();
-            render();
-            document.getElementById('edit-modal').style.display = 'none';
+        function toggleLike(i) {
+            const p = user.posts[i];
+            p.liked ? (p.likes--, p.liked=false) : (p.likes++, p.liked=true);
+            save(); render();
         }
 
-        function save() { localStorage.setItem('aura_'+user.email, JSON.stringify(user)); }
+        function openComments(i) {
+            activeIdx = i;
+            const list = document.getElementById('comment-list');
+            list.innerHTML = user.posts[i].comments.map(c => `<div class="comment-item"><b>${c.u}:</b> ${c.t}</div>`).join('');
+            document.getElementById('comment-sheet').classList.add('active');
+        }
+
+        function sendComment() {
+            const t = document.getElementById('in-comment').value;
+            if(!t) return;
+            user.posts[activeIdx].comments.push({ u: user.name, t: t });
+            document.getElementById('in-comment').value = "";
+            save(); openComments(activeIdx);
+        }
+
+        function save() { localStorage.setItem('aura_final_'+user.email, JSON.stringify(user)); }
 
         function render() {
-            document.querySelectorAll('.u-name').forEach(el => el.innerText = user.name);
-            document.getElementById('u-bio').innerText = user.bio;
-            const init = user.name.charAt(0).toUpperCase();
-            document.querySelectorAll('.u-init').forEach(el => el.innerText = init);
-
+            document.getElementById('p-name').innerText = user.name;
+            document.getElementById('p-init').innerText = user.name[0].toUpperCase();
             const feed = document.getElementById('feed');
-            feed.innerHTML = "";
-            user.posts.forEach(p => {
-                feed.innerHTML += `
-                    <div class="post-card">
-                        <div class="post-header"><div class="mini-avatar">${init}</div><b>${user.name}</b></div>
-                        <img src="${p.img}" class="post-img">
-                    </div>`;
-            });
+            feed.innerHTML = user.posts.map((p, i) => `
+                <div class="post-card">
+                    <div class="post-header"><b>${user.name}</b></div>
+                    <img src="${p.img}" class="post-img" ondblclick="toggleLike(${i})">
+                    <div class="post-actions">
+                        <span class="like-btn ${p.liked?'active':''}" onclick="toggleLike(${i})">${p.liked?'❤️':'🤍'}</span>
+                        <span onclick="openComments(${i})">💬</span>
+                    </div>
+                    <div class="likes-count">${p.likes} Me gusta</div>
+                </div>
+            `).join('');
         }
+
+        function go(v, btn) {
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
+            document.getElementById('view-'+v).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function logout() { localStorage.clear(); location.reload(); }
 
         window.onload = () => {
             const s = localStorage.getItem('aura_session');
-            if(s) {
-                user.email = s;
-                user = JSON.parse(localStorage.getItem('aura_'+s));
-                document.getElementById('auth-overlay').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                render();
-            }
+            if(s) handleAuth(s.split('@')[0]);
         }
     </script>
 </body>
