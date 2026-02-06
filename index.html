@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Buscador Real v1.0</title>
+    <title>Aura | User-1 Home Fixed</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -14,76 +14,78 @@
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- BUSCADOR --- */
-        .search-container { padding: 15px; }
-        .search-box { background: #262626; border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; }
-        .search-box input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 1rem; }
+        /* --- CABECERA E HISTORIAS --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); background: black; }
+        .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         
-        .result-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: 8px; animation: fadeIn 0.3s ease; }
-        .result-item:active { background: #1a1a1a; }
-        .result-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
-        .result-info b { display: block; font-size: 1rem; }
-        .result-info span { color: var(--text-grey); font-size: 0.85rem; }
+        .stories-bar { display: flex; padding: 15px; gap: 15px; border-bottom: 0.5px solid var(--border); overflow-x: auto; }
+        .my-story { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; flex-shrink: 0; }
+        .my-story img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
+        .plus-btn { position: absolute; bottom: 2px; right: 2px; background: var(--blue); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid black; font-size: 14px; font-weight: bold; }
+
+        /* --- BUSCADOR --- */
+        .search-box { background: #262626; border-radius: 10px; margin: 15px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+        .search-box input { background: transparent; border: none; color: white; flex: 1; outline: none; }
+        .result-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; }
+        .result-item img { width: 45px; height: 45px; border-radius: 50%; }
 
         /* --- PERFIL --- */
         .profile-container { padding: 20px; text-align: center; }
-        .p-avatar { width: 95px; height: 95px; border-radius: 50%; padding: 3px; background: var(--aura-grad); margin: 0 auto 12px; }
-        .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
-        .p-stats-row { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
-        .stat-btn { background: none; border: none; color: white; text-align: center; }
-        .stat-btn b { display: block; font-size: 1.2rem; }
-        .stat-btn span { font-size: 0.8rem; color: var(--text-grey); }
-
-        /* --- HOME & REELS VACÍOS --- */
-        .empty-msg { text-align: center; color: var(--text-grey); margin-top: 40%; padding: 20px; }
+        .p-avatar { width: 90px; height: 90px; border-radius: 50%; padding: 3px; background: var(--aura-grad); margin: 0 auto 12px; }
+        .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
+        .p-stats { display: flex; justify-content: center; gap: 25px; margin: 20px 0; }
 
         /* --- CÁMARA --- */
         #cam-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 7000; }
-        #video-feed { width: 100%; height: 100%; object-fit: cover; transition: filter 0.4s; }
-        .cam-ui { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: space-around; align-items: center; }
-
-        /* FILTROS */
-        .f-clarendon { filter: contrast(1.2) saturate(1.4); }
+        #video-feed { width: 100%; height: 100%; object-fit: cover; }
+        .f-clarendon { filter: contrast(1.2) saturate(1.3); }
         .f-moon { filter: grayscale(1); }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.6rem; opacity: 0.4; color: white; cursor: pointer; transition: 0.2s; }
-        .nav-icon.active { opacity: 1; transform: scale(1.1); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-icon { font-size: 1.6rem; opacity: 0.4; color: white; cursor: pointer; }
+        .nav-icon.active { opacity: 1; }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="view active">
-        <div style="padding: 15px 20px; border-bottom: 0.5px solid var(--border);"><h1 style="margin:0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 1.8rem;">Aura</h1></div>
-        <div class="empty-msg">No hay fotos. Sigue a alguien para ver su contenido.</div>
-    </div>
-
-    <div id="view-search" class="view">
-        <div class="search-container">
-            <div class="search-box">
-                🔍 <input type="text" id="userSearch" placeholder="Escribe un nombre de usuario..." oninput="searchUser()">
+        <div class="home-header"><h1 class="brand-name">Aura</h1><div>📥</div></div>
+        
+        <div class="stories-bar">
+            <div class="my-story" onclick="startCam()">
+                <img src="https://i.pravatar.cc/150?u=user1" alt="Mi Perfil">
+                <div class="plus-btn">+</div>
             </div>
-            <div id="results-list" style="margin-top: 20px;">
-                </div>
+            </div>
+
+        <div style="text-align:center; color:var(--text-grey); margin-top:40%; padding:20px;">
+            <p><b>¡Hola user-1!</b><br>Busca a tus amigos para ver sus fotos aquí.</p>
         </div>
     </div>
 
+    <div id="view-search" class="view">
+        <div class="search-box">
+            🔍 <input type="text" id="userInput" placeholder="Buscar perfiles reales..." oninput="doSearch()">
+        </div>
+        <div id="results"></div>
+    </div>
+
     <div id="view-reels" class="view">
-        <div class="empty-msg">Zona de vídeos vacía.</div>
+        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">
+            Zona de vídeos (Reels) vacía.
+        </div>
     </div>
 
     <div id="view-profile" class="view">
         <div class="profile-container">
-            <div style="font-weight: bold; margin-bottom: 15px; font-size: 1.1rem;">user-1</div>
+            <div style="font-weight: bold; margin-bottom: 15px;">user-1</div>
             <div class="p-avatar"><img src="https://i.pravatar.cc/150?u=user1"></div>
             <div style="font-weight: bold;">@user-1</div>
-            <div class="p-stats-row">
-                <div class="stat-btn"><b>0</b><span>Siguiendo</span></div>
-                <div class="stat-btn"><b>0</b><span>Seguidores</span></div>
-                <div class="stat-btn"><b>0</b><span>Posts</span></div>
+            <div class="p-stats">
+                <div><b>0</b><br><span style="color:var(--text-grey); font-size:0.8rem;">Siguiendo</span></div>
+                <div><b>0</b><br><span style="color:var(--text-grey); font-size:0.8rem;">Seguidores</span></div>
+                <div><b>0</b><br><span style="color:var(--text-grey); font-size:0.8rem;">Posts</span></div>
             </div>
             <button style="background:var(--panel); border:none; color:white; padding:12px 0; border-radius:8px; font-weight:600; width:85%;">Editar perfil</button>
         </div>
@@ -92,7 +94,7 @@
     <div id="cam-layer">
         <video id="video-feed" autoplay playsinline></video>
         <div style="position:absolute; top:25px; right:25px; font-size:2rem; cursor:pointer;" onclick="stopCam()">✕</div>
-        <div class="cam-ui">
+        <div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:space-around; align-items:center;">
             <button onclick="changeFilter()" style="background:none; border:none; color:white; font-size:1.8rem;">✨</button>
             <div style="width:70px; height:70px; border:5px solid white; border-radius:50%;"></div>
             <button onclick="stopCam()" style="background:none; border:none; color:white; font-size:1.8rem;">📸</button>
@@ -108,35 +110,18 @@
     </nav>
 
     <script>
-        // SIMULACIÓN DE BASE DE DATOS (Sin bots, solo usuarios que tú decidas o tú mismo)
-        const database = [
-            { username: "user-1", name: "Tu Perfil", img: "https://i.pravatar.cc/150?u=user1" },
-            // Cuando tus amigos entren, sus nombres se añadirían aquí en un sistema real
-        ];
+        // "Base de Datos" solo contigo
+        const users = [{username: "user-1", name: "Tu Perfil", img: "https://i.pravatar.cc/150?u=user1"}];
 
-        function searchUser() {
-            const input = document.getElementById('userSearch').value.toLowerCase();
-            const list = document.getElementById('results-list');
-            list.innerHTML = '';
-
-            if(input.length > 0) {
-                const results = database.filter(u => u.username.toLowerCase().includes(input));
-                
-                if(results.length > 0) {
-                    results.forEach(u => {
-                        list.innerHTML += `
-                            <div class="result-item">
-                                <img src="${u.img}">
-                                <div class="result-info">
-                                    <b>${u.username}</b>
-                                    <span>${u.name}</span>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    list.innerHTML = `<p style="text-align:center; color:var(--text-grey);">No se encontró a "${input}"</p>`;
-                }
+        function doSearch() {
+            const q = document.getElementById('userInput').value.toLowerCase();
+            const r = document.getElementById('results');
+            r.innerHTML = '';
+            if(q.length > 0) {
+                const found = users.filter(u => u.username.includes(q));
+                found.forEach(u => {
+                    r.innerHTML += `<div class="result-item"><img src="${u.img}"><div><b>${u.username}</b><br><small style="color:grey">${u.name}</small></div></div>`;
+                });
             }
         }
 
@@ -147,10 +132,8 @@
             el.classList.add('active');
         }
 
-        // --- CÁMARA Y FILTROS ---
         let fIdx = 0;
         const filters = [{n:'Normal',c:''}, {n:'Clarendon',c:'f-clarendon'}, {n:'Moon',c:'f-moon'}];
-
         function changeFilter() {
             const v = document.getElementById('video-feed');
             fIdx = (fIdx + 1) % filters.length;
@@ -162,7 +145,7 @@
                 const s = await navigator.mediaDevices.getUserMedia({ video: true });
                 document.getElementById('video-feed').srcObject = s;
                 document.getElementById('cam-layer').style.display = 'block';
-            } catch (e) { alert("Cámara no activa"); }
+            } catch (e) { alert("Cámara no disponible"); }
         }
 
         function stopCam() {
