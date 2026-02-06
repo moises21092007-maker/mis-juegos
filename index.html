@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Estilo Único</title>
+    <title>Aura | Versión Final 2026</title>
     <style>
         :root { 
             --bg: #000; --panel: #121212; --border: #262626; 
@@ -13,8 +13,7 @@
         body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
         
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
-        .view.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .view.active { display: block; }
 
         .glass-header {
             position: sticky; top: 0; z-index: 100;
@@ -24,39 +23,46 @@
         }
         .logo { font-size: 1.6rem; font-weight: 800; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* STORIES CUADRADAS (DISEÑO PROPIO) */
-        .stories-bar { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); gap: 12px; overflow-x: auto; }
-        
+        /* STORY CUADRADA CON "+" EN LA ESQUINA */
+        .stories-bar { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); }
+        .square-story-wrapper { position: relative; width: 80px; height: 80px; cursor: pointer; }
         .square-story { 
-            width: 80px; height: 80px; border-radius: 12px; 
-            background: var(--aura-grad); padding: 2px; position: relative; cursor: pointer;
+            width: 100%; height: 100%; border-radius: 15px; 
+            overflow: hidden; border: 2px solid var(--border);
         }
-        .square-inner { 
-            width: 100%; height: 100%; border-radius: 10px; 
-            background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .square-inner img { width: 100%; height: 100%; object-fit: cover; }
-
-        .add-story { 
-            width: 80px; height: 80px; border-radius: 12px; 
-            border: 2px dashed var(--border); display: flex; 
-            align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-grey); cursor: pointer;
-        }
-
-        /* PERFIL */
-        .prof-container { padding: 20px; }
-        .stats-row { display: flex; flex: 1; justify-content: space-around; text-align: center; }
+        .square-story img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* SELECTOR GÉNERO CORREGIDO */
-        .field select { 
-            width: 100%; background: #262626; border: none; color: white; 
-            padding: 10px; border-radius: 8px; margin-top: 5px;
+        /* El botón + estilo Instagram en la esquina */
+        .add-badge {
+            position: absolute; bottom: -2px; right: -2px;
+            background: var(--blue); border: 2px solid black;
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: bold; color: white;
         }
+
+        /* REELS / VIDEOS */
+        .reels-container { height: 100%; scroll-snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; }
+        .reel-video { height: calc(100vh - 60px); scroll-snap-align: start; display: flex; align-items: center; justify-content: center; background: #050505; border-bottom: 1px solid #111; }
+
+        /* CÁMARA ENGINE */
+        #cam-overlay { display: none; position: fixed; inset: 0; background: black; z-index: 9000; }
+        #cam-video { width: 100%; height: 100%; object-fit: cover; }
+        #dog-emoji { display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); font-size: 150px; pointer-events: none; }
+        
+        #filter-drawer { 
+            position: absolute; bottom: -350px; width: 100%; height: 250px; background: #121212;
+            border-radius: 20px 20px 0 0; transition: transform 0.4s ease; padding: 20px; box-sizing: border-box; z-index: 9500; border-top: 1px solid var(--border);
+        }
+        #filter-drawer.open { transform: translateY(-350px); }
+
+        /* EDITOR GÉNERO CORREGIDO */
+        .field select { width: 100%; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; margin-top: 5px; }
         .field select option { background: #fff; color: #000; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; }
+        .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; transition: 0.2s; }
         .nav-icon.active { opacity: 1; }
     </style>
 </head>
@@ -65,46 +71,43 @@
     <div id="v-home" class="view active">
         <header class="glass-header">
             <div class="logo">Aura</div>
-            <div id="go-dm" style="font-size: 1.5rem; cursor: pointer;">✈️</div>
+            <div onclick="showView('v-dms')" style="font-size: 1.5rem; cursor: pointer;">✈️</div>
         </header>
-        
         <div class="stories-bar">
-            <div class="square-story" id="my-story">
-                <div class="square-inner">
+            <div class="square-story-wrapper" onclick="openCam()">
+                <div class="square-story">
                     <img src="https://i.pravatar.cc/150?u=user1">
                 </div>
-                <div style="position: absolute; bottom: -20px; width: 100%; text-align: center; font-size: 0.6rem; color: var(--text-grey);">Tú</div>
-            </div>
-            
-            <div class="add-story" onclick="alert('Abriendo cámara para historia...')">
-                <span>+</span>
+                <div class="add-badge">+</div>
             </div>
         </div>
-
-        <div style="text-align:center; padding:80px 20px; color:var(--text-grey);">
-            <p>Tu muro cuadrado está listo.</p>
+        <div style="text-align:center; padding:100px 20px; color:var(--text-grey);">
+            <p>No hay publicaciones nuevas.<br>Pulsa en tu historia para empezar.</p>
         </div>
     </div>
 
     <div id="v-reels" class="view">
-        <div style="height:100vh; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">🎬 Feed de Videos</div>
+        <div class="reels-container">
+            <div class="reel-video">🎬 Video 1 (Desliza)</div>
+            <div class="reel-video">🎬 Video 2 (Desliza)</div>
+        </div>
     </div>
 
     <div id="v-dms" class="view">
         <header class="glass-header">
             <b onclick="showView('v-home')" style="cursor: pointer;">← Volver</b>
             <b>Mensajes</b>
-            <span style="opacity: 0;">✈️</span>
+            <span style="opacity:0;">✈️</span>
         </header>
-        <div style="padding: 20px; color: var(--text-grey);">No hay conversaciones.</div>
+        <div style="padding:40px; text-align:center; color:var(--text-grey);">Bandeja de entrada vacía</div>
     </div>
 
     <div id="v-profile" class="view">
         <header class="glass-header"><b id="header-user">user-1</b></header>
-        <div class="prof-container">
+        <div style="padding: 20px;">
             <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
-                <div class="square-story" style="width:70px; height:70px;"><div class="square-inner"><img src="https://i.pravatar.cc/150?u=user1"></div></div>
-                <div class="stats-row">
+                <div class="square-story" style="width:75px; height:75px;"><img src="https://i.pravatar.cc/150?u=user1"></div>
+                <div style="display:flex; flex:1; justify-content:space-around; text-align:center;">
                     <div><b>0</b><br><small>Posts</small></div>
                     <div><b>0</b><br><small>Seguidores</small></div>
                     <div><b>0</b><br><small>Siguiendo</small></div>
@@ -112,8 +115,27 @@
             </div>
             <b id="p-name">Tu Nombre</b><br>
             <span id="p-user" style="color:var(--text-grey);">@user-1</span>
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button onclick="openEdit()" style="flex:1; background:#262626; border:none; color:white; padding:8px; border-radius:8px; font-weight:600;">Editar perfil</button>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button onclick="openEdit()" style="flex:1; background:#262626; border:none; color:white; padding:10px; border-radius:8px; font-weight:600;">Editar perfil</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cam-overlay">
+        <video id="cam-video" autoplay playsinline></video>
+        <div id="dog-emoji">🐶</div>
+        <div onclick="closeCam()" style="position:absolute; top:35px; left:25px; font-size:2rem; cursor:pointer;">✕</div>
+        <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:space-around; align-items:center;">
+            <div onclick="toggleFilters(true)" style="font-size:2rem; cursor:pointer;">✨</div>
+            <div onclick="takePhoto()" style="width:70px; height:70px; border:5px solid white; border-radius:50%;"></div>
+            <div style="width:2rem;"></div>
+        </div>
+        <div id="filter-drawer">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><b>FILTROS</b><span onclick="toggleFilters(false)" style="color:var(--blue); font-weight:bold; cursor:pointer;">LISTO</span></div>
+            <div style="display:flex; gap:20px; overflow-x:auto;">
+                <div onclick="applyFilter(0)" class="f-item"><div style="width:50px; height:50px; border:1px solid white; border-radius:50%; margin:0 auto 5px; display:flex; align-items:center; justify-content:center;">🚫</div>Original</div>
+                <div onclick="applyFilter(1)" class="f-item"><div style="width:50px; height:50px; border:1px solid white; border-radius:50%; margin:0 auto 5px; display:flex; align-items:center; justify-content:center;">🐶</div>Perro</div>
+                <div onclick="applyFilter(2)" class="f-item"><div style="width:50px; height:50px; border:1px solid white; border-radius:50%; margin:0 auto 5px; background:cyan;"></div>Frío</div>
             </div>
         </div>
     </div>
@@ -125,11 +147,11 @@
             <span onclick="saveEdit()" style="color:var(--blue); font-weight:bold;">Listo</span>
         </header>
         <div style="padding:20px;">
-            <div style="margin-bottom:15px;"><label style="font-size:0.7rem; color:var(--text-grey);">Nombre</label><input type="text" id="edit-name" style="width:100%; background:none; border:none; border-bottom:1px solid #262626; color:white; padding:5px 0;"></div>
-            <div style="margin-bottom:15px;"><label style="font-size:0.7rem; color:var(--text-grey);">Usuario</label><input type="text" id="edit-user" style="width:100%; background:none; border:none; border-bottom:1px solid #262626; color:white; padding:5px 0;"></div>
+            <div style="margin-bottom:15px;"><label style="color:var(--text-grey); font-size:0.8rem;">Nombre</label><input type="text" id="edit-name" style="width:100%; background:none; border:none; border-bottom:1px solid #262626; color:white; padding:10px 0;"></div>
+            <div style="margin-bottom:15px;"><label style="color:var(--text-grey); font-size:0.8rem;">Usuario</label><input type="text" id="edit-user" style="width:100%; background:none; border:none; border-bottom:1px solid #262626; color:white; padding:10px 0;"></div>
             <div class="field">
-                <label style="font-size:0.7rem; color:var(--text-grey);">Género</label>
-                <select id="edit-gender"><option>Masculino</option><option>Femenino</option><option>Otro</option></select>
+                <label style="color:var(--text-grey); font-size:0.8rem;">Género</label>
+                <select id="edit-gender"><option>Masculino</option><option>Femenino</option><option>No binario</option></select>
             </div>
         </div>
     </div>
@@ -137,17 +159,39 @@
     <nav>
         <div class="nav-icon active" onclick="showView('v-home')">🏠</div>
         <div class="nav-icon" onclick="showView('v-reels')">🎬</div>
+        <div class="nav-icon" onclick="openCam()">➕</div>
         <div class="nav-icon" onclick="showView('v-profile')">👤</div>
     </nav>
 
     <script>
+        // Navegación
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
         }
 
-        document.getElementById('go-dm').onclick = () => showView('v-dms');
+        // Cámara
+        const video = document.getElementById('cam-video');
+        async function openCam() {
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({video: true});
+                video.srcObject = s;
+                document.getElementById('cam-overlay').style.display = 'block';
+            } catch(e) { alert("Cámara no disponible"); }
+        }
+        function closeCam() {
+            video.srcObject.getTracks().forEach(t => t.stop());
+            document.getElementById('cam-overlay').style.display = 'none';
+        }
+        function toggleFilters(show) { document.getElementById('filter-drawer').classList.toggle('open', show); }
+        function applyFilter(i) {
+            video.style.filter = i === 2 ? 'hue-rotate(180deg)' : 'none';
+            document.getElementById('dog-emoji').style.display = i === 1 ? 'block' : 'none';
+        }
+        function takePhoto() { alert("¡Publicado en tu historia!"); closeCam(); }
 
+        // Editor
         function openEdit() {
             document.getElementById('edit-name').value = document.getElementById('p-name').innerText;
             document.getElementById('edit-user').value = document.getElementById('p-user').innerText.replace('@','');
@@ -164,4 +208,3 @@
     </script>
 </body>
 </html>
-       
