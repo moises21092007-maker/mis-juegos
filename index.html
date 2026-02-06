@@ -3,30 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Final Edition</title>
+    <title>Aura | Premium Edition</title>
     <style>
         :root { 
             --bg: #000; --panel: #121212; --border: #262626; 
             --blue: #0095f6; --text-grey: #a8a8a8;
-            --aura-grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            /* El gradiente de tu nuevo logo */
+            --aura-grad: linear-gradient(45deg, #ff8a00, #e52e71, #9c27b0);
         }
         body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; }
         
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
+        /* EL NUEVO LOGO CON AURA */
         .glass-header {
             position: sticky; top: 0; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 20px; background: rgba(0,0,0,0.9);
+            padding: 15px 20px; background: rgba(0,0,0,0.9);
             backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border);
         }
-        .logo { font-size: 1.6rem; font-weight: 800; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-aura { 
+            font-size: 2rem; /* Más grande */
+            font-weight: 900; 
+            letter-spacing: -1px;
+            background: var(--aura-grad); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            /* Efecto de resplandor (Aura) */
+            filter: drop-shadow(0 0 8px rgba(229, 46, 113, 0.6));
+            position: relative;
+        }
 
-        /* BUSCADOR */
-        .search-bar-container { padding: 10px 20px; }
-        .search-input { width: 100%; background: #262626; border: none; padding: 10px 15px; border-radius: 10px; color: white; outline: none; box-sizing: border-box; }
-        
         /* HISTORIA CUADRADA CON "+" */
         .stories-bar { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); }
         .sq-wrapper { position: relative; width: 80px; height: 80px; cursor: pointer; }
@@ -38,50 +46,47 @@
             display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white;
         }
 
-        /* PERFIL */
-        .prof-container { padding: 20px; }
-        .profile-actions { display: flex; gap: 8px; margin-top: 15px; }
-        .action-btn { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
-
-        /* EDITOR GÉNERO */
-        .field { padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
-        .field select { width: 100%; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; margin-top: 5px; }
-        .field select option { background: #fff; color: #000; }
-
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
+
+        /* PERFIL (RECUERDA: EMPIEZAS CON 0 SEGUIDORES) */
+        .prof-container { padding: 20px; }
+        .action-btn { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="v-home" class="view active">
         <header class="glass-header">
-            <div class="logo">Aura</div>
-            <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.4rem;">📩</div>
+            <div class="logo-aura">AURA</div>
+            <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.5rem;">📩</div>
         </header>
+        
         <div class="stories-bar">
             <div class="sq-wrapper" onclick="openCam()">
                 <div class="sq-img"><img src="https://i.pravatar.cc/150?u=user1"></div>
                 <div class="add-badge">+</div>
             </div>
         </div>
-        <div style="text-align:center; padding:100px 20px; color:var(--text-grey);"><p>Tu feed de Aura está listo.</p></div>
+        
+        <div style="text-align:center; padding:100px 20px; color:var(--text-grey);">
+            <p style="font-size: 0.9rem; opacity: 0.7;">Bienvenido al nuevo universo de Aura.</p>
+        </div>
     </div>
 
     <div id="v-search" class="view">
-        <div class="search-bar-container"><input type="text" class="search-input" placeholder="Buscar en Aura..."></div>
-        <div style="padding:20px; color:var(--text-grey); text-align:center;">Explora contenido nuevo</div>
+        <div style="padding: 20px;"><input type="text" placeholder="Buscar..." style="width:100%; background:#262626; border:none; padding:12px; border-radius:10px; color:white;"></div>
     </div>
 
     <div id="v-reels" class="view">
-        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">🎬 Zona de Videos</div>
+        <div style="height:100%; display:flex; align-items:center; justify-content:center;">🎬 Zona Reels</div>
     </div>
 
     <div id="v-dms" class="view">
         <header class="glass-header"><b onclick="showView('v-home')">← Volver</b><b>Mensajes</b><span></span></header>
-        <div style="padding:40px; text-align:center; color:var(--text-grey);">Bandeja de entrada limpia.</div>
+        <div style="padding:20px;">No hay chats todavía.</div>
     </div>
 
     <div id="v-profile" class="view">
@@ -97,27 +102,26 @@
             </div>
             <b id="p-name">Tu Nombre</b><br>
             <span id="p-user" style="color:var(--text-grey);">@user-1</span>
-            <div class="profile-actions">
+            <div style="display:flex; gap:10px; margin-top:15px;">
                 <button class="action-btn" onclick="openEdit()">Editar perfil</button>
-                <button class="action-btn" onclick="alert('Enlace copiado')">Compartir perfil</button>
+                <button class="action-btn">Compartir</button>
             </div>
         </div>
     </div>
 
     <div id="edit-modal" style="position:fixed; top:100%; left:0; width:100%; height:100%; background:black; z-index:10000; transition:0.4s;">
         <header class="glass-header"><span onclick="closeEdit()">Cancelar</span><b>Editar</b><span onclick="saveEdit()" style="color:var(--blue); font-weight:bold;">Listo</span></header>
-        <div class="field"><label>Nombre</label><input type="text" id="in-name" style="width:100%; background:none; border:none; color:white;"></div>
-        <div class="field"><label>Usuario</label><input type="text" id="in-user" style="width:100%; background:none; border:none; color:white;"></div>
-        <div class="field">
-            <label>Género</label>
-            <select id="in-gender"><option>Masculino</option><option>Femenino</option><option>Otro</option></select>
+        <div style="padding:20px;">
+            <label style="color:var(--text-grey); font-size:0.8rem;">Nombre</label>
+            <input type="text" id="in-name" style="width:100%; background:none; border:none; border-bottom:1px solid #262626; color:white; padding:10px 0; margin-bottom:20px;">
+            <label style="color:var(--text-grey); font-size:0.8rem;">Usuario</label>
+            <input type="text" id="in-user" style="width:100%; background:none; border:none; border-bottom:1px solid #262626; color:white; padding:10px 0;">
         </div>
     </div>
 
     <div id="cam-overlay" style="display:none; position:fixed; inset:0; background:black; z-index:9000;">
         <video id="cam-v" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
         <div onclick="closeCam()" style="position:absolute; top:30px; left:25px; font-size:2rem;">✕</div>
-        <div style="position:absolute; bottom:50px; width:100%; display:flex; justify-content:center;"><div onclick="alert('Publicado'); closeCam()" style="width:70px; height:70px; border:5px solid white; border-radius:50%;"></div></div>
     </div>
 
     <nav>
@@ -129,7 +133,7 @@
     </nav>
 
     <script>
-        // CARGAR DATOS AL INICIAR
+        // Memoria para que no se borre tu nombre
         window.onload = function() {
             const n = localStorage.getItem('aura_n');
             const u = localStorage.getItem('aura_u');
@@ -140,7 +144,6 @@
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
         }
 
         async function openCam() {
@@ -155,19 +158,14 @@
             document.getElementById('cam-overlay').style.display = 'none';
         }
 
-        function openEdit() {
-            document.getElementById('edit-modal').style.top = '0';
-        }
+        function openEdit() { document.getElementById('edit-modal').style.top = '0'; }
         function closeEdit() { document.getElementById('edit-modal').style.top = '100%'; }
-        
         function saveEdit() {
             const n = document.getElementById('in-name').value;
             const u = document.getElementById('in-user').value;
             document.getElementById('p-name').innerText = n;
             document.getElementById('p-user').innerText = '@' + u;
             document.getElementById('h-user').innerText = u;
-            
-            // GUARDAR EN EL NAVEGADOR
             localStorage.setItem('aura_n', n);
             localStorage.setItem('aura_u', u);
             closeEdit();
@@ -175,3 +173,4 @@
     </script>
 </body>
 </html>
+   
