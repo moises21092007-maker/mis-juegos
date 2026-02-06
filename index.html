@@ -3,265 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Master Edition 2026</title>
+    <title>Aura | Professional Social Network</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
-        :root { --bg: #000; --accent: #00ffd5; --glass: rgba(15,15,15,0.98); }
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
-
-        /* --- SISTEMA DE USUARIO --- */
-        #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .auth-box { width: 100%; max-width: 340px; text-align: center; }
-        .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 12px; outline: none; box-sizing: border-box; width: 100%; }
-
-        /* --- NAVEGACIÓN --- */
-        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
-        .view.active { display: block; }
-        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
-        .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add-main { width: 55px; height: 55px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); font-weight: bold; }
-
-        /* --- HISTORIAS --- */
-        .stories-bar { display: flex; padding: 15px 20px; gap: 15px; border-bottom: 1px solid #111; overflow-x: auto; }
-        .story-wrapper { position: relative; flex-shrink: 0; cursor: pointer; }
-        .my-story-box { width: 75px; height: 75px; border-radius: 20px; background: #111; border: 2px solid #222; overflow: hidden; }
-        .story-wrapper.active .my-story-box { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
-        .add-story-btn { position: absolute; bottom: -2px; right: -2px; width: 22px; height: 22px; background: var(--accent); color: #000; border-radius: 6px; border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-weight: 900; }
-
-        /* --- FEED POSTS & VIDEO --- */
-        .aura-logo { font-family: 'Orbitron'; font-size: 1.8rem; letter-spacing: 6px; text-align: center; padding: 30px 0 10px; }
-        .post-card { border-bottom: 1px solid #111; margin-bottom: 20px; }
-        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
-        .video-item { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
-        .v-player { width: 100%; height: 100%; object-fit: cover; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Plus+Jakarta+Sans:wght@300;500;800&display=swap');
         
-        /* --- BUSQUEDA --- */
-        .search-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-        .search-box { background: #111; aspect-ratio: 1/1; }
+        :root { 
+            --bg: #000; 
+            --accent: #00ffd5; 
+            --surface: #0a0a0a;
+            --border: #1a1a1a;
+            --glass: rgba(10, 10, 10, 0.9);
+        }
 
-        /* --- CÁMARA & MODALES --- */
-        #camera-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
-        #camera-video { width: 100%; height: 100%; object-fit: cover; }
-        .snap-btn { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border-radius: 50%; border: 5px solid white; background: rgba(255,255,255,0.2); }
-        #comment-sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 60vh; background: var(--glass); border-top: 1px solid #222; border-radius: 30px 30px 0 0; z-index: 9500; transition: 0.4s; padding: 20px; }
-        #comment-sheet.active { bottom: 0; }
+        body { 
+            margin: 0; background: var(--bg); color: white; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow: hidden; height: 100vh; 
+        }
+
+        /* --- LOGIN PROFESIONAL --- */
+        #auth-overlay { 
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; padding: 30px;
+        }
+        .auth-card { width: 100%; max-width: 360px; text-align: center; }
+        .aura-logo { font-family: 'Orbitron'; font-size: 2.5rem; letter-spacing: 10px; margin-bottom: 40px; }
+        
+        .social-btn {
+            width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border);
+            background: var(--surface); color: white; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .social-btn:active { transform: scale(0.98); background: #111; }
+        .btn-google { border-left: 4px solid #4285F4; }
+        .btn-fb { border-left: 4px solid #1877F2; }
+
+        /* --- APP STRUCTURE --- */
+        #main-app { display: none; height: 100vh; }
+        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 110px; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+
+        /* --- STORIES (SQUARE & NEON) --- */
+        .stories-container { display: flex; padding: 20px; gap: 15px; overflow-x: auto; scrollbar-width: none; }
+        .story-wrapper { position: relative; flex-shrink: 0; }
+        .story-square { 
+            width: 72px; height: 72px; border-radius: 22px; 
+            background: var(--surface); border: 2px solid var(--border);
+            overflow: hidden; transition: 0.4s;
+        }
+        .story-wrapper.has-story .story-square { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        .story-square img { width: 100%; height: 100%; object-fit: cover; }
+        .story-add-plus { 
+            position: absolute; bottom: -4px; right: -4px;
+            width: 24px; height: 24px; background: var(--accent);
+            border-radius: 8px; border: 3px solid var(--bg);
+            color: black; font-weight: 900; display: flex; 
+            align-items: center; justify-content: center; font-size: 14px;
+        }
+
+        /* --- FEED POSTS --- */
+        .post { border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+        .post-user { padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        .post-media { width: 100%; aspect-ratio: 1/1; background: #050505; object-fit: cover; }
+        .post-actions { padding: 15px; display: flex; gap: 20px; font-size: 1.4rem; }
+
+        /* --- VIDEO FEED (TIKTOK STYLE) --- */
+        .v-feed { height: 100vh; scroll-snap-type: y mandatory; overflow-y: auto; scrollbar-width: none; }
+        .v-item { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
+        .v-video { width: 100%; height: 100%; object-fit: cover; }
+        .v-info { position: absolute; bottom: 130px; left: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+
+        /* --- BUSCADOR GRID --- */
+        .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
+        .explore-item { aspect-ratio: 1/1; background: var(--surface); }
+
+        /* --- CAMERA INTERFACE --- */
+        #cam-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 11000; }
+        #cam-stream { width: 100%; height: 100%; object-fit: cover; }
+        .cam-shutter { 
+            position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 80px; border-radius: 50%; border: 4px solid white;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cam-shutter-inner { width: 60px; height: 60px; background: white; border-radius: 50%; }
+
+        /* --- NAVIGATION BAR --- */
+        nav { 
+            position: fixed; bottom: 25px; left: 20px; right: 20px; 
+            height: 70px; background: var(--glass); backdrop-filter: blur(25px);
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-around; align-items: center; z-index: 9000;
+        }
+        .nav-icon { font-size: 1.4rem; opacity: 0.4; transition: 0.3s; cursor: pointer; }
+        .nav-icon.active { opacity: 1; color: var(--accent); }
+        .nav-add { 
+            width: 50px; height: 50px; background: white; color: black; 
+            border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: 800; transform: translateY(-5px);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
-        <div class="auth-box">
-            <h1 class="aura-logo" style="margin-bottom:30px;">AURA</h1>
-            <input type="email" id="acc-email" class="auth-input" placeholder="Tu Email">
-            <button onclick="handleAuth()" style="width:100%; padding:18px; border-radius:40px; background:var(--accent); border:none; font-weight:800; cursor:pointer;">ACCEDER</button>
-            <p style="font-size:0.7rem; color:#444; margin-top:20px;">Sesión Segura / 2026</p>
+        <div class="auth-card">
+            <h1 class="aura-logo">AURA</h1>
+            <p style="color: #666; margin-bottom: 30px;">Inicia sesión para conectar</p>
+            <button class="social-btn btn-google" onclick="login('Google')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="20"> Continuar con Google
+            </button>
+            <button class="social-btn btn-fb" onclick="login('Facebook')">
+                <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" width="20"> Continuar con Facebook
+            </button>
+            <div style="margin: 20px; color: #333;">o</div>
+            <input type="email" id="email-log" placeholder="Email" style="width:100%; padding:15px; border-radius:15px; border:1px solid var(--border); background:var(--surface); color:white; outline:none;">
+            <button onclick="login('Email')" style="width:100%; margin-top:10px; padding:15px; border-radius:15px; background:var(--accent); border:none; color:black; font-weight:800; cursor:pointer;">ENTRAR</button>
         </div>
     </div>
 
-    <div id="main-app" style="display:none;">
+    <div id="main-app">
         <div id="view-home" class="view active">
-            <div class="aura-logo">AURA</div>
-            <div class="stories-bar">
-                <div class="story-wrapper" id="story-trigger" onclick="openCamera('story')">
-                    <div class="my-story-box"><img id="ui-story" src="" style="display:none; width:100%; height:100%; object-fit:cover;"></div>
-                    <div class="add-story-btn">+</div>
+            <div class="aura-logo" style="font-size: 1.2rem; padding: 20px 0 0; letter-spacing: 5px;">AURA</div>
+            <div class="stories-container">
+                <div class="story-wrapper" id="story-node" onclick="openCam('story')">
+                    <div class="story-square"><img id="story-img-preview" src="" style="display:none;"></div>
+                    <div class="story-add-plus">+</div>
                 </div>
             </div>
-            <div id="feed-posts"></div>
+            <div id="posts-feed"></div>
         </div>
 
         <div id="view-search" class="view">
-            <div style="padding:50px 20px 20px;">
-                <input type="text" class="auth-input" placeholder="🔍 Explorar Aura...">
-                <div class="search-grid">
-                    <div class="search-box"></div><div class="search-box"></div><div class="search-box"></div>
+            <div style="padding: 20px;">
+                <div style="background:var(--surface); padding:12px; border-radius:12px; color:#555; margin-bottom:15px;">🔍 Buscar en Aura...</div>
+                <div class="explore-grid">
+                    <div class="explore-item"></div><div class="explore-item"></div><div class="explore-item"></div>
+                    <div class="explore-item"></div><div class="explore-item"></div><div class="explore-item"></div>
                 </div>
             </div>
         </div>
 
-        <div id="view-video" class="view" style="padding-bottom:0; overflow-y:scroll; scroll-snap-type: y mandatory;">
-            <div id="feed-videos"></div>
-            <div style="position:fixed; top:20px; right:20px; z-index:6000;">
-                <button onclick="document.getElementById('in-vid').click()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px; border-radius:10px;">Subir Video</button>
+        <div id="view-video" class="v-feed view">
+            <div id="video-content"></div>
+            <div style="position:fixed; top:20px; right:20px; z-index:9999;">
+                <button onclick="document.getElementById('video-upload').click()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 15px; border-radius:10px; backdrop-filter:blur(10px);">Subir Video</button>
             </div>
-            <input type="file" id="in-vid" hidden accept="video/*" onchange="uploadVideo(this)">
+            <input type="file" id="video-upload" hidden accept="video/*" onchange="processVideo(this)">
         </div>
 
         <div id="view-profile" class="view">
-            <div style="padding:40px 20px;">
+            <div style="padding: 40px 20px;">
                 <div style="display:flex; align-items:center; gap:20px;">
-                    <div style="width:80px; height:80px; border-radius:25px; background:#111; border:2px solid var(--accent); overflow:hidden;">
-                        <img id="ui-pfp" src="" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    </div>
+                    <div style="width:80px; height:80px; background:#111; border-radius:25px; border:2px solid var(--accent);"></div>
                     <div>
-                        <h2 id="ui-name" style="font-family:'Orbitron'; margin:0;">Nombre</h2>
-                        <p id="ui-bio" style="color:#666; font-size:0.8rem; margin:5px 0;">Mi Biografía...</p>
-                        <p style="font-size:0.7rem; color:var(--accent);">0 Seguidores | 0 Siguiendo</p>
+                        <h2 id="u-display-name" style="margin:0;">Usuario</h2>
+                        <p style="color:#444; margin:5px 0;">0 seguidores | 0 siguiendo</p>
                     </div>
                 </div>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button onclick="document.getElementById('edit-modal').style.display='block'" style="flex:1; background:#111; color:white; border:1px solid #222; padding:12px; border-radius:15px; font-weight:600;">Editar</button>
-                    <button onclick="alert('Enlace copiado!')" style="flex:1; background:#111; color:white; border:1px solid #222; padding:12px; border-radius:15px; font-weight:600;">Compartir</button>
-                </div>
+                <button style="width:100%; margin-top:25px; padding:12px; border-radius:12px; background:var(--surface); border:1px solid var(--border); color:white; font-weight:600;">Editar Perfil</button>
             </div>
         </div>
 
         <nav>
-            <div class="n-btn active" onclick="go('home', this)">🏠</div>
-            <div class="n-btn" onclick="go('search', this)">🔍</div>
-            <div class="n-add-main" onclick="openCamera('post')">+</div>
-            <div class="n-btn" onclick="go('video', this)">🎬</div>
-            <div class="n-btn" onclick="go('profile', this)">👤</div>
+            <div class="nav-icon active" onclick="tab('home', this)">🏠</div>
+            <div class="nav-icon" onclick="tab('search', this)">🔍</div>
+            <div class="nav-add" onclick="openCam('post')">+</div>
+            <div class="nav-icon" onclick="tab('video', this)">🎬</div>
+            <div class="nav-icon" onclick="tab('profile', this)">👤</div>
         </nav>
     </div>
 
-    <div id="camera-screen">
-        <video id="camera-video" autoplay playsinline></video>
-        <div class="snap-btn" onclick="capture()"></div>
-        <button onclick="closeCamera()" style="position:absolute; top:40px; left:20px; background:none; border:none; color:white; font-size:2rem;">✕</button>
-        <canvas id="canvas" style="display:none;"></canvas>
-    </div>
-
-    <div id="edit-modal" style="display:none; position:fixed; inset:0; background:#000; z-index:9999; padding:40px;">
-        <h2 style="font-family:'Orbitron';">PERFIL</h2>
-        <input type="text" id="in-name" class="auth-input" placeholder="Nombre">
-        <input type="text" id="in-bio" class="auth-input" placeholder="Biografía">
-        <button onclick="saveProfile()" style="width:100%; padding:18px; border-radius:40px; background:white; color:black; border:none; font-weight:800;">GUARDAR</button>
-        <button onclick="document.getElementById('edit-modal').style.display='none'" style="width:100%; background:none; border:none; color:white; margin-top:20px;">Cerrar</button>
-    </div>
-
-    <div id="comment-sheet">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><b>COMENTARIOS</b> <span onclick="document.getElementById('comment-sheet').classList.remove('active')">✕</span></div>
-        <div id="ui-comments" style="height:70%; overflow-y:auto; font-size:0.9rem;"></div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <input type="text" id="in-comment" class="auth-input" placeholder="Escribe..." style="flex:1; margin:0;">
-            <button onclick="addComment()" style="background:var(--accent); border:none; padding:0 20px; border-radius:15px; font-weight:bold;">↑</button>
-        </div>
+    <div id="cam-overlay">
+        <video id="cam-stream" autoplay playsinline></video>
+        <div class="cam-shutter" onclick="snap()"><div class="cam-shutter-inner"></div></div>
+        <button onclick="closeCam()" style="position:absolute; top:40px; right:20px; background:none; border:none; color:white; font-size:2rem;">✕</button>
+        <canvas id="cam-canvas" style="display:none;"></canvas>
     </div>
 
     <script>
-        let user = { email: "", name: "Usuario", bio: "Mi bio", posts: [], videos: [], story: null };
-        let stream, camTarget, activePost;
+        let db = { user: "Aura User", posts: [], videos: [], story: null };
+        let stream = null;
+        let target = 'post';
 
-        // SISTEMA DE USUARIO ROBUSTO
-        function handleAuth() {
-            const em = document.getElementById('acc-email').value;
-            if(!em.includes('@')) return;
-            user.email = em;
-            const saved = localStorage.getItem('aura_v_ultra_'+em);
-            if(saved) user = JSON.parse(saved);
-            else user.name = em.split('@')[0];
-            document.getElementById('auth-overlay').style.display='none';
-            document.getElementById('main-app').style.display='block';
-            render();
+        function login(method) {
+            const email = document.getElementById('email-log').value;
+            db.user = email ? email.split('@')[0] : "Aura User";
+            document.getElementById('auth-overlay').style.fadeOut = "0.5s";
+            setTimeout(() => {
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('u-display-name').innerText = db.user;
+                render();
+            }, 500);
         }
 
-        // CÁMARA
-        async function openCamera(t) {
-            camTarget = t;
+        async function openCam(t) {
+            target = t;
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                document.getElementById('camera-video').srcObject = stream;
-                document.getElementById('camera-screen').style.display = 'block';
-            } catch (e) { alert("Cámara no disponible"); }
+                document.getElementById('cam-stream').srcObject = stream;
+                document.getElementById('cam-overlay').style.display = 'block';
+            } catch (e) { alert("Acceso a cámara denegado."); }
         }
 
-        function closeCamera() {
+        function closeCam() {
             if(stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('camera-screen').style.display = 'none';
+            document.getElementById('cam-overlay').style.display = 'none';
         }
 
-        function capture() {
-            const v = document.getElementById('camera-video');
-            const c = document.getElementById('canvas');
-            c.width = v.videoWidth; c.height = v.videoHeight;
-            c.getContext('2d').drawImage(v, 0, 0);
-            const data = c.toDataURL('image/jpeg');
-            if(camTarget === 'story') user.story = data;
-            else user.posts.unshift({ src: data, likes: 0, liked: false, comments: [] });
-            closeCamera(); save(); render();
+        function snap() {
+            const video = document.getElementById('cam-stream');
+            const canvas = document.getElementById('cam-canvas');
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const data = canvas.toDataURL('image/jpeg');
+
+            if(target === 'story') {
+                db.story = data;
+                document.getElementById('story-img-preview').src = data;
+                document.getElementById('story-img-preview').style.display = 'block';
+                document.getElementById('story-node').classList.add('has-story');
+            } else {
+                db.posts.unshift({ src: data, likes: 0 });
+                tab('home');
+            }
+            closeCam(); render();
         }
 
-        // VÍDEO
-        function uploadVideo(input) {
+        function processVideo(input) {
             if(input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    user.videos.unshift({ src: e.target.result });
-                    save(); render();
-                    go('video');
+                const r = new FileReader();
+                r.onload = e => {
+                    db.videos.unshift({ src: e.target.result });
+                    render(); tab('video');
                 };
-                reader.readAsDataURL(input.files[0]);
+                r.readAsDataURL(input.files[0]);
             }
         }
 
         function render() {
-            document.getElementById('ui-name').innerText = user.name;
-            document.getElementById('ui-bio').innerText = user.bio;
-            if(user.story) {
-                document.getElementById('ui-story').src = user.story;
-                document.getElementById('ui-story').style.display = 'block';
-                document.getElementById('story-trigger').classList.add('active');
+            const feed = document.getElementById('posts-feed');
+            feed.innerHTML = db.posts.map(p => `
+                <div class="post">
+                    <div class="post-user">@${db.user.toLowerCase()}</div>
+                    <img src="${p.src}" class="post-media">
+                    <div class="post-actions">❤️ 💬 ✈️</div>
+                </div>
+            `).join('');
+
+            const vfeed = document.getElementById('video-content');
+            vfeed.innerHTML = db.videos.map(v => `
+                <div class="v-item">
+                    <video src="${v.src}" class="v-video" autoplay loop muted playsinline></video>
+                    <div class="v-info"><b>@${db.user.toLowerCase()}</b><br>Original Audio</div>
+                </div>
+            `).join('');
+        }
+
+        function tab(name, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-'+name).classList.add('active');
+            if(el) {
+                document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
             }
-            
-            // Render Posts
-            document.getElementById('feed-posts').innerHTML = user.posts.map((p, i) => `
-                <div class="post-card">
-                    <div style="padding:12px;"><b>${user.name}</b></div>
-                    <img src="${p.src}" class="post-img" ondblclick="doLike(${i})">
-                    <div style="padding:10px 15px; font-size:1.5rem; display:flex; gap:20px;">
-                        <span onclick="doLike(${i})" style="color:${p.liked?'red':'white'}">${p.liked?'❤️':'🤍'}</span>
-                        <span onclick="openComments(${i})">💬</span>
-                    </div>
-                    <div style="padding:0 15px 10px; font-size:0.8rem;"><b>${p.likes} likes</b></div>
-                </div>
-            `).join('');
-
-            // Render Videos
-            document.getElementById('feed-videos').innerHTML = user.videos.map(v => `
-                <div class="video-item">
-                    <video src="${v.src}" class="v-player" autoplay loop muted playsinline></video>
-                    <div style="position:absolute; bottom:120px; left:20px;"><b>@${user.name}</b></div>
-                </div>
-            `).join('');
         }
-
-        function doLike(i) {
-            const p = user.posts[i];
-            p.liked ? (p.likes--, p.liked=false) : (p.likes++, p.liked=true);
-            save(); render();
-        }
-
-        function openComments(i) {
-            activePost = i;
-            document.getElementById('ui-comments').innerHTML = user.posts[i].comments.map(c => `<div><b>${c.u}:</b> ${c.t}</div>`).join('');
-            document.getElementById('comment-sheet').classList.add('active');
-        }
-
-        function addComment() {
-            const t = document.getElementById('in-comment').value;
-            if(!t) return;
-            user.posts[activePost].comments.push({ u: user.name, t: t });
-            document.getElementById('in-comment').value = "";
-            save(); openComments(activePost);
-        }
-
-        function saveProfile() {
-            user.name = document.getElementById('in-name').value;
-            user.bio = document.getElementById('in-bio').value;
-            document.getElementById('edit-modal').style.display='none';
-            save(); render();
-        }
-
-        function go(v, btn) {
-            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
-            document.getElementById('view-'+v).classList.add('active');
-            if(btn) btn.classList.add('active');
-        }
-
-        function save() { localStorage.setItem('aura_v_ultra_'+user.email, JSON.stringify(user)); }
     </script>
 </body>
 </html>
