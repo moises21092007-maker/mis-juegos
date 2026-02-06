@@ -7,109 +7,120 @@
     <style>
         :root { --bg: #000; --panel: #1c1c1e; --border: #262626; --blue: #0095f6; --text-grey: #8e8e93; }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
-
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
         .view.active { display: block; }
+
+        /* --- HOME INMERSIVO (2753.jpg) --- */
+        .v-header-modern { position: absolute; top: 0; width: 100%; height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); box-sizing: border-box; }
+        .video-container { width: 100%; height: 100vh; background: #111 url('https://images.unsplash.com/photo-1550029402-226115b7c579?w=800') center/cover; display: flex; flex-direction: column; justify-content: flex-end; }
+        .video-info { padding: 20px; padding-bottom: 100px; }
+        .video-actions { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; text-align: center; }
 
         /* --- BUSCAR (2756.jpg) --- */
         .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 15px; border-bottom: 1px solid var(--border); }
         .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px 12px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
         .recent-item { display: flex; align-items: center; padding: 10px 15px; gap: 12px; }
-        .recent-avatar { width: 45px; height: 45px; border-radius: 50%; background: #333; object-fit: cover; }
+        .recent-avatar { width: 45px; height: 45px; border-radius: 50%; background: #333; }
 
         /* --- PERFIL (2751.jpg) --- */
-        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); position: relative; margin-top: 20px; }
+        #view-profile { padding: 15px; }
+        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); position: relative; margin-top: 20px; }
         .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
-        .add-icon-small { position: absolute; bottom: 0; right: 0; background: white; color: black; border-radius: 50%; width: 20px; height: 20px; text-align: center; font-size: 15px; font-weight: bold; border: 2px solid black; }
         .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* --- MODAL EDICIÓN Y FOTO (2752.jpg) --- */
+        /* --- EDICIÓN Y MENÚS (2752.jpg) --- */
         #edit-modal, #photo-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 15px; box-sizing: border-box; }
-        #photo-menu { background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; display: none; }
-        .edit-input-box { background: #1c1c1e; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .edit-input-box label { display: block; font-size: 0.75rem; color: var(--text-grey); }
-        .edit-input-box input { width: 100%; background: transparent; border: none; color: white; font-size: 1rem; outline: none; }
-        .menu-box { background: #1c1c1e; width: 85%; border-radius: 20px; padding: 20px; }
-        .menu-opt { background: #3897f0; color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: center; font-weight: bold; cursor: pointer; }
+        #photo-menu { background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
+        .edit-box { background: #1c1c1e; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .edit-box label { display: block; font-size: 0.75rem; color: var(--text-grey); }
+        .edit-box input { width: 100%; background: transparent; border: none; color: white; font-size: 1rem; outline: none; }
+        .menu-opt { background: var(--blue); color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: center; font-weight: bold; cursor: pointer; }
 
-        /* NAV INFERIOR */
+        /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; color: white; }
         .nav-icon.active { opacity: 1; }
-        .mini-p { width: 26px; height: 26px; border-radius: 50%; border: 1px solid transparent; }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="view active">
-        <div style="padding: 15px; display: flex; justify-content: space-between;">
-            <span>+</span> <b style="font-size: 1.2rem;">Para ti ∨</b> <span>❤️</span>
+        <div class="v-header-modern">
+            <span>➕</span> <b>Para ti ∨</b> <span>❤️</span>
         </div>
-        <div style="height: 70%; display: flex; align-items: center; justify-content: center; color: #222; font-size: 2rem; font-weight: 900;">AURA FEED</div>
+        <div class="video-container">
+            <div class="video-info">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:35px; height:35px; border-radius:50%; background:grey;"></div>
+                    <b>fitnessshayla</b> <button style="background:none; border:1px solid white; color:white; border-radius:5px; padding:2px 8px;">Seguir</button>
+                </div>
+                <p>Explorando el nuevo diseño de Aura 🚀</p>
+                <small>🎵 Sonido original - Aura App</small>
+            </div>
+            <div class="video-actions">
+                <div>❤️<br><small>12k</small></div>
+                <div>💬<br><small>450</small></div>
+                <div>✈️<br><small>15</small></div>
+            </div>
+        </div>
     </div>
 
     <div id="view-search" class="view">
         <div class="search-header">
-            <span>‹</span>
-            <div class="search-bar"><input type="text" placeholder="Buscar"></div>
+            <span>‹</span> <div class="search-bar"><input type="text" placeholder="Buscar"></div>
         </div>
-        <div style="padding: 15px; display: flex; justify-content: space-between;"><b>Recientes</b> <span style="color:var(--blue)">Ver todo</span></div>
+        <div style="padding:15px; display:flex; justify-content:space-between;"><b>Recientes</b> <span style="color:var(--blue)">Ver todo</span></div>
         <div class="recent-item">
-            <img src="https://i.pravatar.cc/100?u=estepona" class="recent-avatar">
+            <div class="recent-avatar" style="background:url('https://i.pravatar.cc/100?u=est') center/cover;"></div>
             <div style="flex:1;"><span>Ayuntamiento de Estepona</span><br><small style="color:var(--text-grey)">• más de 1 miembros nuevos</small></div>
             <div style="color:var(--text-grey)" onclick="this.parentElement.remove()">...</div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
-        <div style="padding: 15px;">
-            <div style="display:flex; justify-content:space-between;"><b>moi_._lopez ∨</b> <span>☰</span></div>
-            <div style="display:flex; align-items:center; gap:25px; margin-top:20px;">
-                <div class="p-ring">
-                    <img id="main-avatar" src="https://i.pravatar.cc/150?u=moi">
-                    <div class="add-icon-small">+</div>
-                </div>
-                <div style="display:flex; gap:20px; text-align:center;">
-                    <div><b>0</b><small>publicaciones</small></div>
-                    <div><b>104</b><small>seguidores</small></div>
-                    <div><b>247</b><small>seguidos</small></div>
-                </div>
+        <div style="display:flex; justify-content:space-between;"><b>moi_._lopez ∨</b> <span>☰</span></div>
+        <div style="display:flex; align-items:center; gap:25px;">
+            <div class="p-ring">
+                <img id="p-img" src="https://i.pravatar.cc/150?u=moi">
+                <div style="position:absolute; bottom:0; right:0; background:white; color:black; border-radius:50%; width:20px; height:20px; text-align:center; font-size:15px; font-weight:bold; border:2px solid black;">+</div>
             </div>
-            <div style="margin-top:15px;">
-                <b id="p-name-disp">moi_._Lopez</b><br>
-                <span id="p-bio-disp" style="color:var(--text-grey)">📍 Estepona</span>
+            <div style="display:flex; gap:20px; text-align:center;">
+                <div><b>104</b><br><small>seguidores</small></div>
+                <div><b>247</b><br><small>seguidos</small></div>
             </div>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button class="btn-p" onclick="openEdit()">Editar perfil</button>
-                <button class="btn-p">Compartir</button>
-            </div>
-            <div style="text-align:center; margin-top:60px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/3534/3534065.png" width="100" style="filter:invert(1); opacity:0.7;">
-                <h3>Crea tu primera publicación</h3>
-                <button style="background:var(--blue); border:none; color:white; padding:12px 40px; border-radius:10px; font-weight:bold;">Crear</button>
-            </div>
+        </div>
+        <div style="margin-top:15px;">
+            <b id="p-name-disp">moi_._Lopez</b><br>
+            <span id="p-bio-disp" style="color:var(--text-grey)">📍 Estepona</span>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-p" onclick="openEdit()">Editar perfil</button>
+            <button class="btn-p">Compartir</button>
+        </div>
+        <div style="text-align:center; margin-top:50px; background:#111; border-radius:15px; padding:20px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/3534/3534065.png" width="80" style="filter:invert(1); opacity:0.5;">
+            <h3>Crea tu primera publicación</h3>
+            <button style="background:var(--blue); border:none; color:white; width:100%; padding:12px; border-radius:10px; font-weight:bold;">Crear</button>
         </div>
     </div>
 
     <div id="edit-modal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
             <span onclick="closeEdit()">✕</span> <b>Editar perfil</b> <span style="color:var(--blue); font-weight:bold;" onclick="saveEdit()">✔️</span>
         </div>
-        <center><span onclick="openPhotoMenu()" style="color:var(--blue); font-weight:bold; cursor:pointer;">Editar foto o avatar</span></center>
+        <center><span onclick="openPhoto()" style="color:var(--blue); font-weight:bold; cursor:pointer;">Editar foto o avatar</span></center>
         <div style="margin-top:20px;">
-            <div class="edit-input-box"><label>Nombre</label><input type="text" id="in-name" value="moi_._Lopez"></div>
-            <div class="edit-input-box"><label>Nombre de usuario</label><input type="text" value="moi_._lopez_"></div>
-            <div class="edit-input-box"><label>Presentación</label><input type="text" id="in-bio" value="📍 Estepona"></div>
+            <div class="edit-box"><label>Nombre</label><input type="text" id="in-name" value="moi_._Lopez"></div>
+            <div class="edit-box"><label>Presentación</label><input type="text" id="in-bio" value="📍 Estepona"></div>
         </div>
     </div>
 
-    <div id="photo-menu" onclick="closePhotoMenu()">
-        <div class="menu-box" onclick="event.stopPropagation()">
-            <div style="margin-bottom:20px; font-weight:bold;">Cambiar foto de perfil</div>
+    <div id="photo-menu" onclick="closePhoto()">
+        <div class="menu-box" onclick="event.stopPropagation()" style="background:#1c1c1e; width:80%; padding:20px; border-radius:20px;">
             <div class="menu-opt" onclick="alert('Cámara abierta')">Hacer foto</div>
-            <label class="menu-opt" for="file-in" style="display:block;">Seleccionar de la galería</label>
-            <input type="file" id="file-in" style="display:none;" accept="image/*" onchange="updatePhoto(this)">
+            <label class="menu-opt" for="gal-in" style="display:block;">Seleccionar de la galería</label>
+            <input type="file" id="gal-in" style="display:none;" accept="image/*" onchange="updatePhoto(this)">
         </div>
     </div>
 
@@ -118,32 +129,29 @@
         <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
         <div class="nav-icon" style="font-size:2.2rem; opacity:1;">+</div>
         <div class="nav-icon">🎬</div>
-        <div class="nav-icon" onclick="tab('view-profile', this)">
-            <img src="https://i.pravatar.cc/150?u=moi" class="mini-p">
-        </div>
+        <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
     </nav>
 
     <script>
         function tab(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
+            document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
-        function openEdit() { document.getElementById('edit-modal').style.display = 'block'; }
-        function closeEdit() { document.getElementById('edit-modal').style.display = 'none'; }
-        function openPhotoMenu() { document.getElementById('photo-menu').style.display = 'flex'; }
-        function closePhotoMenu() { document.getElementById('photo-menu').style.display = 'none'; }
+        function openEdit() { document.getElementById('edit-modal').style.display='block'; }
+        function closeEdit() { document.getElementById('edit-modal').style.display='none'; }
         function saveEdit() {
             document.getElementById('p-name-disp').innerText = document.getElementById('in-name').value;
             document.getElementById('p-bio-disp').innerText = document.getElementById('in-bio').value;
             closeEdit();
         }
+        function openPhoto() { document.getElementById('photo-menu').style.display='flex'; }
+        function closePhoto() { document.getElementById('photo-menu').style.display='none'; }
         function updatePhoto(input) {
             if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) { document.getElementById('main-avatar').src = e.target.result; closePhotoMenu(); };
-                reader.readAsDataURL(input.files[0]);
+                const r = new FileReader();
+                r.onload = e => { document.getElementById('p-img').src = e.target.result; closePhoto(); };
+                r.readAsDataURL(input.files[0]);
             }
         }
     </script>
