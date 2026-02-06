@@ -3,79 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Pro Cam</title>
+    <title>Aura | Unique Experience</title>
     <style>
         :root { 
-            --bg: #000; --panel: #121212; --border: #1a1a1a; 
+            --bg: #050505; --card: #111111; --border: #1a1a1a; 
             --rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            --accent: #00ffd5;
         }
-        body { margin: 0; background: var(--bg); color: white; font-family: -apple-system, sans-serif; overflow: hidden; height: 100vh; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', -apple-system, sans-serif; overflow: hidden; }
         
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
-        .view.active { display: block; }
+        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         /* HEADER */
-        .glass-header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); border-bottom: 0.5px solid var(--border); }
-        .logo-text { font-size: 1.6rem; font-weight: 900; background: var(--rainbow); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 5s ease infinite; letter-spacing: 2px; }
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(5,5,5,0.8); backdrop-filter: blur(20px); z-index: 100; }
+        .logo { font-size: 1.8rem; font-weight: 900; background: var(--rainbow); background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 5s infinite; letter-spacing: -1px; }
 
-        /* HISTORIAS */
-        .stories-section { padding: 15px 0; border-bottom: 0.5px solid var(--border); }
-        .stories-container { display: flex; gap: 14px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
-        .sq-story { position: relative; min-width: 68px; height: 68px; }
-        .rainbow-border { width: 100%; height: 100%; border-radius: 14px; background: var(--rainbow); background-size: 400% 400%; animation: rainbow-move 5s ease infinite; padding: 3px; box-sizing: border-box; }
-        .placeholder-sq { width: 100%; height: 100%; border-radius: 11px; background: #111; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        /* PERFIL ÚNICO */
+        .profile-card { background: var(--card); margin: 15px; padding: 20px; border-radius: 24px; border: 1px solid var(--border); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .stat-box { background: #000; padding: 15px; border-radius: 16px; text-align: center; border: 1px solid #151515; }
+        .stat-box b { font-size: 1.2rem; display: block; }
+        .stat-box span { font-size: 0.7rem; color: #555; text-transform: uppercase; }
 
-        /* NAV */
-        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; transition: 0.2s; }
-        .nav-icon.active { opacity: 1; }
-        .center-x { width: 55px; height: 55px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; transform: translateY(-8px); box-shadow: 0 4px 15px rgba(255,255,255,0.2); cursor: pointer; }
+        .bio-section { padding: 0 15px; color: #aaa; font-size: 0.9rem; line-height: 1.5; }
+        .link-tag { display: inline-block; color: var(--accent); text-decoration: none; margin-top: 10px; font-weight: 500; }
 
-        /* CÁMARA FULL SCREEN */
-        #cam-screen { position: fixed; inset: 0; background: black; z-index: 5000; display: none; }
-        #video-preview { width: 100%; height: 100%; object-fit: cover; }
-        .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 20px; pointer-events: none; }
-        .cam-btn { pointer-events: auto; cursor: pointer; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .shutter-btn { width: 75px; height: 75px; border: 4px solid white; border-radius: 50%; pointer-events: auto; align-self: center; margin-bottom: 20px; }
+        /* BOTONES DE ACCIÓN */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .btn { background: #1a1a1a; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: white; color: black; }
+
+        /* NAV FUTURISTA */
+        nav { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 65px; background: rgba(20,20,20,0.9); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-icon { font-size: 1.4rem; opacity: 0.3; transition: 0.3s; cursor: pointer; }
+        .nav-icon.active { opacity: 1; color: var(--accent); }
+        .center-x { width: 50px; height: 50px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; transform: translateY(-15px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+
+        /* CÁMARA FULL */
+        #cam-view { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
+        #video-feed { width: 100%; height: 100%; object-fit: cover; }
+        .cam-overlay { position: absolute; inset: 0; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; }
+        .filter-btns { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; pointer-events: auto; }
+        .f-btn { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; backdrop-filter: blur(10px); font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); color: white; }
     </style>
 </head>
 <body>
 
     <div id="v-home" class="view active">
-        <header class="glass-header"><div class="logo-text">AURA</div><div>📩</div></header>
-        <div class="stories-section">
-            <div class="stories-container">
-                <div class="sq-story" onclick="openCam()"><div class="rainbow-border"><div class="placeholder-sq">👤</div></div></div>
-            </div>
+        <header class="header"><div class="logo">AURA</div><div>✉️</div></header>
+        <div style="padding:40px; text-align:center; color:#222;">
+            <h1 style="font-size:3rem; margin:0;">Feed</h1>
+            <p>Tu espacio está limpio.</p>
         </div>
-        <div style="padding:150px 20px; text-align:center; opacity:0.1; font-size:4rem; font-weight:900;">AURA</div>
     </div>
 
     <div id="v-search" class="view">
-        <div style="padding:15px;"><input type="text" placeholder="Buscar..." style="width:100%; background:#111; border:1px solid #222; padding:12px; border-radius:10px; color:white; outline:none;"></div>
-    </div>
-
-    <div id="v-reels" class="view">
-        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#333;">No hay vídeos ahora</div>
-    </div>
-
-    <div id="v-profile" class="view">
-        <div style="padding:40px; text-align:center;">
-            <center><div class="rainbow-border" style="width:100px; height:100px;"><div class="placeholder-sq">👤</div></div></center>
-            <h2 style="margin-top:20px;">Tu Nombre</h2>
+        <div style="padding:20px;">
+            <input type="text" placeholder="Explorar el universo Aura..." style="width:100%; background:#111; border:1px solid #222; padding:15px; border-radius:18px; color:white; outline:none;">
         </div>
     </div>
 
-    <div id="cam-screen">
-        <video id="video-preview" autoplay playsinline></video>
-        <div class="cam-ui">
-            <div style="display:flex; justify-content:space-between;">
-                <span class="cam-btn" onclick="closeCam()" style="font-size:2rem;">✕</span>
-                <span class="cam-btn">⚡️</span>
+    <div id="v-profile" class="view">
+        <div class="profile-card">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div style="width:80px; height:80px; border-radius:22px; background:var(--rainbow); background-size:400%; animation:rainbow-move 5s infinite; padding:3px;">
+                    <div style="width:100%; height:100%; background:black; border-radius:19px; display:flex; align-items:center; justify-content:center; font-size:2rem;">👤</div>
+                </div>
+                <div>
+                    <h2 id="p-name" style="margin:0;">Nombre</h2>
+                    <span id="p-user" style="color:#444;">@usuario</span>
+                </div>
             </div>
-            <div class="shutter-btn" onclick="alert('Capturado')"></div>
+
+            <div class="stats-grid">
+                <div class="stat-box"><b>0</b><span>Posts</span></div>
+                <div class="stat-box"><b>0</b><span>Aura</span></div>
+                <div class="stat-box"><b>0</b><span>Vibras</span></div>
+            </div>
+
+            <div class="bio-section">
+                <b>Biografía</b>
+                <p>Bienvenido a mi perfil único en Aura. Sin ruidos, solo esencia.</p>
+                <a href="#" class="link-tag">aura.me/usuario</a>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="alert('Editar biografía')">Editar Perfil</button>
+            <button class="btn" onclick="shareProfile()">Compartir</button>
+        </div>
+    </div>
+
+    <div id="cam-view">
+        <video id="video-feed" autoplay playsinline></video>
+        <div class="cam-overlay">
+            <div style="display:flex; justify-content:space-between; pointer-events:auto;">
+                <span onclick="closeCam()" style="font-size:2rem;">✕</span>
+                <span style="font-size:1.5rem;">⚙️</span>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:20px; align-items:center;">
+                <div class="filter-btns">
+                    <button class="f-btn" onclick="applyFilter('none')">Original</button>
+                    <button class="f-btn" onclick="applyFilter('grayscale(1)')">B&N</button>
+                    <button class="f-btn" onclick="applyFilter('hue-rotate(90deg) saturate(2)')">Ciber</button>
+                    <button class="f-btn" onclick="applyFilter('sepia(1) brightness(0.8)')">Vintage</button>
+                </div>
+                <div style="width:70px; height:70px; border:5px solid white; border-radius:50%; pointer-events:auto;" onclick="alert('Foto guardada')"></div>
+            </div>
         </div>
     </div>
 
@@ -83,7 +122,7 @@
         <div class="nav-icon active" onclick="showView('v-home', this)">🏠</div>
         <div class="nav-icon" onclick="showView('v-search', this)">🔍</div>
         <div class="center-x" onclick="openCam()">✕</div>
-        <div class="nav-icon" onclick="showView('v-reels', this)">🎬</div>
+        <div class="nav-icon" onclick="alert('Próximamente: Reels Únicos')">🎬</div>
         <div class="nav-icon" onclick="showView('v-profile', this)">👤</div>
     </nav>
 
@@ -100,34 +139,24 @@
         }
 
         async function openCam() {
-            const camScreen = document.getElementById('cam-screen');
-            const video = document.getElementById('video-preview');
             try {
-                // Pedimos cámara trasera por defecto para que sea más "social"
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment" }, 
-                    audio: false 
-                });
-                video.srcObject = stream;
-                camScreen.style.display = 'block';
-            } catch (err) {
-                // Si falla la trasera (ej: en PC), pedimos cualquier cámara
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    video.srcObject = stream;
-                    camScreen.style.display = 'block';
-                } catch(e) {
-                    alert("Error al abrir cámara: " + e.message);
-                }
-            }
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                document.getElementById('video-feed').srcObject = stream;
+                document.getElementById('cam-view').style.display = 'block';
+            } catch(e) { alert("Cámara no disponible"); }
         }
 
         function closeCam() {
-            const camScreen = document.getElementById('cam-screen');
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            camScreen.style.display = 'none';
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('cam-view').style.display = 'none';
+        }
+
+        function applyFilter(f) {
+            document.getElementById('video-feed').style.filter = f;
+        }
+
+        function shareProfile() {
+            alert("Enlace de Aura copiado: aura.me/tu-usuario");
         }
     </script>
 </body>
