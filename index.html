@@ -3,62 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | El Sistema Completo</title>
+    <title>Aura | Master Edition 2026</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
         :root { --bg: #000; --accent: #00ffd5; --glass: rgba(15,15,15,0.98); }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- UI GENERAL --- */
-        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
-        .view.active { display: block; }
-        .aura-logo { font-family: 'Orbitron'; font-size: 1.8rem; letter-spacing: 6px; text-align: center; padding: 30px 0 10px; }
-
-        /* --- ACCESO --- */
+        /* --- SISTEMA DE USUARIO --- */
         #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 25px; }
         .auth-box { width: 100%; max-width: 340px; text-align: center; }
-        .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 12px; outline: none; box-sizing: border-box; }
+        .auth-input { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; padding: 18px; border-radius: 16px; color: white; margin-bottom: 12px; outline: none; box-sizing: border-box; width: 100%; }
+
+        /* --- NAVEGACIÓN --- */
+        .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
+        .view.active { display: block; }
+        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
+        .n-btn.active { opacity: 1; color: var(--accent); }
+        .n-add-main { width: 55px; height: 55px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); font-weight: bold; }
 
         /* --- HISTORIAS --- */
-        .stories-bar { display: flex; padding: 15px 20px; gap: 15px; border-bottom: 1px solid #111; }
+        .stories-bar { display: flex; padding: 15px 20px; gap: 15px; border-bottom: 1px solid #111; overflow-x: auto; }
         .story-wrapper { position: relative; flex-shrink: 0; cursor: pointer; }
-        .my-story-box { width: 75px; height: 75px; border-radius: 20px; background: #111; border: 2px solid #222; overflow: hidden; transition: 0.3s; }
+        .my-story-box { width: 75px; height: 75px; border-radius: 20px; background: #111; border: 2px solid #222; overflow: hidden; }
         .story-wrapper.active .my-story-box { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
         .add-story-btn { position: absolute; bottom: -2px; right: -2px; width: 22px; height: 22px; background: var(--accent); color: #000; border-radius: 6px; border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
-        /* --- POSTS --- */
-        .post-card { width: 100%; border-bottom: 1px solid #111; margin-bottom: 20px; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; font-weight: 800; }
-        .mini-pfp { width: 30px; height: 30px; border-radius: 8px; background: #222; overflow: hidden; }
+        /* --- FEED POSTS & VIDEO --- */
+        .aura-logo { font-family: 'Orbitron'; font-size: 1.8rem; letter-spacing: 6px; text-align: center; padding: 30px 0 10px; }
+        .post-card { border-bottom: 1px solid #111; margin-bottom: 20px; }
         .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
-        .post-actions { padding: 12px 15px; display: flex; gap: 20px; font-size: 1.5rem; }
+        .video-item { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
+        .v-player { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* --- BUSQUEDA --- */
+        .search-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .search-box { background: #111; aspect-ratio: 1/1; }
 
-        /* --- COMENTARIOS (SHEET) --- */
-        #comment-sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 60vh; background: var(--glass); border-top: 1px solid #222; border-radius: 30px 30px 0 0; z-index: 9500; transition: 0.4s; padding: 20px; }
-        #comment-sheet.active { bottom: 0; }
-
-        /* --- CÁMARA --- */
+        /* --- CÁMARA & MODALES --- */
         #camera-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
         #camera-video { width: 100%; height: 100%; object-fit: cover; }
-        .snap-btn { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border-radius: 50%; border: 5px solid white; background: rgba(255,255,255,0.2); }
-
-        /* --- NAV --- */
-        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; }
-        .n-btn.active { opacity: 1; color: var(--accent); }
+        .snap-btn { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border-radius: 50%; border: 5px solid white; background: rgba(255,255,255,0.2); }
+        #comment-sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 60vh; background: var(--glass); border-top: 1px solid #222; border-radius: 30px 30px 0 0; z-index: 9500; transition: 0.4s; padding: 20px; }
+        #comment-sheet.active { bottom: 0; }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
         <div class="auth-box">
-            <h1 class="aura-logo">AURA</h1>
+            <h1 class="aura-logo" style="margin-bottom:30px;">AURA</h1>
             <input type="email" id="acc-email" class="auth-input" placeholder="Tu Email">
-            <button onclick="handleAuth()" style="width:100%; padding:18px; border-radius:40px; background:var(--accent); border:none; font-weight:800;">ENTRAR</button>
+            <button onclick="handleAuth()" style="width:100%; padding:18px; border-radius:40px; background:var(--accent); border:none; font-weight:800; cursor:pointer;">ACCEDER</button>
+            <p style="font-size:0.7rem; color:#444; margin-top:20px;">Sesión Segura / 2026</p>
         </div>
     </div>
 
-    <div id="main-app">
+    <div id="main-app" style="display:none;">
         <div id="view-home" class="view active">
             <div class="aura-logo">AURA</div>
             <div class="stories-bar">
@@ -70,6 +71,23 @@
             <div id="feed-posts"></div>
         </div>
 
+        <div id="view-search" class="view">
+            <div style="padding:50px 20px 20px;">
+                <input type="text" class="auth-input" placeholder="🔍 Explorar Aura...">
+                <div class="search-grid">
+                    <div class="search-box"></div><div class="search-box"></div><div class="search-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-video" class="view" style="padding-bottom:0; overflow-y:scroll; scroll-snap-type: y mandatory;">
+            <div id="feed-videos"></div>
+            <div style="position:fixed; top:20px; right:20px; z-index:6000;">
+                <button onclick="document.getElementById('in-vid').click()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:10px; border-radius:10px;">Subir Video</button>
+            </div>
+            <input type="file" id="in-vid" hidden accept="video/*" onchange="uploadVideo(this)">
+        </div>
+
         <div id="view-profile" class="view">
             <div style="padding:40px 20px;">
                 <div style="display:flex; align-items:center; gap:20px;">
@@ -78,21 +96,22 @@
                     </div>
                     <div>
                         <h2 id="ui-name" style="font-family:'Orbitron'; margin:0;">Nombre</h2>
-                        <p id="ui-bio" style="color:#666; font-size:0.8rem;">Bio...</p>
+                        <p id="ui-bio" style="color:#666; font-size:0.8rem; margin:5px 0;">Mi Biografía...</p>
+                        <p style="font-size:0.7rem; color:var(--accent);">0 Seguidores | 0 Siguiendo</p>
                     </div>
                 </div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button onclick="document.getElementById('edit-modal').style.display='block'" style="flex:1; background:#111; color:white; border:1px solid #222; padding:10px; border-radius:10px;">Editar</button>
-                    <button onclick="alert('Link copiado')" style="flex:1; background:#111; color:white; border:1px solid #222; padding:10px; border-radius:10px;">Compartir</button>
+                    <button onclick="document.getElementById('edit-modal').style.display='block'" style="flex:1; background:#111; color:white; border:1px solid #222; padding:12px; border-radius:15px; font-weight:600;">Editar</button>
+                    <button onclick="alert('Enlace copiado!')" style="flex:1; background:#111; color:white; border:1px solid #222; padding:12px; border-radius:15px; font-weight:600;">Compartir</button>
                 </div>
             </div>
         </div>
 
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
-            <div class="n-btn" onclick="go('home', this)">🔍</div>
-            <div class="n-btn" onclick="openCamera('post')" style="opacity:1; background:white; color:black; width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold;">+</div>
-            <div class="n-btn" onclick="go('home', this)">🎬</div>
+            <div class="n-btn" onclick="go('search', this)">🔍</div>
+            <div class="n-add-main" onclick="openCamera('post')">+</div>
+            <div class="n-btn" onclick="go('video', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
     </div>
@@ -105,28 +124,32 @@
     </div>
 
     <div id="edit-modal" style="display:none; position:fixed; inset:0; background:#000; z-index:9999; padding:40px;">
-        <h2 style="font-family:'Orbitron';">EDITAR PERFIL</h2>
-        <input type="text" id="in-name" class="auth-input" placeholder="Nuevo Nombre">
-        <input type="text" id="in-bio" class="auth-input" placeholder="Nueva Bio">
+        <h2 style="font-family:'Orbitron';">PERFIL</h2>
+        <input type="text" id="in-name" class="auth-input" placeholder="Nombre">
+        <input type="text" id="in-bio" class="auth-input" placeholder="Biografía">
         <button onclick="saveProfile()" style="width:100%; padding:18px; border-radius:40px; background:white; color:black; border:none; font-weight:800;">GUARDAR</button>
+        <button onclick="document.getElementById('edit-modal').style.display='none'" style="width:100%; background:none; border:none; color:white; margin-top:20px;">Cerrar</button>
     </div>
 
     <div id="comment-sheet">
         <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><b>COMENTARIOS</b> <span onclick="document.getElementById('comment-sheet').classList.remove('active')">✕</span></div>
-        <div id="ui-comments" style="height:70%; overflow-y:auto;"></div>
-        <input type="text" id="in-comment" class="auth-input" placeholder="Escribe..." style="margin-top:10px;">
-        <button onclick="addComment()" style="background:var(--accent); border:none; width:100%; padding:10px; border-radius:10px; color:black; font-weight:800;">PUBLICAR</button>
+        <div id="ui-comments" style="height:70%; overflow-y:auto; font-size:0.9rem;"></div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <input type="text" id="in-comment" class="auth-input" placeholder="Escribe..." style="flex:1; margin:0;">
+            <button onclick="addComment()" style="background:var(--accent); border:none; padding:0 20px; border-radius:15px; font-weight:bold;">↑</button>
+        </div>
     </div>
 
     <script>
-        let user = { email: "", name: "Usuario", bio: "Bio", posts: [], story: null };
+        let user = { email: "", name: "Usuario", bio: "Mi bio", posts: [], videos: [], story: null };
         let stream, camTarget, activePost;
 
+        // SISTEMA DE USUARIO ROBUSTO
         function handleAuth() {
             const em = document.getElementById('acc-email').value;
             if(!em.includes('@')) return;
             user.email = em;
-            const saved = localStorage.getItem('aura_full_'+em);
+            const saved = localStorage.getItem('aura_v_ultra_'+em);
             if(saved) user = JSON.parse(saved);
             else user.name = em.split('@')[0];
             document.getElementById('auth-overlay').style.display='none';
@@ -134,11 +157,14 @@
             render();
         }
 
+        // CÁMARA
         async function openCamera(t) {
             camTarget = t;
-            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            document.getElementById('camera-video').srcObject = stream;
-            document.getElementById('camera-screen').style.display = 'block';
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                document.getElementById('camera-video').srcObject = stream;
+                document.getElementById('camera-screen').style.display = 'block';
+            } catch (e) { alert("Cámara no disponible"); }
         }
 
         function closeCamera() {
@@ -157,6 +183,19 @@
             closeCamera(); save(); render();
         }
 
+        // VÍDEO
+        function uploadVideo(input) {
+            if(input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    user.videos.unshift({ src: e.target.result });
+                    save(); render();
+                    go('video');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         function render() {
             document.getElementById('ui-name').innerText = user.name;
             document.getElementById('ui-bio').innerText = user.bio;
@@ -165,16 +204,25 @@
                 document.getElementById('ui-story').style.display = 'block';
                 document.getElementById('story-trigger').classList.add('active');
             }
-            const feed = document.getElementById('feed-posts');
-            feed.innerHTML = user.posts.map((p, i) => `
+            
+            // Render Posts
+            document.getElementById('feed-posts').innerHTML = user.posts.map((p, i) => `
                 <div class="post-card">
-                    <div class="post-header"><b>${user.name}</b></div>
+                    <div style="padding:12px;"><b>${user.name}</b></div>
                     <img src="${p.src}" class="post-img" ondblclick="doLike(${i})">
-                    <div class="post-actions">
+                    <div style="padding:10px 15px; font-size:1.5rem; display:flex; gap:20px;">
                         <span onclick="doLike(${i})" style="color:${p.liked?'red':'white'}">${p.liked?'❤️':'🤍'}</span>
                         <span onclick="openComments(${i})">💬</span>
                     </div>
-                    <div style="padding:0 15px; font-size:0.8rem;"><b>${p.likes} likes</b></div>
+                    <div style="padding:0 15px 10px; font-size:0.8rem;"><b>${p.likes} likes</b></div>
+                </div>
+            `).join('');
+
+            // Render Videos
+            document.getElementById('feed-videos').innerHTML = user.videos.map(v => `
+                <div class="video-item">
+                    <video src="${v.src}" class="v-player" autoplay loop muted playsinline></video>
+                    <div style="position:absolute; bottom:120px; left:20px;"><b>@${user.name}</b></div>
                 </div>
             `).join('');
         }
@@ -208,10 +256,12 @@
 
         function go(v, btn) {
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
             document.getElementById('view-'+v).classList.add('active');
+            if(btn) btn.classList.add('active');
         }
 
-        function save() { localStorage.setItem('aura_full_'+user.email, JSON.stringify(user)); }
+        function save() { localStorage.setItem('aura_v_ultra_'+user.email, JSON.stringify(user)); }
     </script>
 </body>
 </html>
