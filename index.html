@@ -3,39 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Social App</title>
+    <title>Aura | App Completa</title>
     <style>
-        :root { --bg: #000; --panel: #1c1c1e; --border: #262626; --blue: #0095f6; --text-grey: #8e8e93; }
+        :root { --bg: #000; --panel: #1c1c1e; --border: #262626; --blue: #0095f6; --text-grey: #8e8e93; --aura-grad: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- HOME INMERSIVO (2753.jpg) --- */
-        .v-header-modern { position: absolute; top: 0; width: 100%; height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); box-sizing: border-box; }
-        .video-container { width: 100%; height: 100vh; background: #111 url('https://images.unsplash.com/photo-1550029402-226115b7c579?w=800') center/cover; display: flex; flex-direction: column; justify-content: flex-end; }
-        .video-info { padding: 20px; padding-bottom: 100px; }
-        .video-actions { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; text-align: center; }
+        /* --- HOME: AURA & STORIES --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
+        .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .stories-container { display: flex; padding: 10px 20px; border-bottom: 0.5px solid var(--border); }
+        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.75rem; }
+        .story-ring { width: 70px; height: 70px; border-radius: 50%; padding: 3px; position: relative; background: var(--aura-grad); }
+        .story-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
+        .add-story-btn { position: absolute; bottom: 2px; right: 2px; background: var(--blue); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid black; font-size: 14px; }
 
         /* --- BUSCAR (2756.jpg) --- */
         .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 15px; border-bottom: 1px solid var(--border); }
         .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px 12px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
-        .recent-item { display: flex; align-items: center; padding: 10px 15px; gap: 12px; }
-        .recent-avatar { width: 45px; height: 45px; border-radius: 50%; background: #333; }
 
         /* --- PERFIL (2751.jpg) --- */
         #view-profile { padding: 15px; }
-        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); position: relative; margin-top: 20px; }
+        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; margin-top: 20px; }
         .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
         .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* --- EDICIÓN Y MENÚS (2752.jpg) --- */
+        /* --- MODAL EDICIÓN (2752.jpg) --- */
         #edit-modal, #photo-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 15px; box-sizing: border-box; }
-        #photo-menu { background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
-        .edit-box { background: #1c1c1e; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .edit-box label { display: block; font-size: 0.75rem; color: var(--text-grey); }
-        .edit-box input { width: 100%; background: transparent; border: none; color: white; font-size: 1rem; outline: none; }
-        .menu-opt { background: var(--blue); color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: center; font-weight: bold; cursor: pointer; }
+        .edit-input-box { background: #1c1c1e; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .edit-input-box label { display: block; font-size: 0.75rem; color: var(--text-grey); }
+        .edit-input-box input { width: 100%; background: transparent; border: none; color: white; font-size: 1rem; outline: none; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
@@ -46,23 +45,22 @@
 <body>
 
     <div id="view-home" class="view active">
-        <div class="v-header-modern">
-            <span>➕</span> <b>Para ti ∨</b> <span>❤️</span>
+        <div class="home-header">
+            <h1 class="brand-name">Aura</h1>
+            <div style="display:flex; gap:20px; font-size:1.3rem;"><span>❤️</span><span>💬</span></div>
         </div>
-        <div class="video-container">
-            <div class="video-info">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:35px; height:35px; border-radius:50%; background:grey;"></div>
-                    <b>fitnessshayla</b> <button style="background:none; border:1px solid white; color:white; border-radius:5px; padding:2px 8px;">Seguir</button>
+        <div class="stories-container">
+            <div class="story-item" onclick="openPhotoMenu()">
+                <div class="story-ring">
+                    <img class="user-photo-ref" src="https://i.pravatar.cc/150?u=moi">
+                    <div class="add-story-btn">+</div>
                 </div>
-                <p>Explorando el nuevo diseño de Aura 🚀</p>
-                <small>🎵 Sonido original - Aura App</small>
+                <span>Tu historia</span>
             </div>
-            <div class="video-actions">
-                <div>❤️<br><small>12k</small></div>
-                <div>💬<br><small>450</small></div>
-                <div>✈️<br><small>15</small></div>
-            </div>
+        </div>
+        <div style="text-align:center; margin-top:100px; color:var(--text-grey);">
+            <p>Bienvenido a Aura</p>
+            <small>Desliza para ver publicaciones</small>
         </div>
     </div>
 
@@ -71,19 +69,18 @@
             <span>‹</span> <div class="search-bar"><input type="text" placeholder="Buscar"></div>
         </div>
         <div style="padding:15px; display:flex; justify-content:space-between;"><b>Recientes</b> <span style="color:var(--blue)">Ver todo</span></div>
-        <div class="recent-item">
-            <div class="recent-avatar" style="background:url('https://i.pravatar.cc/100?u=est') center/cover;"></div>
-            <div style="flex:1;"><span>Ayuntamiento de Estepona</span><br><small style="color:var(--text-grey)">• más de 1 miembros nuevos</small></div>
-            <div style="color:var(--text-grey)" onclick="this.parentElement.remove()">...</div>
+        <div style="padding:15px; display:flex; align-items:center; gap:12px;">
+            <div style="width:45px; height:45px; border-radius:50%; background:#333;"></div>
+            <div style="flex:1;">Ayuntamiento de Estepona</div>
+            <div style="color:var(--text-grey)">✕</div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
         <div style="display:flex; justify-content:space-between;"><b>moi_._lopez ∨</b> <span>☰</span></div>
-        <div style="display:flex; align-items:center; gap:25px;">
+        <div style="display:flex; align-items:center; gap:25px; margin-top:20px;">
             <div class="p-ring">
-                <img id="p-img" src="https://i.pravatar.cc/150?u=moi">
-                <div style="position:absolute; bottom:0; right:0; background:white; color:black; border-radius:50%; width:20px; height:20px; text-align:center; font-size:15px; font-weight:bold; border:2px solid black;">+</div>
+                <img class="user-photo-ref" src="https://i.pravatar.cc/150?u=moi">
             </div>
             <div style="display:flex; gap:20px; text-align:center;">
                 <div><b>104</b><br><small>seguidores</small></div>
@@ -91,17 +88,12 @@
             </div>
         </div>
         <div style="margin-top:15px;">
-            <b id="p-name-disp">moi_._Lopez</b><br>
-            <span id="p-bio-disp" style="color:var(--text-grey)">📍 Estepona</span>
+            <b id="disp-name">moi_._Lopez</b><br>
+            <span id="disp-bio" style="color:var(--text-grey)">📍 Estepona</span>
         </div>
         <div style="display:flex; gap:10px; margin-top:20px;">
             <button class="btn-p" onclick="openEdit()">Editar perfil</button>
             <button class="btn-p">Compartir</button>
-        </div>
-        <div style="text-align:center; margin-top:50px; background:#111; border-radius:15px; padding:20px;">
-            <img src="https://cdn-icons-png.flaticon.com/512/3534/3534065.png" width="80" style="filter:invert(1); opacity:0.5;">
-            <h3>Crea tu primera publicación</h3>
-            <button style="background:var(--blue); border:none; color:white; width:100%; padding:12px; border-radius:10px; font-weight:bold;">Crear</button>
         </div>
     </div>
 
@@ -109,18 +101,19 @@
         <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
             <span onclick="closeEdit()">✕</span> <b>Editar perfil</b> <span style="color:var(--blue); font-weight:bold;" onclick="saveEdit()">✔️</span>
         </div>
-        <center><span onclick="openPhoto()" style="color:var(--blue); font-weight:bold; cursor:pointer;">Editar foto o avatar</span></center>
+        <center><span onclick="openPhotoMenu()" style="color:var(--blue); font-weight:bold; cursor:pointer;">Editar foto o avatar</span></center>
         <div style="margin-top:20px;">
-            <div class="edit-box"><label>Nombre</label><input type="text" id="in-name" value="moi_._Lopez"></div>
-            <div class="edit-box"><label>Presentación</label><input type="text" id="in-bio" value="📍 Estepona"></div>
+            <div class="edit-input-box"><label>Nombre</label><input type="text" id="in-name" value="moi_._Lopez"></div>
+            <div class="edit-input-box"><label>Presentación</label><input type="text" id="in-bio" value="📍 Estepona"></div>
         </div>
     </div>
 
-    <div id="photo-menu" onclick="closePhoto()">
-        <div class="menu-box" onclick="event.stopPropagation()" style="background:#1c1c1e; width:80%; padding:20px; border-radius:20px;">
-            <div class="menu-opt" onclick="alert('Cámara abierta')">Hacer foto</div>
-            <label class="menu-opt" for="gal-in" style="display:block;">Seleccionar de la galería</label>
-            <input type="file" id="gal-in" style="display:none;" accept="image/*" onchange="updatePhoto(this)">
+    <div id="photo-menu" onclick="closePhotoMenu()" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000;">
+        <div class="menu-box" onclick="event.stopPropagation()" style="background:#1c1c1e; width:80%; padding:20px; border-radius:20px; text-align:center;">
+            <label style="background:var(--blue); display:block; padding:15px; border-radius:12px; margin-bottom:10px; cursor:pointer;">
+                Seleccionar de la galería <input type="file" style="display:none" accept="image/*" onchange="updateAllPhotos(this)">
+            </label>
+            <div onclick="closePhotoMenu()" style="padding:10px; color:var(--text-grey);">Cancelar</div>
         </div>
     </div>
 
@@ -141,17 +134,20 @@
         function openEdit() { document.getElementById('edit-modal').style.display='block'; }
         function closeEdit() { document.getElementById('edit-modal').style.display='none'; }
         function saveEdit() {
-            document.getElementById('p-name-disp').innerText = document.getElementById('in-name').value;
-            document.getElementById('p-bio-disp').innerText = document.getElementById('in-bio').value;
+            document.getElementById('disp-name').innerText = document.getElementById('in-name').value;
+            document.getElementById('disp-bio').innerText = document.getElementById('in-bio').value;
             closeEdit();
         }
-        function openPhoto() { document.getElementById('photo-menu').style.display='flex'; }
-        function closePhoto() { document.getElementById('photo-menu').style.display='none'; }
-        function updatePhoto(input) {
+        function openPhotoMenu() { document.getElementById('photo-menu').style.display='flex'; }
+        function closePhotoMenu() { document.getElementById('photo-menu').style.display='none'; }
+        function updateAllPhotos(input) {
             if (input.files && input.files[0]) {
-                const r = new FileReader();
-                r.onload = e => { document.getElementById('p-img').src = e.target.result; closePhoto(); };
-                r.readAsDataURL(input.files[0]);
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.querySelectorAll('.user-photo-ref').forEach(img => img.src = e.target.result);
+                    closePhotoMenu();
+                };
+                reader.readAsDataURL(input.files[0]);
             }
         }
     </script>
