@@ -3,80 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Stories & Live Cam</title>
+    <title>Aura | Stories vs Posts</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;800&display=swap');
         :root { --bg: #000; --accent: #00ffd5; --glass: rgba(15,15,15,0.98); }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- UI GENERAL --- */
+        /* --- UI --- */
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; box-sizing: border-box; }
         .view.active { display: block; }
         .aura-logo { font-family: 'Orbitron'; font-size: 1.8rem; letter-spacing: 6px; text-align: center; padding: 30px 0 10px; }
 
-        /* --- ZONA HISTORIAS (SOLICITADO) --- */
-        .stories-bar { display: flex; padding: 10px 20px; gap: 15px; overflow-x: auto; border-bottom: 1px solid #111; }
-        .story-wrapper { position: relative; flex-shrink: 0; }
+        /* --- HISTORIAS (ZONA EXCLUSIVA) --- */
+        .stories-bar { display: flex; padding: 15px 20px; gap: 15px; border-bottom: 1px solid #111; }
+        .story-wrapper { position: relative; flex-shrink: 0; cursor: pointer; }
         .my-story-box { 
-            width: 70px; height: 70px; 
-            border-radius: 18px; 
-            background: #111; 
+            width: 75px; height: 75px; 
+            border-radius: 20px; 
+            background: #0a0a0a; 
             border: 2px solid #222; 
             overflow: hidden; 
             display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
         }
+        /* Borde neón cuando hay historia */
+        .story-wrapper.active .my-story-box { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        
         .my-story-box img { width: 100%; height: 100%; object-fit: cover; }
         .add-story-btn { 
-            position: absolute; bottom: -5px; right: -5px; 
-            width: 24px; height: 24px; 
+            position: absolute; bottom: -2px; right: -2px; 
+            width: 22px; height: 22px; 
             background: var(--accent); color: #000; 
-            border-radius: 8px; border: 3px solid #000;
+            border-radius: 6px; border: 2px solid #000;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 14px; cursor: pointer;
+            font-weight: 900; font-size: 16px;
         }
 
-        /* --- POSTS --- */
-        .post-card { width: 100%; border-bottom: 1px solid #111; margin-bottom: 10px; }
-        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        /* --- PUBLICACIONES (MURO) --- */
+        .feed { padding-top: 10px; }
+        .post-card { width: 100%; border-bottom: 1px solid #111; margin-bottom: 20px; }
+        .post-header { padding: 12px; font-weight: 800; font-size: 0.9rem; }
+        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #050505; }
 
-        /* --- CÁMARA --- */
+        /* --- CÁMARA LIVE --- */
         #camera-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
         #camera-video { width: 100%; height: 100%; object-fit: cover; }
-        .cam-ui { position: absolute; bottom: 50px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; }
-        .snap-btn { width: 75px; height: 75px; border-radius: 50%; border: 4px solid white; background: rgba(255,255,255,0.2); }
+        .cam-ui { position: absolute; bottom: 60px; left: 0; right: 0; display: flex; justify-content: center; }
+        .snap-btn { width: 80px; height: 80px; border-radius: 50%; border: 5px solid white; background: rgba(255,255,255,0.2); }
 
         /* --- NAV --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 5000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; }
         .n-btn.active { opacity: 1; color: var(--accent); }
+        .n-add-main { width: 55px; height: 55px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 2rem; transform: translateY(-5px); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="main-app" style="display:block;">
+    <div id="main-app">
         <div id="view-home" class="view active">
             <div class="aura-logo">AURA</div>
             
             <div class="stories-bar">
-                <div class="story-wrapper" onclick="openLiveCamera('story')">
-                    <div class="my-story-box" id="story-display">
-                        <img id="story-img" src="" style="display:none;">
-                        <span id="story-init" style="font-family:'Orbitron'; font-weight:900; color:#333;">?</span>
+                <div class="story-wrapper" id="story-container" onclick="openCamera('story')">
+                    <div class="my-story-box">
+                        <img id="img-story" src="" style="display:none;">
+                        <span id="label-story" style="font-size:0.7rem; color:#444;">HISTORIA</span>
                     </div>
                     <div class="add-story-btn">+</div>
                 </div>
-                </div>
+            </div>
 
-            <div id="feed-photos"></div>
+            <div id="feed-posts" class="feed"></div>
         </div>
 
         <div id="view-video" class="view"></div>
-        <div id="view-profile" class="view"></div>
+        <div id="view-profile" class="view">
+            <div style="padding:40px; text-align:center;">
+                <h2 id="user-name-profile">Usuario</h2>
+                <p>0 Seguidores | 0 Siguiendo</p>
+            </div>
+        </div>
 
         <nav>
             <div class="n-btn active" onclick="go('home', this)">🏠</div>
             <div class="n-btn" onclick="go('home', this)">🔍</div>
-            <div class="n-btn" onclick="openLiveCamera('post')">➕</div>
+            <div class="n-add-main" onclick="openCamera('post')">+</div>
             <div class="n-btn" onclick="go('video', this)">🎬</div>
             <div class="n-btn" onclick="go('profile', this)">👤</div>
         </nav>
@@ -84,57 +96,63 @@
 
     <div id="camera-screen">
         <video id="camera-video" autoplay playsinline></video>
-        <button onclick="closeLiveCamera()" style="position:absolute; top:40px; left:20px; background:none; border:none; color:white; font-size:2rem;">✕</button>
+        <button onclick="closeCamera()" style="position:absolute; top:40px; right:20px; background:none; border:none; color:white; font-size:2.5rem;">✕</button>
         <div class="cam-ui">
-            <div class="snap-btn" onclick="takeSnapshot()"></div>
+            <div class="snap-btn" onclick="capture()"></div>
         </div>
-        <canvas id="cam-canvas" style="display:none;"></canvas>
+        <canvas id="canvas" style="display:none;"></canvas>
     </div>
 
     <script>
-        let user = { name: "Usuario", posts: [], story: null };
+        let userData = { name: "Usuario", posts: [], story: null };
         let stream = null;
-        let mode = 'post'; // 'post' o 'story'
+        let cameraTarget = 'post'; // Define si va a Historia o a Post
 
-        async function openLiveCamera(m) {
-            mode = m;
+        // Abrir Cámara
+        async function openCamera(target) {
+            cameraTarget = target;
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 document.getElementById('camera-video').srcObject = stream;
                 document.getElementById('camera-screen').style.display = 'block';
-            } catch (err) { alert("Error cámara"); }
+            } catch (e) { alert("Cámara no disponible"); }
         }
 
-        function closeLiveCamera() {
-            if (stream) stream.getTracks().forEach(t => t.stop());
+        function closeCamera() {
+            if(stream) stream.getTracks().forEach(t => t.stop());
             document.getElementById('camera-screen').style.display = 'none';
         }
 
-        function takeSnapshot() {
-            const video = document.getElementById('camera-video');
-            const canvas = document.getElementById('cam-canvas');
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            const data = canvas.toDataURL('image/jpeg');
+        // Capturar Foto
+        function capture() {
+            const v = document.getElementById('camera-video');
+            const c = document.getElementById('canvas');
+            c.width = v.videoWidth; c.height = v.videoHeight;
+            c.getContext('2d').drawImage(v, 0, 0);
+            const imgData = c.toDataURL('image/jpeg');
 
-            if(mode === 'story') {
-                user.story = data;
-                const img = document.getElementById('story-img');
-                img.src = data; img.style.display = 'block';
-                document.getElementById('story-init').style.display = 'none';
+            if(cameraTarget === 'story') {
+                // Va a la zona de HISTORIA
+                userData.story = imgData;
+                document.getElementById('img-story').src = imgData;
+                document.getElementById('img-story').style.display = 'block';
+                document.getElementById('label-story').style.display = 'none';
+                document.getElementById('story-container').classList.add('active');
             } else {
-                user.posts.unshift({ src: data });
+                // Va a la zona de PUBLICACIONES
+                userData.posts.unshift({ src: imgData, date: new Date().getTime() });
+                renderPosts();
             }
-            
-            render();
-            closeLiveCamera();
+
+            closeCamera();
+            save();
         }
 
-        function render() {
-            const feed = document.getElementById('feed-photos');
-            feed.innerHTML = user.posts.map(p => `
+        function renderPosts() {
+            const feed = document.getElementById('feed-posts');
+            feed.innerHTML = userData.posts.map(p => `
                 <div class="post-card">
-                    <div style="padding:12px;"><b>${user.name}</b></div>
+                    <div class="post-header">@${userData.name.toLowerCase()}</div>
                     <img src="${p.src}" class="post-img">
                 </div>
             `).join('');
@@ -144,6 +162,22 @@
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
             document.getElementById('view-'+v).classList.add('active');
         }
+
+        function save() { localStorage.setItem('aura_data', JSON.stringify(userData)); }
+
+        window.onload = () => {
+            const saved = localStorage.getItem('aura_data');
+            if(saved) {
+                userData = JSON.parse(saved);
+                if(userData.story) {
+                    document.getElementById('img-story').src = userData.story;
+                    document.getElementById('img-story').style.display = 'block';
+                    document.getElementById('label-story').style.display = 'none';
+                    document.getElementById('story-container').classList.add('active');
+                }
+                renderPosts();
+            }
+        };
     </script>
 </body>
 </html>
