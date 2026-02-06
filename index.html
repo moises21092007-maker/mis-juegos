@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Full App 2026</title>
+    <title>Aura | Final Edition</title>
     <style>
         :root { 
             --bg: #000; --panel: #121212; --border: #262626; 
@@ -26,9 +26,7 @@
         /* BUSCADOR */
         .search-bar-container { padding: 10px 20px; }
         .search-input { width: 100%; background: #262626; border: none; padding: 10px 15px; border-radius: 10px; color: white; outline: none; box-sizing: border-box; }
-        .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding-top: 10px; }
-        .grid-item { aspect-ratio: 1/1; background: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #333; }
-
+        
         /* HISTORIA CUADRADA CON "+" */
         .stories-bar { display: flex; padding: 15px; border-bottom: 0.5px solid var(--border); }
         .sq-wrapper { position: relative; width: 80px; height: 80px; cursor: pointer; }
@@ -45,14 +43,14 @@
         .profile-actions { display: flex; gap: 8px; margin-top: 15px; }
         .action-btn { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
 
-        /* EDITOR GÉNERO (FIX LETRAS NEGRAS) */
+        /* EDITOR GÉNERO */
         .field { padding: 15px 20px; border-bottom: 0.5px solid var(--border); }
         .field select { width: 100%; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; margin-top: 5px; }
         .field select option { background: #fff; color: #000; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; transition: 0.3s; }
+        .nav-icon { font-size: 1.5rem; opacity: 0.4; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
     </style>
 </head>
@@ -61,7 +59,7 @@
     <div id="v-home" class="view active">
         <header class="glass-header">
             <div class="logo">Aura</div>
-            <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.4rem;">✈️</div>
+            <div onclick="showView('v-dms')" style="cursor:pointer; font-size:1.4rem;">📩</div>
         </header>
         <div class="stories-bar">
             <div class="sq-wrapper" onclick="openCam()">
@@ -69,27 +67,21 @@
                 <div class="add-badge">+</div>
             </div>
         </div>
-        <div style="text-align:center; padding:100px 20px; color:var(--text-grey);"><p>No hay publicaciones nuevas.</p></div>
+        <div style="text-align:center; padding:100px 20px; color:var(--text-grey);"><p>Tu feed de Aura está listo.</p></div>
     </div>
 
     <div id="v-search" class="view">
-        <div class="search-bar-container">
-            <input type="text" class="search-input" placeholder="Buscar usuarios o temas...">
-        </div>
-        <div class="explore-grid">
-            <div class="grid-item">🖼️</div><div class="grid-item">🖼️</div><div class="grid-item">🖼️</div>
-            <div class="grid-item">🖼️</div><div class="grid-item">🖼️</div><div class="grid-item">🖼️</div>
-            <div class="grid-item">🖼️</div><div class="grid-item">🖼️</div><div class="grid-item">🖼️</div>
-        </div>
+        <div class="search-bar-container"><input type="text" class="search-input" placeholder="Buscar en Aura..."></div>
+        <div style="padding:20px; color:var(--text-grey); text-align:center;">Explora contenido nuevo</div>
     </div>
 
     <div id="v-reels" class="view">
-        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">🎬 Feed de Vídeos</div>
+        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-grey);">🎬 Zona de Videos</div>
     </div>
 
     <div id="v-dms" class="view">
         <header class="glass-header"><b onclick="showView('v-home')">← Volver</b><b>Mensajes</b><span></span></header>
-        <div style="padding:40px; text-align:center; color:var(--text-grey);">Bandeja vacía</div>
+        <div style="padding:40px; text-align:center; color:var(--text-grey);">Bandeja de entrada limpia.</div>
     </div>
 
     <div id="v-profile" class="view">
@@ -107,7 +99,7 @@
             <span id="p-user" style="color:var(--text-grey);">@user-1</span>
             <div class="profile-actions">
                 <button class="action-btn" onclick="openEdit()">Editar perfil</button>
-                <button class="action-btn" onclick="alert('Perfil copiado')">Compartir perfil</button>
+                <button class="action-btn" onclick="alert('Enlace copiado')">Compartir perfil</button>
             </div>
         </div>
     </div>
@@ -137,11 +129,18 @@
     </nav>
 
     <script>
+        // CARGAR DATOS AL INICIAR
+        window.onload = function() {
+            const n = localStorage.getItem('aura_n');
+            const u = localStorage.getItem('aura_u');
+            if(n) { document.getElementById('p-name').innerText = n; document.getElementById('in-name').value = n; }
+            if(u) { document.getElementById('p-user').innerText = '@'+u; document.getElementById('h-user').innerText = u; document.getElementById('in-user').value = u; }
+        };
+
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-            // Lógica simple para iluminar icono (puedes mejorarla con IDs)
         }
 
         async function openCam() {
@@ -157,16 +156,20 @@
         }
 
         function openEdit() {
-            document.getElementById('in-name').value = document.getElementById('p-name').innerText;
-            document.getElementById('in-user').value = document.getElementById('p-user').innerText.replace('@','');
             document.getElementById('edit-modal').style.top = '0';
         }
         function closeEdit() { document.getElementById('edit-modal').style.top = '100%'; }
+        
         function saveEdit() {
-            document.getElementById('p-name').innerText = document.getElementById('in-name').value;
+            const n = document.getElementById('in-name').value;
             const u = document.getElementById('in-user').value;
+            document.getElementById('p-name').innerText = n;
             document.getElementById('p-user').innerText = '@' + u;
             document.getElementById('h-user').innerText = u;
+            
+            // GUARDAR EN EL NAVEGADOR
+            localStorage.setItem('aura_n', n);
+            localStorage.setItem('aura_u', u);
             closeEdit();
         }
     </script>
