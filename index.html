@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | Pro Edition Final</title>
+    <title>Aura | Pure Edition</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -14,24 +14,17 @@
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- HOME (ZONA DE FOTOS) --- */
+        /* --- HOME (ZONA DE FOTOS VACÍA) --- */
         .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid var(--border); position: sticky; top: 0; background: black; z-index: 100; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         
-        .post-photo { width: 100%; border-bottom: 0.5px solid var(--border); margin-bottom: 10px; }
-        .post-header { display: flex; align-items: center; gap: 10px; padding: 10px; }
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; }
-        .photo-content { width: 100%; aspect-ratio: 1/1; background: #111; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold; }
-        .post-actions { padding: 12px; font-size: 1.5rem; display: flex; gap: 18px; }
+        .empty-state { text-align: center; color: var(--text-grey); padding: 50px 20px; margin-top: 30%; }
+        .empty-icon { font-size: 3rem; margin-bottom: 10px; opacity: 0.5; }
 
-        /* --- REELS (ZONA DE VÍDEOS VERTICALES) --- */
-        #view-reels { overflow-y: scroll; snap-type: y mandatory; padding-bottom: 0; scrollbar-width: none; }
-        #view-reels::-webkit-scrollbar { display: none; }
-        .video-snap { height: 100vh; width: 100%; snap-align: start; position: relative; background: #000; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #111; }
-        .video-info { position: absolute; bottom: 100px; left: 15px; z-index: 10; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
-        .video-sidebar { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        /* --- REELS (ZONA DE VÍDEOS VACÍA) --- */
+        #view-reels { background: #000; display: flex; align-items: center; justify-content: center; text-align: center; }
 
-        /* --- PERFIL (USER-1 REAL) --- */
+        /* --- PERFIL (SOLO USER-1) --- */
         .profile-container { padding: 20px; text-align: center; }
         .p-avatar { width: 90px; height: 90px; border-radius: 50%; padding: 3px; background: var(--aura-grad); margin: 0 auto 12px; }
         .p-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
@@ -40,18 +33,17 @@
         .stat-btn b { display: block; font-size: 1.2rem; }
         .stat-btn span { font-size: 0.8rem; color: var(--text-grey); }
 
-        /* --- CÁMARA PRO CON FILTROS --- */
+        /* --- CÁMARA CON FILTROS --- */
         #cam-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 7000; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; transition: filter 0.4s; }
         .filter-label { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 8px 18px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase; }
         .cam-ui { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: space-around; align-items: center; }
-        .shutter { width: 70px; height: 70px; border: 5px solid white; border-radius: 50%; background: rgba(255,255,255,0.1); }
+        .shutter { width: 70px; height: 70px; border: 5px solid white; border-radius: 50%; }
 
-        /* FILTROS CSS ESTILO IG */
+        /* FILTROS CSS */
         .f-clarendon { filter: contrast(1.2) saturate(1.4) brightness(1.1); }
         .f-moon { filter: grayscale(1) contrast(1.1); }
         .f-nashville { filter: sepia(0.3) contrast(1.2) brightness(1.1) hue-rotate(-15deg); }
-        .f-reyes { filter: sepia(0.4) contrast(0.9) saturate(0.8); }
 
         /* NAVEGACIÓN */
         nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
@@ -68,33 +60,23 @@
         <div class="stories-bar" style="display:flex; padding:15px; border-bottom:0.5px solid var(--border);">
             <div class="p-avatar" style="width:60px; height:60px; margin:0;"><img src="https://i.pravatar.cc/150?u=user1"></div>
         </div>
-        <div id="photo-feed">
-            <div class="post-photo">
-                <div class="post-header">
-                    <img src="https://i.pravatar.cc/150?u=aura">
-                    <b>comunidad_aura</b>
-                </div>
-                <div class="photo-content">ZONA DE FOTOS</div>
-                <div class="post-actions">❤️ 💬 ✈️</div>
-            </div>
-            <p style="text-align:center; color:var(--text-grey); padding:20px;">No hay más fotos por ahora.</p>
+        <div class="empty-state">
+            <div class="empty-icon">📸</div>
+            <p><b>Tu feed está vacío</b><br>Las fotos de las personas que sigas aparecerán aquí.</p>
         </div>
     </div>
 
     <div id="view-search" class="view">
         <div style="background:#262626; border-radius:10px; margin:15px; padding:12px; color:var(--text-grey);">🔍 Buscar...</div>
-        <div style="text-align:center; color:var(--text-grey); margin-top:50px;">Limpio de bots. Empieza a buscar personas.</div>
+        <div class="empty-state">
+            <p>Busca usuarios reales para ver su contenido.</p>
+        </div>
     </div>
 
     <div id="view-reels" class="view">
-        <div class="video-snap">
-            <div class="video-info"><b>@aura_oficial</b><p>Bienvenido a la zona de vídeos vertical 🎬</p></div>
-            <div class="video-sidebar"><div>❤️</div><div>💬</div><div>✈️</div></div>
-            <div style="color:#222;">[ VÍDEO 1 ]</div>
-        </div>
-        <div class="video-snap" style="background:#050505;">
-            <div class="video-info"><b>@user_test</b><p>Desliza hacia arriba para ver más 👆</p></div>
-            <div style="color:#222;">[ VÍDEO 2 ]</div>
+        <div class="empty-state">
+            <div class="empty-icon">🎬</div>
+            <p><b>No hay vídeos todavía</b><br>Explora contenido real cuando la gente empiece a publicar.</p>
         </div>
     </div>
 
@@ -156,7 +138,7 @@
         let fIdx = 0;
         const filters = [
             {n:'Normal', c:''}, {n:'Clarendon', c:'f-clarendon'}, 
-            {n:'Moon', c:'f-moon'}, {n:'Nashville', c:'f-nashville'}, {n:'Reyes', c:'f-reyes'}
+            {n:'Moon', c:'f-moon'}, {n:'Nashville', c:'f-nashville'}
         ];
 
         function changeFilter() {
