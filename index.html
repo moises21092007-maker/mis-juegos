@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | App Completa</title>
+    <title>Aura | Sistema Integrado</title>
     <style>
-        :root { --bg: #000; --panel: #1c1c1e; --border: #262626; --blue: #0095f6; --text-grey: #8e8e93; --aura-grad: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); }
+        :root { 
+            --bg: #000; --panel: #1c1c1e; --border: #262626; 
+            --blue: #0095f6; --text-grey: #8e8e93; 
+            --aura-grad: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); 
+        }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
         .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
         .view.active { display: block; }
@@ -14,15 +18,16 @@
         .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         .stories-container { display: flex; padding: 10px 20px; border-bottom: 0.5px solid var(--border); }
-        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.75rem; }
+        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.75rem; cursor: pointer; }
         .story-ring { width: 70px; height: 70px; border-radius: 50%; padding: 3px; position: relative; background: var(--aura-grad); }
         .story-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
         .add-story-btn { position: absolute; bottom: 2px; right: 2px; background: var(--blue); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid black; font-size: 14px; }
 
-        /* --- BUSCAR (2756.jpg) --- */
+        /* --- BUSCAR (2756.jpg Arreglado) --- */
         .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 15px; border-bottom: 1px solid var(--border); }
         .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px 12px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
+        .recent-item { display: flex; align-items: center; padding: 15px; gap: 12px; transition: opacity 0.3s ease; }
 
         /* --- PERFIL (2751.jpg) --- */
         #view-profile { padding: 15px; }
@@ -30,7 +35,7 @@
         .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
         .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* --- MODAL EDICIÓN (2752.jpg) --- */
+        /* --- MODALES --- */
         #edit-modal, #photo-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 15px; box-sizing: border-box; }
         .edit-input-box { background: #1c1c1e; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; border: 1px solid var(--border); }
         .edit-input-box label { display: block; font-size: 0.75rem; color: var(--text-grey); }
@@ -60,7 +65,6 @@
         </div>
         <div style="text-align:center; margin-top:100px; color:var(--text-grey);">
             <p>Bienvenido a Aura</p>
-            <small>Desliza para ver publicaciones</small>
         </div>
     </div>
 
@@ -68,11 +72,17 @@
         <div class="search-header">
             <span>‹</span> <div class="search-bar"><input type="text" placeholder="Buscar"></div>
         </div>
-        <div style="padding:15px; display:flex; justify-content:space-between;"><b>Recientes</b> <span style="color:var(--blue)">Ver todo</span></div>
-        <div style="padding:15px; display:flex; align-items:center; gap:12px;">
-            <div style="width:45px; height:45px; border-radius:50%; background:#333;"></div>
-            <div style="flex:1;">Ayuntamiento de Estepona</div>
-            <div style="color:var(--text-grey)">✕</div>
+        <div style="padding:15px; display:flex; justify-content:space-between;">
+            <b>Recientes</b> 
+            <span style="color:var(--blue); cursor:pointer;" onclick="document.querySelectorAll('.recent-item').forEach(el => el.remove())">Borrar todo</span>
+        </div>
+        <div class="recent-item" id="item-estepona">
+            <div style="width:45px; height:45px; border-radius:50%; background:url('https://i.pravatar.cc/100?u=est') center/cover;"></div>
+            <div style="flex:1;">
+                <span>Ayuntamiento de Estepona</span><br>
+                <small style="color:var(--text-grey)">• más de 1 miembros nuevos</small>
+            </div>
+            <div style="color:var(--text-grey); cursor:pointer; padding:10px;" onclick="eliminarReciente(this)">✕</div>
         </div>
     </div>
 
@@ -99,7 +109,7 @@
 
     <div id="edit-modal">
         <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <span onclick="closeEdit()">✕</span> <b>Editar perfil</b> <span style="color:var(--blue); font-weight:bold;" onclick="saveEdit()">✔️</span>
+            <span onclick="closeEdit()">✕</span> <b>Editar perfil</b> <span style="color:var(--blue); font-weight:bold; cursor:pointer;" onclick="saveEdit()">✔️</span>
         </div>
         <center><span onclick="openPhotoMenu()" style="color:var(--blue); font-weight:bold; cursor:pointer;">Editar foto o avatar</span></center>
         <div style="margin-top:20px;">
@@ -108,29 +118,40 @@
         </div>
     </div>
 
-    <div id="photo-menu" onclick="closePhotoMenu()" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000;">
-        <div class="menu-box" onclick="event.stopPropagation()" style="background:#1c1c1e; width:80%; padding:20px; border-radius:20px; text-align:center;">
-            <label style="background:var(--blue); display:block; padding:15px; border-radius:12px; margin-bottom:10px; cursor:pointer;">
+    <div id="photo-menu" onclick="closePhotoMenu()" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:3000;">
+        <div class="menu-box" onclick="event.stopPropagation()" style="background:#1c1c1e; width:85%; padding:20px; border-radius:20px; text-align:center;">
+            <div style="font-weight:bold; margin-bottom:20px;">Cambiar foto de perfil</div>
+            <label style="background:var(--blue); display:block; padding:15px; border-radius:12px; margin-bottom:10px; cursor:pointer; font-weight:bold;">
                 Seleccionar de la galería <input type="file" style="display:none" accept="image/*" onchange="updateAllPhotos(this)">
             </label>
-            <div onclick="closePhotoMenu()" style="padding:10px; color:var(--text-grey);">Cancelar</div>
+            <div onclick="closePhotoMenu()" style="padding:10px; color:var(--text-grey); cursor:pointer;">Cancelar</div>
         </div>
     </div>
 
     <nav>
         <div class="nav-icon active" onclick="tab('view-home', this)">🏠</div>
         <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
-        <div class="nav-icon" style="font-size:2.2rem; opacity:1;">+</div>
+        <div class="nav-icon" style="font-size:2.2rem; opacity:1;" onclick="openPhotoMenu()">+</div>
         <div class="nav-icon">🎬</div>
         <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
     </nav>
 
     <script>
+        // Función para cambiar de pestañas
         function tab(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
+
+        // Función para eliminar elementos de búsqueda (2756.jpg)
+        function eliminarReciente(btnX) {
+            const item = btnX.parentElement;
+            item.style.opacity = '0';
+            setTimeout(() => item.remove(), 300);
+        }
+
+        // Funciones de Edición de Perfil (2752.jpg)
         function openEdit() { document.getElementById('edit-modal').style.display='block'; }
         function closeEdit() { document.getElementById('edit-modal').style.display='none'; }
         function saveEdit() {
@@ -138,6 +159,8 @@
             document.getElementById('disp-bio').innerText = document.getElementById('in-bio').value;
             closeEdit();
         }
+
+        // Funciones de Galería
         function openPhotoMenu() { document.getElementById('photo-menu').style.display='flex'; }
         function closePhotoMenu() { document.getElementById('photo-menu').style.display='none'; }
         function updateAllPhotos(input) {
