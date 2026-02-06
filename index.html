@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Ultra Elite</title>
+    <title>Aura | Sistema Elite</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;600;800&display=swap');
 
@@ -11,45 +11,45 @@
             --bg: #000000; 
             --accent: #00ffd5;
             --rainbow: linear-gradient(45deg, #ff0055, #00ffd5, #cc00ff);
-            --glass: rgba(10, 10, 10, 0.9);
+            --glass: rgba(15, 15, 15, 0.95);
         }
 
         body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* --- NUEVO LOGO MINIMALISTA --- */
-        .header-elite { display: flex; flex-direction: column; align-items: center; padding: 60px 0 30px; }
-        .aura-logo-minimal { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; letter-spacing: 15px; position: relative; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        .aura-logo-minimal::after { content: 'ELITE'; position: absolute; bottom: -15px; right: 0; font-size: 0.6rem; letter-spacing: 4px; color: var(--accent); font-weight: 400; }
+        /* --- SISTEMA DE LOGIN Y REGISTRO --- */
+        #auth-screen {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px;
+        }
+        .auth-card { width: 100%; max-width: 320px; text-align: center; }
+        .auth-input {
+            width: 100%; background: #111; border: 1px solid #222; padding: 15px; 
+            border-radius: 12px; color: white; margin-bottom: 15px; outline: none; box-sizing: border-box;
+        }
+        .btn-auth {
+            width: 100%; background: white; color: black; border: none; padding: 15px; 
+            border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px;
+        }
+        .auth-toggle { margin-top: 20px; font-size: 0.8rem; color: #555; cursor: pointer; }
+        .auth-toggle b { color: var(--accent); }
 
-        /* --- MI HISTORIA: CUADRADA Y GRANDE --- */
+        /* --- LOGO AURA --- */
+        .header-elite { display: flex; flex-direction: column; align-items: center; padding: 60px 0 30px; }
+        .aura-logo-minimal { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; letter-spacing: 15px; color: #fff; position: relative; }
+        .aura-logo-minimal::after { content: 'ELITE'; position: absolute; bottom: -15px; right: 0; font-size: 0.6rem; letter-spacing: 4px; color: var(--accent); }
+
+        /* --- HOME: HISTORIA CUADRADA --- */
         .home-content { padding: 0 25px; }
         .story-big-square { 
-            width: 140px; 
-            height: 140px; 
-            background: #111; 
-            border-radius: 24px; 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            border: 1px solid #222;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 140px; height: 140px; background: #111; border-radius: 24px; 
+            display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #222;
         }
         .story-big-square::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            padding: 3px;
-            border-radius: 24px;
-            background: var(--rainbow);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
+            content: ''; position: absolute; inset: 0; padding: 3px; border-radius: 24px;
+            background: var(--rainbow); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
         }
-        .story-icon { font-size: 3rem; }
-        .story-label-home { margin-top: 12px; font-size: 0.75rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
+        .story-label-home { margin-top: 12px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; }
 
         /* --- VISTAS --- */
         .view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 120px; }
@@ -58,7 +58,7 @@
         /* --- BUSCADOR --- */
         .search-container { padding: 25px; }
         .search-bar { background: #111; border: 1px solid #222; border-radius: 18px; padding: 18px; display: flex; align-items: center; gap: 12px; }
-        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
+        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
 
         /* --- PERFIL --- */
         .p-card { padding: 30px 25px; }
@@ -68,117 +68,131 @@
         .stat-val { font-size: 1.2rem; font-weight: 800; color: var(--accent); display: block; }
         .stat-label { font-size: 0.6rem; color: #555; font-weight: 900; text-transform: uppercase; }
         .p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 30px; }
-        .grid-box { aspect-ratio: 1/1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; color: #1a1a1a; font-size: 2rem; }
+        .grid-box { aspect-ratio: 1/1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
 
         /* --- NAVEGACIÓN --- */
         nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 38px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #222; z-index: 2000; }
-        .n-btn { font-size: 1.6rem; opacity: 0.3; cursor: pointer; transition: 0.3s; }
+        .n-btn { font-size: 1.6rem; opacity: 0.3; cursor: pointer; }
         .n-btn.active { opacity: 1; color: var(--accent); }
         .n-add { width: 65px; height: 65px; background: white; border-radius: 50%; color: black; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; transform: translateY(-10px); }
 
         /* --- CÁMARA --- */
         #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 25px; pointer-events: none; }
-        .btn-act { width: 45px; height: 45px; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: auto; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="view-home" class="view active">
-        <div class="header-elite">
-            <div class="aura-logo-minimal">AURA</div>
+    <div id="auth-screen">
+        <div class="auth-card" id="login-form">
+            <h1 style="font-family:'Orbitron'; letter-spacing:10px; margin-bottom:40px;">AURA</h1>
+            <input type="text" id="user-login" class="auth-input" placeholder="Usuario">
+            <input type="password" id="pass-login" class="auth-input" placeholder="Contraseña">
+            <button class="btn-auth" onclick="handleAuth('login')">ENTRAR</button>
+            <p class="auth-toggle" onclick="toggleAuth()">¿No tienes cuenta? <b>Regístrate</b></p>
         </div>
-        
-        <div class="home-content">
-            <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                <div class="story-big-square" onclick="alert('Abriendo tu historia...')">
-                    <span class="story-icon">👤</span>
-                </div>
-                <span class="story-label-home">MI HISTORIA</span>
-            </div>
+
+        <div class="auth-card" id="register-form" style="display:none;">
+            <h1 style="font-family:'Orbitron'; letter-spacing:10px; margin-bottom:40px;">UNIRSE</h1>
+            <input type="text" id="user-reg" class="auth-input" placeholder="Crea tu usuario">
+            <input type="password" id="pass-reg" class="auth-input" placeholder="Contraseña">
+            <button class="btn-auth" onclick="handleAuth('register')">CREAR CUENTA</button>
+            <p class="auth-toggle" onclick="toggleAuth()">¿Ya eres miembro? <b>Inicia Sesión</b></p>
         </div>
     </div>
 
-    <div id="view-search" class="view">
-        <div class="search-container">
-            <h2 style="font-family:'Orbitron'; font-size:1.1rem; letter-spacing:2px; margin-bottom:20px;">EXPLORAR</h2>
-            <div class="search-bar">
-                <span>🔍</span>
-                <input type="text" placeholder="Buscar usuarios...">
+    <div id="main-app" style="display:none;">
+        <div id="view-home" class="view active">
+            <div class="header-elite">
+                <div class="aura-logo-minimal">AURA</div>
             </div>
-        </div>
-    </div>
-
-    <div id="view-reels" class="view">
-        <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <span style="font-size:4rem; filter: drop-shadow(0 0 15px var(--accent));">🎬</span>
-            <p style="font-family:'Orbitron'; color:var(--accent); letter-spacing:5px;">VIDEO ZONE</p>
-        </div>
-    </div>
-
-    <div id="view-profile" class="view">
-        <div class="p-card">
-            <div class="p-header">
-                <div class="p-avatar">👤</div>
-                <div class="p-stats">
-                    <div><b class="stat-val">0</b><span class="stat-label">Pubs</span></div>
-                    <div><b class="stat-val">0</b><span class="stat-label">Fans</span></div>
-                    <div><b class="stat-val">0</b><span class="stat-label">Siguiendo</span></div>
-                </div>
-            </div>
-            <h2 style="font-family:'Orbitron'; margin:0; letter-spacing:1px;">Aura User</h2>
-            <p style="color:#666; margin: 8px 0 25px; font-size: 0.9rem;">Digital Elite Member 2026.</p>
-            <button style="width:100%; background:white; color:black; border:none; padding:16px; border-radius:14px; font-weight:800;">Editar perfil</button>
-            
-            <div class="p-grid">
-                <div class="grid-box">+</div><div class="grid-box"></div><div class="grid-box"></div>
-                <div class="grid-box"></div><div class="grid-box"></div><div class="grid-box"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="aura-cam">
-        <video id="video-preview" autoplay playsinline></video>
-        <div class="cam-ui">
-            <div style="display:flex; justify-content:space-between; pointer-events:auto;">
-                <div class="btn-act" onclick="closeCam()">✕</div>
-            </div>
-            <div style="display:flex; justify-content:center; pointer-events:auto;">
-                <div style="width:75px; height:75px; border:4px solid white; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                    <div style="width:55px; height:55px; background:white; border-radius:50%;"></div>
+            <div class="home-content">
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="story-big-square">
+                        <span style="font-size:3rem;">👤</span>
+                    </div>
+                    <span class="story-label-home">MI HISTORIA</span>
                 </div>
             </div>
         </div>
-    </div>
 
-    <nav>
-        <div class="n-btn active" onclick="go('home', this)">🏠</div>
-        <div class="n-btn" onclick="go('search', this)">🔍</div>
-        <div class="n-add" onclick="openCam()">+</div>
-        <div class="n-btn" onclick="go('reels', this)">🎬</div>
-        <div class="n-btn" onclick="go('profile', this)">👤</div>
-    </nav>
+        <div id="view-search" class="view">
+            <div class="search-container">
+                <h2 style="font-family:'Orbitron'; font-size:1.1rem; letter-spacing:2px; margin-bottom:20px;">EXPLORAR</h2>
+                <div class="search-bar"><span>🔍</span><input type="text" placeholder="Buscar usuarios..."></div>
+            </div>
+        </div>
+
+        <div id="view-profile" class="view">
+            <div class="p-card">
+                <div class="p-header">
+                    <div class="p-avatar" id="profile-avatar">👤</div>
+                    <div class="p-stats">
+                        <div><b class="stat-val">0</b><span class="stat-label">Pubs</span></div>
+                        <div><b class="stat-val">0</b><span class="stat-label">Fans</span></div>
+                        <div><b class="stat-val">0</b><span class="stat-label">Siguiendo</span></div>
+                    </div>
+                </div>
+                <h2 id="display-name" style="font-family:'Orbitron'; letter-spacing:1px;">User</h2>
+                <p style="color:#666; margin: 8px 0 25px;">Elite Member 2026.</p>
+                <button class="btn-auth" style="margin:0;" onclick="logout()">Cerrar Sesión</button>
+                <div class="p-grid">
+                    <div class="grid-box">+</div><div class="grid-box"></div><div class="grid-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <div class="n-btn active" onclick="go('home', this)">🏠</div>
+            <div class="n-btn" onclick="go('search', this)">🔍</div>
+            <div class="n-add" onclick="openCam()">+</div>
+            <div class="n-btn" onclick="go('profile', this)">👤</div>
+        </nav>
+    </div>
 
     <script>
-        let stream = null;
+        // --- LÓGICA DE USUARIOS ---
+        function toggleAuth() {
+            const login = document.getElementById('login-form');
+            const reg = document.getElementById('register-form');
+            login.style.display = login.style.display === 'none' ? 'block' : 'none';
+            reg.style.display = reg.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleAuth(type) {
+            if(type === 'register') {
+                const u = document.getElementById('user-reg').value;
+                const p = document.getElementById('pass-reg').value;
+                if(u && p) {
+                    localStorage.setItem('aura_user', u);
+                    localStorage.setItem('aura_pass', p);
+                    alert("¡Cuenta creada! Inicia sesión.");
+                    toggleAuth();
+                }
+            } else {
+                const u = document.getElementById('user-login').value;
+                const p = document.getElementById('pass-login').value;
+                if(u === localStorage.getItem('aura_user') && p === localStorage.getItem('aura_pass')) {
+                    document.getElementById('auth-screen').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'block';
+                    document.getElementById('display-name').innerText = u;
+                } else {
+                    alert("Datos incorrectos");
+                }
+            }
+        }
+
+        function logout() { location.reload(); }
+
+        // --- NAVEGACIÓN APP ---
         function go(v, btn) {
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
             document.getElementById('view-' + v).classList.add('active');
             btn.classList.add('active');
         }
-        async function openCam() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-                document.getElementById('video-preview').srcObject = stream;
-                document.getElementById('aura-cam').style.display = 'block';
-            } catch(e) { alert("Cámara no activa"); }
-        }
-        function closeCam() {
-            if(stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('aura-cam').style.display = 'none';
-        }
+
+        async function openCam() { alert("Cámara activa en modo Elite"); }
     </script>
 </body>
 </html>
