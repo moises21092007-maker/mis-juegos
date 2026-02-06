@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura | App Completa</title>
+    <title>Aura | App Final</title>
     <style>
         :root { 
             --bg: #000; --panel: #1c1c1e; --border: #262626; 
@@ -11,42 +11,42 @@
             --aura-grad: linear-gradient(45deg, #a020f0, #ff00ff, #00d4ff); 
         }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
-        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; position: relative; }
+        .view { height: 100vh; display: none; overflow-y: auto; padding-bottom: 70px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- HOME & STORIES --- */
-        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top:0; background: var(--bg); z-index: 10; }
+        /* --- HOME --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
         .brand-name { font-size: 1.8rem; margin: 0; background: var(--aura-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        .stories-container { display: flex; padding: 10px 20px; border-bottom: 0.5px solid var(--border); }
-        .story-ring { width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
-        .story-ring img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid black; object-fit: cover; }
 
-        /* --- VIDEO FEED (RECUPERADO) --- */
+        /* --- VÍDEO FEED --- */
         .v-container { width: 100%; height: 100%; background: #111 url('https://images.unsplash.com/photo-1550029402-226115b7c579?w=800') center/cover; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
         .v-info { padding: 20px; padding-bottom: 80px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
-        .v-actions { position: absolute; right: 15px; bottom: 100px; display: flex; flex-direction: column; gap: 15px; text-align: center; font-size: 1.5rem; }
+        .v-actions { position: absolute; right: 15px; bottom: 100px; display: flex; flex-direction: column; gap: 15px; text-align: center; }
 
-        /* --- BUSCADOR --- */
-        .search-header { display: flex; align-items: center; padding: 10px 15px; gap: 10px; border-bottom: 1px solid var(--border); }
-        .search-bar { background: #262626; border-radius: 10px; flex: 1; padding: 8px; }
-        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; }
-        .recent-item { display: flex; align-items: center; padding: 15px; gap: 12px; transition: 0.3s; }
+        /* --- PERFIL COMPLETO (RESTAURADO) --- */
+        .p-main { padding: 15px; }
+        .p-top { display: flex; align-items: center; gap: 25px; margin-top: 20px; }
+        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); position: relative; }
+        .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; object-fit: cover; }
+        .stats { display: flex; gap: 20px; text-align: center; flex: 1; justify-content: space-around; }
+        .stat-val { font-weight: bold; font-size: 1.1rem; display: block; }
+        .stat-lab { font-size: 0.8rem; color: var(--text-grey); }
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-p { flex: 1; background: #262626; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        /* Ilustración Bienvenida (2751.jpg) */
+        .welcome-box { margin-top: 40px; background: #121212; border-radius: 15px; overflow: hidden; text-align: center; }
+        .welcome-img { padding: 40px; font-size: 50px; opacity: 0.7; }
+        .welcome-bar { background: var(--blue); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
 
-        /* --- PERFIL --- */
-        .p-main { padding: 20px; }
-        .p-ring { width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: var(--aura-grad); }
-        .p-ring img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid black; }
-
-        /* --- CAPAS CÁMARA Y MENÚ --- */
+        /* CAPAS CÁMARA */
         #camera-layer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; }
         #upload-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
-        .u-box { background: var(--panel); width: 80%; padding: 25px; border-radius: 20px; text-align: center; }
-        .u-btn { background: var(--blue); color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; font-weight: bold; cursor: pointer; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { font-size: 1.5rem; opacity: 0.5; cursor: pointer; }
+        .nav-icon { font-size: 1.5rem; opacity: 0.5; color: white; cursor: pointer; }
         .nav-icon.active { opacity: 1; }
     </style>
 </head>
@@ -54,48 +54,58 @@
 
     <div id="view-home" class="view active">
         <div class="home-header"><h1 class="brand-name">Aura</h1></div>
-        <div class="stories-container">
-            <div class="story-ring"><img class="u-img" src="https://i.pravatar.cc/150?u=moi"></div>
-        </div>
-        <div style="padding: 20px; text-align: center; color: var(--text-grey);">Mira tus historias aquí</div>
-    </div>
-
-    <div id="view-search" class="view">
-        <div class="search-header"><span>‹</span><div class="search-bar"><input type="text" placeholder="Buscar"></div></div>
-        <div style="padding:15px;"><b>Recientes</b></div>
-        <div class="recent-item">
-            <div style="width:40px; height:40px; border-radius:50%; background:#333;"></div>
-            <div style="flex:1;">Ayuntamiento de Estepona</div>
-            <div style="cursor:pointer;" onclick="this.parentElement.remove()">✕</div>
-        </div>
+        <div style="padding:20px; text-align:center; color:var(--text-grey);">Historias de Aura</div>
     </div>
 
     <div id="view-reels" class="view">
         <div class="v-container">
             <div class="v-info">
                 <b>fitnessshayla</b> <button style="background:none; border:1px solid white; color:white; border-radius:5px; padding:2px 8px; font-size:0.7rem;">Seguir</button>
-                <p>Mi primer vídeo en Aura 🚀</p>
-                <small>🎵 Sonido original</small>
+                <p>Explorando el mundo Aura 🚀</p>
             </div>
             <div class="v-actions">
-                <div>❤️<br><small style="font-size:0.7rem;">12k</small></div>
-                <div>💬<br><small style="font-size:0.7rem;">400</small></div>
-                <div>✈️</div>
+                <div>❤️<br><small>12k</small></div>
+                <div>💬<br><small>400</small></div>
             </div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
         <div class="p-main">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><b>moi_._lopez ∨</b> <span>☰</span></div>
-            <div style="display:flex; align-items:center; gap:20px;">
-                <div class="p-ring"><img class="u-img" src="https://i.pravatar.cc/150?u=moi" style="width:100%; height:100%; border-radius:50%;"></div>
-                <div style="display:flex; gap:15px; text-align:center;">
-                    <div><b>104</b><br><small>seguidores</small></div>
-                    <div><b>247</b><br><small>seguidos</small></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>moi_._lopez ∨</b>
+                <span>☰</span>
+            </div>
+
+            <div class="p-top">
+                <div class="p-ring">
+                    <img class="u-img" src="https://i.pravatar.cc/150?u=moi">
+                    <div style="position:absolute; bottom:0; right:0; background:white; color:black; border-radius:50%; width:20px; height:20px; text-align:center; font-size:15px; font-weight:bold; border:2px solid black;">+</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item"><span class="stat-val">104</span><span class="stat-lab">seguidores</span></div>
+                    <div class="stat-item"><span class="stat-val">247</span><span class="stat-lab">seguidos</span></div>
                 </div>
             </div>
-            <div style="margin-top:15px;"><b>moi_._Lopez</b><br><span style="color:var(--text-grey);">📍 Estepona</span></div>
+
+            <div style="margin-top:15px;">
+                <b style="font-size:1.1rem;">moi_._Lopez</b><br>
+                <span style="color:var(--text-grey);">📍 Estepona</span><br>
+                <div style="margin-top:5px;"><b>0</b> <span style="color:var(--text-grey);">publicaciones</span></div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-p">Editar perfil</button>
+                <button class="btn-p">Compartir</button>
+            </div>
+
+            <div class="welcome-box">
+                <div class="welcome-img">💻</div>
+                <div class="welcome-bar">
+                    <span>Crea tu primera publicación</span>
+                    <span style="cursor:pointer;" onclick="tab('view-home')">Crear</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -105,16 +115,16 @@
     </div>
 
     <div id="upload-menu" onclick="this.style.display='none'">
-        <div class="u-box" onclick="event.stopPropagation()">
-            <div class="u-btn" onclick="startCamera()">📷 Grabar Vídeo</div>
-            <label class="u-btn" style="background:#333; display:block;" for="gal">🖼️ Galería</label>
-            <input type="file" id="gal" style="display:none" onchange="alert('Archivo listo')">
+        <div style="background:var(--panel); width:80%; padding:25px; border-radius:20px; text-align:center;" onclick="event.stopPropagation()">
+            <div style="background:var(--blue); color:white; padding:15px; border-radius:12px; margin-bottom:10px; font-weight:bold;" onclick="startCamera()">📷 Grabar con Cámara</div>
+            <label style="background:#333; color:white; padding:15px; border-radius:12px; display:block;" for="gal">🖼️ Elegir de Galería</label>
+            <input type="file" id="gal" style="display:none">
         </div>
     </div>
 
     <nav>
         <div class="nav-icon active" onclick="tab('view-home', this)">🏠</div>
-        <div class="nav-icon" onclick="tab('view-search', this)">🔍</div>
+        <div class="nav-icon" onclick="alert('Buscador')">🔍</div>
         <div class="nav-icon" style="font-size:2.5rem; opacity:1;" onclick="document.getElementById('upload-menu').style.display='flex'">+</div>
         <div class="nav-icon" onclick="tab('view-reels', this)">🎬</div>
         <div class="nav-icon" onclick="tab('view-profile', this)">👤</div>
@@ -123,8 +133,11 @@
     <script>
         function tab(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active'); el.classList.add('active');
+            if(el) {
+                document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
+                el.classList.add('active');
+            }
+            document.getElementById(id).classList.add('active');
         }
 
         async function startCamera() {
