@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura Pro | Mega Filter Pack</title>
+    <title>Aura Pro | v3.0 Final</title>
     <style>
         :root { 
             --bg: #000; --card: #0d0d0d; --border: #1a1a1a; 
@@ -16,129 +16,115 @@
         .view { display: none; height: 100vh; width: 100%; overflow-y: auto; padding-bottom: 100px; box-sizing: border-box; }
         .view.active { display: block; }
 
-        /* --- VISTA INICIO: TU HISTORIA --- */
-        .stories-bar { display: flex; padding: 20px; border-bottom: 1px solid var(--border); }
-        .story { width: 75px; text-align: center; cursor: pointer; }
-        .s-ring { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: var(--rainbow); background-size: 400%; margin-bottom: 5px; }
+        /* --- VISTA INICIO (CON LOGO AURA) --- */
+        .aura-brand { padding: 20px 25px 5px; font-size: 2rem; font-weight: 900; letter-spacing: -1.5px; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stories-bar { display: flex; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+        .story { width: 70px; text-align: center; }
+        .s-ring { width: 60px; height: 60px; border-radius: 50%; padding: 2px; background: var(--rainbow); background-size: 400%; margin-bottom: 5px; }
         .s-inner { width: 100%; height: 100%; border-radius: 50%; background: #000; border: 2px solid black; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .story span { font-size: 0.65rem; color: #888; font-weight: 600; }
 
-        /* --- VISTA PERFIL: SIMPLIFICADO --- */
-        .p-info { padding: 40px 25px 10px; }
-        .p-top { display: flex; align-items: center; gap: 35px; margin-bottom: 20px; }
+        /* --- VISTA VIDEO (FUNCIONAL ESTILO REEL) --- */
+        #view-reels { overflow: hidden; background: #000; }
+        .reel-container { height: 100vh; width: 100%; position: relative; }
+        .reel-video-sim { width: 100%; height: 100%; object-fit: cover; background: linear-gradient(to bottom, #111, #000); display: flex; align-items: center; justify-content: center; }
+        .reel-ui { position: absolute; bottom: 110px; left: 20px; right: 20px; pointer-events: none; }
+        .reel-user { font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .reel-user img { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); }
+        .reel-side { position: absolute; right: 10px; bottom: 130px; display: flex; flex-direction: column; gap: 20px; pointer-events: auto; }
+        .side-btn { text-align: center; font-size: 1.6rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .side-btn span { display: block; font-size: 0.6rem; font-weight: 900; margin-top: 2px; }
+
+        /* --- VISTA PERFIL (LIMPIO) --- */
+        .p-header { padding: 40px 25px 20px; }
+        .p-main { display: flex; align-items: center; gap: 30px; margin-bottom: 20px; }
         .p-avatar { width: 85px; height: 85px; background: var(--rainbow); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
         .p-stats { display: flex; flex: 1; justify-content: space-around; text-align: center; }
-        .stat-n { display: block; font-weight: 900; font-size: 1.1rem; }
-        .stat-t { font-size: 0.65rem; color: gray; text-transform: uppercase; letter-spacing: 1px; }
+        .p-stats b { display: block; font-size: 1.1rem; }
+        .p-stats span { font-size: 0.65rem; color: gray; text-transform: uppercase; }
+        .p-actions { display: flex; gap: 10px; padding: 0 20px; }
+        .p-btn { flex: 1; background: #1a1a1a; border: none; color: white; padding: 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; cursor: pointer; }
 
-        .p-user-details { padding: 0 25px 25px; }
-        .p-name { font-size: 1.3rem; margin: 0; font-weight: 800; }
-        .p-tag { color: gray; font-size: 0.85rem; display: block; margin-top: 4px; }
-
-        .p-buttons { display: flex; gap: 10px; padding: 0 20px 30px; }
-        .btn-p { flex: 1; background: #111; border: 1px solid #222; color: white; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-
-        /* --- CÁMARA ESPEJO CON FILTROS --- */
+        /* --- CÁMARA PRO --- */
         #aura-cam { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; }
-        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: filter 0.3s ease; }
-        .cam-ui { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 45px 25px; pointer-events: none; }
-        
-        #filter-panel { 
-            position: absolute; bottom: 0; width: 100%; background: rgba(5,5,5,0.98); 
-            border-radius: 30px 30px 0 0; transform: translateY(100%); transition: 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 6000; border-top: 1px solid #222; 
-        }
-        #filter-panel.open { transform: translateY(0); }
-        .f-list { display: flex; gap: 15px; padding: 25px; overflow-x: auto; scrollbar-width: none; }
-        .f-item { min-width: 65px; text-align: center; font-size: 0.6rem; cursor: pointer; }
-        .f-circ { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #333; margin-bottom: 8px; }
-        .f-item.active .f-circ { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,213,0.3); }
+        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: filter 0.3s; }
+        .cam-controls { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 45px 25px; pointer-events: none; }
+        .shutter-btn { width: 75px; height: 75px; border: 4px solid white; border-radius: 50%; margin: auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
+        .shutter-inner { width: 60px; height: 60px; background: white; border-radius: 50%; }
 
         /* --- NAVEGACIÓN --- */
-        nav { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px; background: rgba(10,10,10,0.95); backdrop-filter: blur(25px); border-radius: 40px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 4000; }
-        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; transition: 0.3s; }
+        nav { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px; background: rgba(10,10,10,0.96); backdrop-filter: blur(20px); border-radius: 40px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 4000; }
+        .n-btn { font-size: 1.5rem; opacity: 0.3; cursor: pointer; transition: 0.2s; }
         .n-btn.active { opacity: 1; color: var(--accent); }
-        .n-add { width: 60px; height: 60px; background: white; border-radius: 50%; color: black; font-size: 2.2rem; display: flex; align-items: center; justify-content: center; transform: translateY(-12px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .n-add { width: 60px; height: 60px; background: white; border-radius: 50%; color: black; font-size: 2.2rem; display: flex; align-items: center; justify-content: center; transform: translateY(-12px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="view active">
+        <div class="aura-brand">AURA</div>
         <div class="stories-bar">
             <div class="story" onclick="openCam()">
                 <div class="s-ring"><div class="s-inner">+</div></div>
-                <span>Tu historia</span>
+                <span style="font-size:0.6rem; color:gray;">Tu historia</span>
             </div>
         </div>
-        <div style="text-align:center; padding-top:120px; color:#222; font-weight:900; letter-spacing:2px; font-size:0.8rem;">
-            AURA PRO FEED
-        </div>
+        <div style="padding-top:100px; text-align:center; color:#222; font-weight:900; letter-spacing:2px;">FEED VACÍO</div>
     </div>
 
     <div id="view-search" class="view">
         <div style="padding:40px 20px;">
-            <input type="text" placeholder="Buscar filtros en Aura..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#111; color:white; outline:none;">
+            <input type="text" placeholder="Buscar en Aura Pro..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#111; color:white; outline:none;">
+        </div>
+    </div>
+
+    <div id="view-reels" class="view">
+        <div class="reel-container">
+            <div class="reel-video-sim">
+                <div style="text-align:center;">
+                    <div style="font-size:3rem;">🎬</div>
+                    <p style="color:#444; font-weight:800; font-size:0.7rem;">MODO REEL ACTIVO</p>
+                </div>
+            </div>
+            <div class="reel-side">
+                <div class="side-btn" onclick="this.style.color='#ff0055'">❤️<span>0</span></div>
+                <div class="side-btn">💬<span>0</span></div>
+                <div class="side-btn">✈️</div>
+            </div>
+            <div class="reel-ui">
+                <div class="reel-user"><img src=""> @aura_user</div>
+                <p style="font-size:0.8rem; opacity:0.8; pointer-events:none;">Probando la fluidez de la zona de video en Aura Pro. #Aura #VideoZone</p>
+            </div>
         </div>
     </div>
 
     <div id="view-profile" class="view">
-        <div class="p-info">
-            <div class="p-top">
+        <div class="p-header">
+            <div class="p-main">
                 <div class="p-avatar">👤</div>
                 <div class="p-stats">
-                    <div><span class="stat-n">0</span><span class="stat-t">Pubs</span></div>
-                    <div><span class="stat-n">0</span><span class="stat-t">Seguidores</span></div>
-                    <div><span class="stat-n">0</span><span class="stat-t">Seguidos</span></div>
+                    <div><b>0</b><span>Pubs</span></div>
+                    <div><b>0</b><span>Seguidores</span></div>
+                    <div><b>0</b><span>Siguiendo</span></div>
                 </div>
             </div>
+            <h2 style="margin:0;">Mi Perfil</h2>
+            <p style="color:gray; font-size:0.8rem; margin:5px 0 25px;">0 Seguidores | 0 Siguiendo</p>
         </div>
-        <div class="p-user-details">
-            <h2 class="p-name">Mi Perfil</h2>
-            <span class="p-tag">0 Seguidores | 0 Siguiendo</span>
+        <div class="p-actions">
+            <button class="p-btn" onclick="alert('Editor de Perfil')">Editar perfil</button>
+            <button class="p-btn" onclick="alert('Enlace copiado')">Compartir perfil</button>
         </div>
-
-        <div class="p-buttons">
-            <button class="btn-p" onclick="alert('Editor de Perfil')">Editar perfil</button>
-            <button class="btn-p" onclick="alert('Enlace copiado')">Compartir perfil</button>
-        </div>
-
-        <div style="padding:60px 20px; text-align:center; color:#333; font-size:0.75rem; border-top: 1px solid #111; font-weight:700;">
-            AÚN NO HAY PUBLICACIONES
+        <div style="margin-top:50px; text-align:center; color:#222; font-weight:800; font-size:0.7rem; letter-spacing:1px; border-top:1px solid #111; padding-top:40px;">
+            SIN PUBLICACIONES TODAVÍA
         </div>
     </div>
 
     <div id="aura-cam">
         <video id="video-preview" autoplay playsinline></video>
-        <div class="cam-ui">
-            <div style="pointer-events:auto; display:flex; justify-content:space-between; align-items:center;">
-                <div onclick="closeCam()" style="font-size:2rem; cursor:pointer;">✕</div>
-                <div id="rec-tag" style="display:none; color:red; font-weight:bold; font-size:0.8rem; letter-spacing:1px;">● REC</div>
-                <div style="width:30px"></div>
-            </div>
-
-            <div style="pointer-events:auto; text-align:center;">
-                <div style="display:flex; justify-content:center; gap:25px; margin-bottom:25px; font-size:0.75rem; font-weight:900; letter-spacing:1px;">
-                    <span onclick="setM('v')" id="mv" style="opacity:0.5">VIDEO</span>
-                    <span onclick="setM('f')" id="mf" style="color:var(--accent)">FOTO</span>
-                </div>
-                <div style="display:flex; align-items:center; justify-content:space-around;">
-                    <div style="width:45px; height:45px; border-radius:12px; border:2px solid white; overflow:hidden; background:#111;">
-                        <img src="https://picsum.photos/50" style="width:100%; height:100%; object-fit:cover;">
-                    </div>
-                    <div style="width:80px; height:80px; border:4px solid white; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="take()">
-                        <div id="dot" style="width:62px; height:62px; background:white; border-radius:50%;"></div>
-                    </div>
-                    <div style="font-size:2rem; cursor:pointer;" onclick="toggleF()">✨</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="filter-panel">
-            <div class="f-list">
-                <div class="f-item active" onclick="apply('none', this)"><div class="f-circ" style="background:#222;"></div>Normal</div>
-                <div class="f-item" onclick="apply('grayscale(100%)', this)"><div class="f-circ" style="background:#555;"></div>Moon</div>
-                <div class="f-item" onclick="apply('sepia(0.6) contrast(1.2)', this)"><div class="f-circ" style="background:#8b5e3c;"></div>Retro</div>
-                <div class="f-item" onclick="apply('hue-rotate(280deg) saturate(1.5)', this)"><div class="f-circ" style="background:var(--accent);"></div>Aura Pro</div>
-                <div class="f-item" onclick="apply('invert(1) hue-rotate(180deg)', this)"><div class="f-circ" style="background:#fff;"></div>X-Ray</div>
+        <div class="cam-controls">
+            <div style="pointer-events:auto; font-size:2rem;" onclick="closeCam()">✕</div>
+            <div class="shutter-btn" onclick="alert('Capturado')">
+                <div class="shutter-inner"></div>
             </div>
         </div>
     </div>
@@ -147,19 +133,18 @@
         <div class="n-btn active" onclick="go('home', this)">🖼️</div>
         <div class="n-btn" onclick="go('search', this)">🔍</div>
         <div class="n-add" onclick="openCam()">+</div>
-        <div class="n-btn" onclick="alert('Cargando Reels...')">🎬</div>
+        <div class="n-btn" onclick="go('reels', this)">🎬</div>
         <div class="n-btn" onclick="go('profile', this)">👤</div>
     </nav>
 
     <script>
         let stream = null;
-        let mode = 'f';
 
-        function go(v, b) {
+        function go(v, btn) {
             document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.n-btn').forEach(x => x.classList.remove('active'));
-            document.getElementById('view-'+v).classList.add('active');
-            b.classList.add('active');
+            document.getElementById('view-' + v).classList.add('active');
+            btn.classList.add('active');
         }
 
         async function openCam() {
@@ -167,35 +152,14 @@
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
                 document.getElementById('video-preview').srcObject = stream;
                 document.getElementById('aura-cam').style.display = 'block';
-            } catch(e) { alert("Permiso de cámara denegado."); }
+            } catch(e) { alert("Cámara no disponible"); }
         }
 
         function closeCam() {
             if(stream) stream.getTracks().forEach(t => t.stop());
             document.getElementById('aura-cam').style.display = 'none';
         }
-
-        function toggleF() { document.getElementById('filter-panel').classList.toggle('open'); }
-
-        function apply(f, el) {
-            document.getElementById('video-preview').style.filter = f;
-            document.querySelectorAll('.f-item').forEach(x => x.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function setM(m) {
-            mode = m;
-            document.getElementById('dot').style.background = m === 'f' ? 'white' : 'red';
-            document.getElementById('rec-tag').style.display = m === 'v' ? 'block' : 'none';
-            document.getElementById('mf').style.color = m === 'f' ? 'var(--accent)' : 'white';
-            document.getElementById('mv').style.color = m === 'v' ? 'var(--accent)' : 'white';
-            document.getElementById('mf').style.opacity = m === 'f' ? '1' : '0.5';
-            document.getElementById('mv').style.opacity = m === 'v' ? '1' : '0.5';
-        }
-
-        function take() { 
-            alert(mode === 'f' ? "Foto guardada." : "Grabando..."); 
-        }
     </script>
 </body>
 </html>
+      
