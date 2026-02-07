@@ -3,319 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Aura | Full Experience 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+    <title>Aura | Social Experience 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --bg: #000; 
-            --accent: #00ffd5; 
-            --surface: #0a0a0a; 
-            --border: #1a1a1a;
-            --glass: rgba(10, 10, 10, 0.95);
-            --text-main: #ffffff;
-            --text-dim: #666666;
+        :root {
+            --bg: #000; --accent: #00ffd5; --surface: #0a0a0a; --border: #1a1a1a;
+            --text: #fff; --dim: #666; --glass: rgba(10, 10, 10, 0.9);
         }
 
-        /* --- ESTILOS BASE Y ANIMACIONES --- */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         body { 
-            margin: 0; background: var(--bg); color: var(--text-main); 
+            background: var(--bg); color: var(--text); 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             overflow: hidden; height: 100vh; 
         }
 
+        /* --- VISTAS --- */
         .view { 
             display: none; height: 100vh; overflow-y: auto; 
             padding-bottom: 120px; scrollbar-width: none; 
         }
-        .view::-webkit-scrollbar { display: none; }
-        .view.active { display: block; animation: viewSlide 0.4s ease; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes viewSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- CABECERA Y LOGO --- */
+        .header { padding: 50px 25px 15px; }
+        .logo { 
+            font-family: 'Orbitron'; font-size: 2.5rem; font-weight: 900;
+            letter-spacing: 14px; background: linear-gradient(90deg, #fff, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0,255,213,0.3));
         }
 
-        /* --- CABECERA (LOGO AURA GRANDE) --- */
-        .header-main { padding: 45px 25px 15px; }
-        .aura-logo { 
-            font-family: 'Orbitron'; font-size: 2.3rem; 
-            letter-spacing: 12px; font-weight: 900;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 30px rgba(0,255,213,0.3);
-        }
-
-        /* --- HISTORIAS (TU HISTORIA A LA IZQUIERDA) --- */
-        .stories-container { 
-            display: flex; align-items: center; padding: 20px 25px; 
-            gap: 18px; overflow-x: auto; scrollbar-width: none; 
-        }
-        .story-wrapper { position: relative; flex-shrink: 0; }
-        .story-box { 
+        /* --- HISTORIAS (TU DISEÑO: IZQUIERDA + CUADRADO) --- */
+        .stories { display: flex; padding: 10px 25px 25px; gap: 20px; overflow-x: auto; }
+        .story-node { position: relative; flex-shrink: 0; }
+        .story-sq { 
             width: 85px; height: 85px; border-radius: 28px; 
-            background: var(--surface); border: 2.5px solid var(--border);
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            background: var(--surface); border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
-        .active-story .story-box { 
-            border-color: var(--accent); 
-            box-shadow: 0 0 20px rgba(0,255,213,0.4);
-        }
-        .plus-button { 
-            position: absolute; bottom: -2px; right: -2px;
-            width: 28px; height: 28px; background: var(--accent);
-            border-radius: 10px; border: 3px solid #000;
-            color: #000; font-weight: 900; display: flex; 
-            align-items: center; justify-content: center; font-size: 18px;
+        .active-story .story-sq { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        .plus { 
+            position: absolute; bottom: -2px; right: -2px; width: 28px; height: 28px;
+            background: var(--accent); border: 3px solid #000; border-radius: 10px;
+            color: #000; font-weight: 900; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- SEPARADOR FEED DE LA GENTE --- */
-        .feed-info-bar { padding: 25px 25px 10px; display: flex; align-items: center; gap: 15px; }
-        .feed-title { font-size: 0.75rem; font-weight: 800; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
-        .feed-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-
-        /* --- ZONA BÚSQUEDA --- */
-        .search-header { padding: 50px 25px 20px; }
-        .search-input-group { 
-            background: var(--surface); border: 1px solid var(--border); 
-            border-radius: 22px; display: flex; align-items: center; padding: 18px 22px; gap: 15px;
+        /* --- BÚSQUEDA --- */
+        .search-box { padding: 60px 25px 20px; }
+        .search-bar { 
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 18px; display: flex; gap: 15px; 
         }
-        .search-input-group input { background: none; border: none; color: white; width: 100%; outline: none; font-size: 1.1rem; }
-        
-        .user-item { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: var(--surface); padding: 18px; border-radius: 25px; 
-            margin: 0 25px 12px; border: 1px solid var(--border);
+        .search-bar input { background: none; border: none; color: #fff; width: 100%; font-size: 1.1rem; }
+        .res-card { 
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 15px; border-radius: 22px; margin: 10px 25px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .user-avatar-circle { width: 50px; height: 50px; border-radius: 18px; background: #151515; }
 
-        /* --- VÍDEO (ESTILO FULL SCREEN) --- */
-        .video-scroll { height: 100vh; scroll-snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; background: #000; }
-        .video-page { height: 100vh; scroll-snap-align: start; position: relative; }
-        .full-video { width: 100%; height: 100%; object-fit: cover; }
-        .video-ui { position: absolute; bottom: 135px; left: 20px; z-index: 10; }
+        /* --- ZONA VÍDEO (VERTICAL) --- */
+        .v-scroll { height: 100vh; scroll-snap-type: y mandatory; overflow-y: scroll; scrollbar-width: none; background: #000; }
+        .v-unit { height: 100vh; width: 100%; scroll-snap-align: start; position: relative; }
+        .v-full { width: 100%; height: 100%; object-fit: cover; }
+        .v-meta { position: absolute; bottom: 140px; left: 20px; z-index: 5; }
 
         /* --- PERFIL --- */
-        .profile-top { padding: 60px 25px 30px; text-align: center; }
-        .profile-pic { width: 95px; height: 95px; border-radius: 35px; border: 3px solid var(--accent); margin: 0 auto 20px; }
-        .stat-row { display: flex; justify-content: center; gap: 30px; margin: 25px 0; }
-        .stat-item b { display: block; font-size: 1.3rem; color: #fff; }
-        .stat-item span { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+        .p-head { padding: 60px 25px 30px; text-align: center; }
+        .p-pfp { width: 100px; height: 100px; border-radius: 35px; border: 3px solid var(--accent); margin: 0 auto 20px; }
+        .p-stats { display: flex; justify-content: center; gap: 30px; margin: 25px 0; }
+        .p-stats b { display: block; font-size: 1.4rem; }
+        .p-stats span { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; }
 
-        /* --- CÁMARA CON BOTÓN X --- */
-        #camera-layer { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; }
-        .camera-x { 
-            position: absolute; top: 50px; right: 25px; 
-            font-size: 3.5rem; color: white; background: none; border: none; z-index: 10001;
-        }
-        .capture-trigger { 
-            position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); 
-            width: 80px; height: 80px; border-radius: 50%; border: 6px solid white;
+        /* --- CÁMARA --- */
+        #cam-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; }
+        .cam-x { position: absolute; top: 50px; right: 30px; font-size: 3.5rem; color: #fff; background: none; border: none; }
+        .shutter { 
+            position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 80px; border-radius: 50%; border: 6px solid #fff;
         }
 
-        /* --- NAVEGACIÓN --- */
+        /* --- NAV --- */
         nav { 
-            position: fixed; bottom: 25px; left: 20px; right: 20px; 
-            height: 75px; background: var(--glass); backdrop-filter: blur(25px);
+            position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px;
+            background: var(--glass); backdrop-filter: blur(20px);
             border-radius: 35px; border: 1px solid rgba(255,255,255,0.1);
             display: flex; justify-content: space-around; align-items: center; z-index: 9000;
         }
-        .nav-link { font-size: 1.7rem; opacity: 0.3; transition: 0.3s; cursor: pointer; }
-        .nav-link.active { opacity: 1; color: var(--accent); }
-        .nav-add { background: #fff; color: #000; width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; }
+        .n-btn { font-size: 1.7rem; opacity: 0.3; transition: 0.3s; }
+        .n-btn.active { opacity: 1; color: var(--accent); }
+        .n-add { background: #fff; color: #000; width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 900; }
     </style>
 </head>
 <body>
 
     <div id="v-home" class="view active">
-        <div class="header-main"><div class="aura-logo">AURA</div></div>
-        <div class="stories-container">
-            <div class="story-wrapper" id="my-aura-node" onclick="openAuraCam('story')">
-                <div class="story-box">
-                    <img id="story-prev" src="" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="story-ph" style="font-size:2.5rem; opacity:0.1;">👤</span>
+        <div class="header"><h1 class="logo">Aura</h1></div>
+        <div class="stories">
+            <div class="story-node" id="my-node" onclick="openCam('story')">
+                <div class="story-sq">
+                    <img id="s-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+                    <span id="s-icon" style="font-size:2.5rem; opacity:0.1;">👤</span>
                 </div>
-                <div class="plus-button">+</div>
+                <div class="plus">+</div>
             </div>
-            <div class="story-box" style="opacity:0.05;"></div>
+            <div class="story-sq" style="opacity:0.05;"></div>
         </div>
-        <div class="feed-info-bar"><span class="feed-title">Publicaciones de la gente</span><div class="feed-line"></div></div>
         <div id="home-feed"></div>
     </div>
 
     <div id="v-search" class="view">
-        <div class="search-header">
-            <div class="search-input-group">
-                <span>🔍</span>
-                <input type="text" id="search-in" placeholder="Buscar personas..." oninput="auraSearch()">
-            </div>
+        <div class="search-box">
+            <div class="search-bar"><span>🔍</span><input type="text" id="s-input" placeholder="Buscar en Aura..." oninput="doSearch()"></div>
         </div>
         <div id="search-results"></div>
     </div>
 
-    <div id="v-video" class="video-scroll view">
-        <div id="video-feed"></div>
-    </div>
+    <div id="v-video" class="view v-scroll"><div id="v-feed"></div></div>
 
     <div id="v-profile" class="view">
-        <div class="profile-top">
-            <div class="profile-pic"></div>
-            <h2 id="p-name">@aura_user</h2>
-            <p id="p-bio" style="color:var(--text-dim);">Explorador de Aura</p>
-            <div class="stat-row">
-                <div class="stat-item"><b id="s-posts">0</b><span>Posts</span></div>
-                <div class="stat-item"><b id="s-followers">0</b><span>Followers</span></div>
-                <div class="stat-item"><b id="s-following">0</b><span>Following</span></div>
-            </div>
-            <div style="display:flex; gap:12px; padding:0 25px;">
-                <button style="flex:3; padding:16px; border-radius:15px; background:var(--surface); border:1px solid var(--border); color:white; font-weight:700;">Editar</button>
-                <button onclick="alert('Enlace copiado')" style="flex:1; padding:16px; border-radius:15px; background:var(--surface); border:1px solid var(--border); color:white;">✈️</button>
+        <div class="p-head">
+            <div class="p-pfp"></div>
+            <h2 id="p-user">@aura_user</h2>
+            <p id="p-bio" style="color:var(--dim);">0 seguidores & 0 siguiendo</p>
+            <div class="p-stats">
+                <div><b id="st-p">0</b><span>Posts</span></div>
+                <div><b id="st-f">0</b><span>Followers</span></div>
+                <div><b id="st-fg">0</b><span>Following</span></div>
             </div>
         </div>
         <div id="p-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:2px;"></div>
     </div>
 
-    <div id="camera-layer">
-        <button class="camera-x" onclick="closeAuraCam()">×</button>
-        <video id="camera-preview" autoplay playsinline></video>
-        <div class="capture-trigger" onclick="takeAuraSnap()"></div>
+    <div id="cam-overlay">
+        <button class="cam-x" onclick="stopCam()">×</button>
+        <video id="v-stream" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+        <div class="shutter" onclick="snap()"></div>
     </div>
 
     <nav>
-        <div class="nav-link active" onclick="tab('home', this)">🏠</div>
-        <div class="nav-link" onclick="tab('search', this)">🔍</div>
-        <div class="nav-add" onclick="menuAdd()">+</div>
-        <div class="nav-link" onclick="tab('video', this)">🎬</div>
-        <div class="nav-link" onclick="tab('profile', this)">👤</div>
+        <div class="n-btn active" onclick="go('home', this)">🏠</div>
+        <div class="n-btn" onclick="go('search', this)">🔍</div>
+        <div class="n-add" onclick="up()">+</div>
+        <div class="n-btn" onclick="go('video', this)">🎬</div>
+        <div class="n-btn" onclick="go('profile', this)">👤</div>
     </nav>
 
-    <input type="file" id="up-video" hidden accept="video/*" onchange="handleVid(this)">
-    <canvas id="h-canvas" style="display:none;"></canvas>
+    <input type="file" id="f-vid" hidden accept="video/*" onchange="hVid(this)">
+    <canvas id="canvas" style="display:none;"></canvas>
 
     <script>
-        // --- BASE DE DATOS LOCAL ---
-        let db = {
-            me: { name: "Mi_Aura", posts: [], videos: [], story: null },
-            global: [
-                { name: "Nova_2026", bio: "Viviendo el futuro", p: 12, f: '1.2k', c: '#ff0055' },
-                { name: "Cyber_Punk", bio: "Aura Beta Tester", p: 5, f: 890, c: '#00ffd5' }
-            ]
+        let data = {
+            me: { nick: "Mi_Aura", posts: [], vids: [], story: null },
+            users: [{ n: "Nova_2026", b: "Digital Life", p: 14, f: '1.2k', c: '#ff0055' }]
         };
+        let stream, camMode;
 
-        let stream, mode;
-
-        // --- NAVEGACIÓN ---
-        function tab(id, el) {
+        function go(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('v-' + id).classList.add('active');
-            if(el) {
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                el.classList.add('active');
-            }
-            const vids = document.querySelectorAll('video'); vids.forEach(v => v.pause());
-            if(id === 'video') document.querySelector('#video-feed video')?.play();
-            if(id === 'profile' && !el.hasAttribute('data-ext')) showMe();
+            if(el) { document.querySelectorAll('.n-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+            document.querySelectorAll('video').forEach(v => v.pause());
+            if(id === 'video') document.querySelector('.v-full')?.play();
+            if(id === 'profile' && !el.hasAttribute('ext')) showMe();
         }
 
-        // --- CÁMARA Y PUBLICAR ---
-        function menuAdd() {
-            const ok = confirm("OK: Foto\nCANCELAR: Vídeo");
-            ok ? openAuraCam('post') : document.getElementById('up-video').click();
-        }
-
-        async function openAuraCam(m) {
-            mode = m;
+        async function openCam(m) {
+            camMode = m;
             stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            document.getElementById('camera-preview').srcObject = stream;
-            document.getElementById('camera-layer').style.display = 'block';
+            document.getElementById('v-stream').srcObject = stream;
+            document.getElementById('cam-overlay').style.display = 'block';
         }
 
-        function closeAuraCam() {
+        function stopCam() {
             if(stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('camera-layer').style.display = 'none';
+            document.getElementById('cam-overlay').style.display = 'none';
         }
 
-        function takeAuraSnap() {
-            const v = document.getElementById('camera-preview'), c = document.getElementById('h-canvas');
+        function snap() {
+            const v = document.getElementById('v-stream'), c = document.getElementById('canvas'), ctx = c.getContext('2d');
             c.width = v.videoWidth; c.height = v.videoHeight;
-            c.getContext('2d').drawImage(v, 0, 0);
+            ctx.drawImage(v, 0, 0);
             const img = c.toDataURL('image/jpeg');
-
-            if(mode === 'story') {
-                db.me.story = img;
-                const p = document.getElementById('story-prev'); p.src = img; p.style.display = 'block';
-                document.getElementById('story-ph').style.display = 'none';
-                document.getElementById('my-aura-node').classList.add('active-story');
-            } else {
-                db.me.posts.unshift(img);
-                render();
-            }
-            closeAuraCam();
+            if(camMode === 'story') {
+                data.me.story = img;
+                const i = document.getElementById('s-img'); i.src = img; i.style.display = 'block';
+                document.getElementById('s-icon').style.display = 'none';
+                document.getElementById('my-node').classList.add('active-story');
+            } else { data.me.posts.unshift(img); render(); }
+            stopCam();
         }
 
-        function handleVid(input) {
-            if(input.files[0]) {
+        function up() {
+            const ok = confirm("OK: Foto | CANCELAR: Vídeo");
+            ok ? openCam('post') : document.getElementById('f-vid').click();
+        }
+
+        function hVid(i) {
+            if(i.files[0]) {
                 const r = new FileReader();
-                r.onload = e => { db.me.videos.unshift(e.target.result); render(); tab('video'); };
-                r.readAsDataURL(input.files[0]);
+                r.onload = e => { data.me.vids.unshift(e.target.result); render(); go('video'); };
+                r.readAsDataURL(i.files[0]);
             }
         }
 
-        // --- BÚSQUEDA ---
-        function auraSearch() {
-            const q = document.getElementById('search-in').value.toLowerCase();
-            const res = document.getElementById('search-results');
-            if(q === "") { res.innerHTML = ""; return; }
-            const filtered = db.global.filter(u => u.name.toLowerCase().includes(q));
-            res.innerHTML = filtered.map(u => `
-                <div class="user-item" onclick="visit('${u.name}')">
+        function doSearch() {
+            const q = document.getElementById('s-input').value.toLowerCase();
+            const r = document.getElementById('search-results');
+            if(!q) { r.innerHTML = ""; return; }
+            const m = data.users.filter(u => u.n.toLowerCase().includes(q));
+            r.innerHTML = m.map(u => `
+                <div class="res-card" onclick="visit('${u.n}')">
                     <div style="display:flex; align-items:center; gap:15px;">
-                        <div class="user-avatar-circle" style="background:${u.c};"></div>
-                        <b>@${u.name}</b>
+                        <div style="width:45px; height:45px; border-radius:15px; background:${u.c};"></div>
+                        <b>@${u.n}</b>
                     </div>
-                    <button style="background:white; border:none; padding:8px 15px; border-radius:10px; font-weight:800;">VER</button>
+                    <button style="background:#fff; border:none; padding:8px 15px; border-radius:10px; font-weight:800;">VER</button>
                 </div>
             `).join('');
         }
 
-        function visit(name) {
-            const u = db.global.find(x => x.name === name);
-            document.getElementById('p-name').innerText = "@" + u.name.toLowerCase();
-            document.getElementById('p-bio').innerText = u.bio;
-            document.getElementById('s-posts').innerText = u.p;
-            document.getElementById('s-followers').innerText = u.f;
-            document.getElementById('p-grid').innerHTML = `<div style="grid-column: span 3; text-align:center; padding:50px; opacity:0.1;">Cuenta Privada</div>`;
-            tab('profile', document.querySelector('.nav-link[onclick*="profile"]'));
+        function visit(n) {
+            const u = data.users.find(x => x.n === n);
+            document.getElementById('p-user').innerText = "@" + u.n.toLowerCase();
+            document.getElementById('p-bio').innerText = u.b;
+            document.getElementById('st-p').innerText = u.p;
+            document.getElementById('st-f').innerText = u.f;
+            document.getElementById('p-grid').innerHTML = '<div style="grid-column:span 3; padding:50px; opacity:0.2; text-align:center;">Perfil Privado</div>';
+            go('profile', document.querySelector('.n-btn[onclick*="profile"]'));
         }
 
         function showMe() {
-            document.getElementById('p-name').innerText = "@" + db.me.name.toLowerCase();
+            document.getElementById('p-user').innerText = "@" + data.me.nick.toLowerCase();
             document.getElementById('p-bio').innerText = "0 Seguidores & 0 Siguiendo";
             render();
         }
 
-        // --- RENDER ---
         function render() {
-            document.getElementById('s-posts').innerText = db.me.posts.length;
-            document.getElementById('home-feed').innerHTML = db.me.posts.map(p => `
+            document.getElementById('st-p').innerText = data.me.posts.length;
+            document.getElementById('home-feed').innerHTML = data.me.posts.map(p => `
                 <div style="margin-bottom:30px;">
-                    <div style="padding:15px 25px; font-weight:800; font-size:0.9rem;">@${db.me.name}</div>
+                    <div style="padding:15px 25px; font-weight:800;">@${data.me.nick}</div>
                     <img src="${p}" style="width:100%; aspect-ratio:1/1; object-fit:cover;">
                 </div>
             `).join('');
-            document.getElementById('video-feed').innerHTML = db.me.videos.map(v => `
-                <div class="video-page">
-                    <video src="${v}" class="full-video" loop muted playsinline onclick="this.paused?this.play():this.pause()"></video>
-                    <div class="video-ui"><b>@${db.me.name}</b></div>
+            document.getElementById('v-feed').innerHTML = data.me.vids.map(v => `
+                <div class="v-unit">
+                    <video src="${v}" class="v-full" loop muted playsinline onclick="this.paused?this.play():this.pause()"></video>
+                    <div class="v-meta"><b>@${data.me.nick}</b></div>
                 </div>
             `).join('');
-            document.getElementById('p-grid').innerHTML = db.me.posts.map(p => `
+            document.getElementById('p-grid').innerHTML = data.me.posts.map(p => `
                 <div style="aspect-ratio:1/1; overflow:hidden;"><img src="${p}" style="width:100%; height:100%; object-fit:cover;"></div>
             `).join('');
         }
-        render();
     </script>
 </body>
 </html>
+
+    
